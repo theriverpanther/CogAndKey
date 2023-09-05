@@ -7,6 +7,8 @@ public class Agent : MonoBehaviour
     [SerializeField]
     protected float health = 10f;
     [SerializeField]
+    protected float maxHealth = 10f;
+    [SerializeField]
     protected float movementSpeed = 1f;
     [SerializeField]
     protected float attackSpeed;

@@ -15,7 +15,7 @@ public class Toy : Agent
     private int endpointSeekIndex = 0;
     [SerializeField]
     private ToyState state;
-    private float recoverTime = 5f;
+    private float recoverTime = 7.5f;
     private float recoverTimer = 0f;
     private bool keyInserted = true;
     // Start is called before the first frame update
@@ -36,13 +36,19 @@ public class Toy : Agent
         }
         if (state == ToyState.Recovering)
         {
-            if(recoverTimer <= recoverTime)
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                keyInserted = false;
+                transform.GetChild(0).SetParent(transform.parent);
+            }
+            if (recoverTimer <= recoverTime)
             {
                 recoverTimer += Time.deltaTime;
             }
             else
             {
                 recoverTimer = 0f;
+                health = maxHealth;
                 state = ToyState.Active;
             }
         }
@@ -59,10 +65,9 @@ public class Toy : Agent
             // Testing to ensure functionality
             if (Input.GetKeyDown(KeyCode.E))
             {
-                keyInserted = false;
-                transform.GetChild(0).SetParent(transform.parent);
+                health--;
             }
-            if(health <= 0)
+            if (health <= 0)
             {
                 state = ToyState.Recovering;
             }
