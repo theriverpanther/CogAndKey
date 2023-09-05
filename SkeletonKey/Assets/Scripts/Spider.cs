@@ -24,7 +24,7 @@ public class Spider : Agent
     }
 
     // Update is called once per frame
-    protected void Update()
+    protected override void Update()
     {
         base.Update();
     }

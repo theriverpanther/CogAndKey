@@ -10,16 +10,17 @@ public class Toy : Agent
     }
 
     private ToyState state;
-    private float recoverTime;
+    private float recoverTime = 1f;
     private bool keyInserted = true;
     // Start is called before the first frame update
-    protected virtual void Start()
+    protected override void Start()
     {
+        state = ToyState.Inactive;
         base.Start();
     }
 
     // Update is called once per frame
-    protected virtual void Update()
+    protected override void Update()
     {
         if(!keyInserted)
         {
@@ -27,5 +28,11 @@ public class Toy : Agent
             Destroy(this.gameObject);
         }
         base.Update();
+        // Testing to ensure functionality
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            keyInserted = false;
+            transform.GetChild(0).SetParent(transform.parent);
+        }
     }
 }
