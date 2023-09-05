@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
-    protected float health;
-    protected float movementSpeed;
+    [SerializeField]
+    protected float health = 10f;
+    [SerializeField]
+    protected float movementSpeed = 1f;
+    [SerializeField]
     protected float attackSpeed;
     /// <summary>
     /// Degree of error for prediction built in for a less perfect agent
@@ -14,6 +17,8 @@ public class Agent : MonoBehaviour
     protected float visionRange;
     protected float attackDamage;
     protected bool flightEnabled = false;
+    [SerializeField]
+    protected Vector3 direction = Vector3.zero;
 
     // Start is called before the first frame update
     protected virtual void Start()

@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6981132, g: 0.4823316, b: 0.13501245, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -116,7 +116,7 @@ Transform:
   m_Children:
   - {fileID: 8631198974671597404}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5570010984519649092
 SpriteRenderer:
@@ -182,3 +182,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714b074975505574381f09b8f1114750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 10
+  movementSpeed: 1
+  attackSpeed: 0
+  direction: {x: 0, y: 0, z: 0}
+  endpoints:
+  - {x: 10, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  endpointSeekIndex: 0
+  state: 0
