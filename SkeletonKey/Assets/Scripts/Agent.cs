@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
-    protected enum State
-    {
-        Inactive,
-        Active
-    };
+    protected float health;
+    protected float movementSpeed;
+    protected float attackSpeed;
+    protected float mistakeThreshold;
+    protected float visionRange;
+    protected float attackDamage;
+    protected bool flightEnabled;
 
-    protected State agentState;
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
-        agentState = State.Inactive;
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         
     }
