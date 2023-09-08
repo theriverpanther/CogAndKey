@@ -1,6 +1,6 @@
-# SkeletonKey  
+# Cog & Key - Deadbolt
   
-## Team Members  
+## Team Deadbolt
 Alexa - Technical Artist  
 Ethan - Gameplay Development  
 Liam - Producer, Level Design  
