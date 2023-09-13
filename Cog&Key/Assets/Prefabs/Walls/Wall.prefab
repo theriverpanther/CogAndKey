@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5938606351015525991}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,7 +94,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 3620713396818469456}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 3a95f217189f0a044a0b57411e0c0fc2, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
