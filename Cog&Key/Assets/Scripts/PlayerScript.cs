@@ -103,7 +103,6 @@ public class PlayerScript : MonoBehaviour
         }
 
         physicsBody.velocity = velocity;
-        Debug.Log(currentState);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
