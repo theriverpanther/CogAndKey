@@ -1,9 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build;
 using UnityEngine;
+
+public enum KeyState
+{
+    Normal, Reverse, Lock, Fast
+}
 
 public class Agent : MonoBehaviour
 {
+    protected KeyState state;
     [SerializeField]
     protected float health = 10f;
     [SerializeField]
