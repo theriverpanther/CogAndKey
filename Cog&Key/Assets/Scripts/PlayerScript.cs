@@ -26,11 +26,14 @@ public class PlayerScript : MonoBehaviour
     private InputAction rightAction;
     private InputAction leftAction;
 
+    private PlayerInput input;
+
     void Start()
     {
         physicsBody = GetComponent<Rigidbody2D>();
         physicsBody.gravityScale = FALL_GRAVITY;
         currentState = State.Aerial;
+        input = new PlayerInput();
 
         jumpAction = new InputAction((keyboard) => keyboard.upArrowKey, (gamepad) => gamepad.aButton);
         rightAction = new InputAction((keyboard) => keyboard.rightArrowKey, (gamepad) => gamepad.leftStick.right);
@@ -39,6 +42,7 @@ public class PlayerScript : MonoBehaviour
 
     void Update()
     {
+        input.Update();
         Vector2 velocity = physicsBody.velocity;
         float friction = 0f; // per second^2
 
