@@ -22,10 +22,6 @@ public class PlayerScript : MonoBehaviour
     private Rigidbody2D physicsBody;
     private State currentState;
 
-    private InputAction jumpAction;
-    private InputAction rightAction;
-    private InputAction leftAction;
-
     private PlayerInput input;
 
     void Start()
@@ -34,10 +30,6 @@ public class PlayerScript : MonoBehaviour
         physicsBody.gravityScale = FALL_GRAVITY;
         currentState = State.Aerial;
         input = new PlayerInput();
-
-        jumpAction = new InputAction((keyboard) => keyboard.upArrowKey, (gamepad) => gamepad.aButton);
-        rightAction = new InputAction((keyboard) => keyboard.rightArrowKey, (gamepad) => gamepad.leftStick.right);
-        leftAction = new InputAction((keyboard) => keyboard.leftArrowKey, (gamepad) => gamepad.leftStick.left);
     }
 
     void Update()
@@ -53,7 +45,7 @@ public class PlayerScript : MonoBehaviour
                 friction = 5f;
 
                 // extend jump height while jump is still held
-                if(physicsBody.gravityScale == JUMP_GRAVITY && (physicsBody.velocity.y <= 0 || !jumpAction.IsPressed()) ) {
+                if(physicsBody.gravityScale == JUMP_GRAVITY && (physicsBody.velocity.y <= 0 || !input.IsPressed(PlayerInput.Action.Jump)) ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
                 break;
@@ -61,7 +53,7 @@ public class PlayerScript : MonoBehaviour
             case State.Grounded:
                 friction = 30f;
 
-                if(jumpAction.JustPressed()) {
+                if(input.JustPressed(PlayerInput.Action.Jump)) {
                     // jump
                     velocity.y = JUMP_VELOCITY;
                     physicsBody.gravityScale = JUMP_GRAVITY;
@@ -79,8 +71,8 @@ public class PlayerScript : MonoBehaviour
 
         // horizontal movement
         float walkAccel = WALK_ACCEL * Time.deltaTime;
-        bool moveRight = rightAction.IsPressed() && velocity.x < WALK_SPEED;
-        bool moveLeft = leftAction.IsPressed() && velocity.x > -WALK_SPEED;
+        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x < WALK_SPEED;
+        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && velocity.x > -WALK_SPEED;
         if(moveRight == moveLeft) { // both pressed is same as neither pressed
             // apply friction
             if(velocity != Vector2.zero) {

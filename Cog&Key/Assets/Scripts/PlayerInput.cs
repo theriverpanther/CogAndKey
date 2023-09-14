@@ -1,78 +1,88 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
+// helper class for input. Key bindings are set in ConstructKeyBindings()
 public class PlayerInput
 {
     public enum Action
     {
-        Jump,
+        Jump = 0,
         Right,
         Left
     }
 
-    // should be called once per frame
-    public void Update() { 
+    private readonly int NUM_ACTIONS;
 
+    // contain a spot for each Action, index matches enum int value
+    private bool[] pressedLastFrame;
+    private bool[] pressedThisFrame;
+
+    // used to detect when a controller is plugged in or unplugged
+    private Gamepad currentGP;
+    private Keyboard currentKB;
+
+    private Dictionary<Action, List<ButtonControl>> keyBindings;
+
+    public PlayerInput() {
+        NUM_ACTIONS = Enum.GetNames(typeof(Action)).Length;
+        pressedLastFrame = new bool[NUM_ACTIONS];
+        pressedThisFrame = new bool[NUM_ACTIONS];
+        ConstructKeyBindings();
+    }
+
+    // should be called once per frame
+    public void Update() {
+        if(Gamepad.current != currentGP || Keyboard.current != currentKB) {
+            ConstructKeyBindings();
+        }
+
+        pressedThisFrame.CopyTo(pressedLastFrame, 0);
+
+        for(int i = 0; i < NUM_ACTIONS; i++) {
+            pressedThisFrame[i] = false;
+            foreach(ButtonControl button in keyBindings[(Action)i]) {
+                if(button.isPressed) {
+                    pressedThisFrame[i] = true;
+                    break;
+                }
+            }
+        }
     }
 
     public bool IsPressed(Action action) {
-        //    bool keyPressed = Keyboard.current != null && GetKeyboardKey(Keyboard.current).isPressed;
-        //    bool buttonPressed = Gamepad.current != null && GetGamePadButton(Gamepad.current).isPressed;
-        //return keyPressed || buttonPressed;
-        return false;
+        return pressedThisFrame[(int)action];
     }
 
     public bool JustPressed(Action action) {
-        //bool keyPressed = Keyboard.current != null && GetKeyboardKey(Keyboard.current).wasPressedThisFrame;
-        //bool buttonPressed = Gamepad.current != null && GetGamePadButton(Gamepad.current).wasPressedThisFrame;
-
-        //bool keyReleased = Keyboard.current == null || !GetKeyboardKey(Keyboard.current).isPressed;
-        //bool buttonReleased = Gamepad.current == null || !GetGamePadButton(Gamepad.current).isPressed;
-        //return (keyPressed && buttonReleased) || (buttonPressed && keyReleased); // don't trigger if pressed when the other button is currently held
-        // if the player somehow presses both on the same frame the input will be missed
-        return false;
+        return pressedThisFrame[(int)action] && !pressedLastFrame[(int)action];
     }
 
-    private ButtonControl[] GetButtons(Action action) {
-        if(Gamepad.current == null) {
-            return null;
+    // called at initialization and whenever a controller is plugged in or unplugged. Constructs the keyBindings dictionary
+    private void ConstructKeyBindings() {
+        currentGP = Gamepad.current;
+        currentKB = Keyboard.current;
+
+        keyBindings = new Dictionary<Action, List<ButtonControl>>();
+        for(int i = 0; i < NUM_ACTIONS; i++) {
+            keyBindings[(Action)i] = new List<ButtonControl>();
         }
 
-        switch(action)
-        {
-            case Action.Jump:
-                return new ButtonControl[] { Gamepad.current.aButton, Gamepad.current.dpad.up };
-
-            case Action.Right:
-                return new ButtonControl[] { Gamepad.current.leftStick.right, Gamepad.current.dpad.right };
-
-            case Action.Left:
-                return new ButtonControl[] { Gamepad.current.leftStick.left, Gamepad.current.dpad.left };
+        // add gamepad bindings
+        if(currentGP != null) {
+            keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentGP.aButton, currentGP.dpad.up });
+            keyBindings[Action.Right].AddRange(new List<ButtonControl>() { currentGP.leftStick.right, currentGP.dpad.right });
+            keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentGP.leftStick.left, currentGP.dpad.left });
         }
 
-        return null;
-    }
-
-    private KeyControl[] GetKeys(Action action) {
-        if(Keyboard.current == null) {
-            return null;
+        // add keyboard bindings
+        if(currentKB != null) {
+            keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentKB.upArrowKey, currentKB.wKey, currentKB.spaceKey });
+            keyBindings[Action.Right].AddRange(new List<ButtonControl>() { currentKB.rightArrowKey, currentKB.dKey });
+            keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentKB.leftArrowKey, currentKB.aKey });
         }
-
-        switch(action)
-        {
-            case Action.Jump:
-                return new KeyControl[] { Keyboard.current.spaceKey, Keyboard.current.rightArrowKey, Keyboard.current.wKey };
-
-            case Action.Right:
-                return new KeyControl[] { Keyboard.current.dKey, Keyboard.current.rightArrowKey };
-
-            case Action.Left:
-                return new KeyControl[] { Keyboard.current.aKey, Keyboard.current.leftArrowKey };
-        }
-
-        return null;
     }
 }
