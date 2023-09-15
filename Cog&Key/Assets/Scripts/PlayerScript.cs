@@ -21,8 +21,9 @@ public class PlayerScript : MonoBehaviour
 
     private Rigidbody2D physicsBody;
     private State currentState;
-
     private PlayerInput input;
+
+    private float coyoteTime;
 
     void Start()
     {
@@ -48,20 +49,28 @@ public class PlayerScript : MonoBehaviour
                 if(physicsBody.gravityScale == JUMP_GRAVITY && (physicsBody.velocity.y <= 0 || !input.IsPressed(PlayerInput.Action.Jump)) ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
+
+                // allow jump during coyote time
+                if(coyoteTime > 0) {
+                    if(input.JustPressed(PlayerInput.Action.Jump)) {
+                        Jump(ref velocity);
+                        coyoteTime = 0;
+                    } else {
+                        coyoteTime -= Time.deltaTime;
+                    }
+                }
                 break;
 
             case State.Grounded:
                 friction = 30f;
 
-                if(input.JustPressed(PlayerInput.Action.Jump)) {
-                    // jump
-                    velocity.y = JUMP_VELOCITY;
-                    physicsBody.gravityScale = JUMP_GRAVITY;
-                    currentState = State.Aerial;
+                if(input.JumpBuffered) {
+                    Jump(ref velocity);
                 }
                 else if(velocity.y < 0) {
                     // fall off platform
                     currentState = State.Aerial;
+                    coyoteTime = 0.05f;
                 }
                 break;
 
@@ -99,6 +108,12 @@ public class PlayerScript : MonoBehaviour
         }
 
         physicsBody.velocity = velocity;
+    }
+
+    private void Jump(ref Vector2 newVelocity) {
+        newVelocity.y = JUMP_VELOCITY;
+        physicsBody.gravityScale = JUMP_GRAVITY;
+        currentState = State.Aerial;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

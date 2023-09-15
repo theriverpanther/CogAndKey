@@ -26,6 +26,9 @@ public class PlayerInput
     private Keyboard currentKB;
 
     private Dictionary<Action, List<ButtonControl>> keyBindings;
+    private float jumpBuffer;
+
+    public bool JumpBuffered { get { return jumpBuffer > 0; } }
 
     public PlayerInput() {
         NUM_ACTIONS = Enum.GetNames(typeof(Action)).Length;
@@ -50,6 +53,14 @@ public class PlayerInput
                     break;
                 }
             }
+        }
+
+        // manage jump buffer
+        if(JustPressed(Action.Jump)) {
+            jumpBuffer = 0.07f;
+        }
+        else if(jumpBuffer > 0) {
+            jumpBuffer -= Time.deltaTime;
         }
     }
 
