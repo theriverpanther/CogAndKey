@@ -130,6 +130,7 @@ public class PlayerScript : MonoBehaviour
         }
 
         physicsBody.velocity = velocity;
+        //Debug.Log(currentState);
     }
 
     private void Jump(ref Vector2 newVelocity) {
@@ -141,12 +142,11 @@ public class PlayerScript : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.tag == "Wall") {
-            if(physicsBody.velocity.y == 0) {
+            if(Mathf.Abs(physicsBody.velocity.y) <= 0.01f) {
                 // land on ground, from aerial or wall state
                 currentState = State.Grounded;
-                physicsBody.gravityScale = FALL_GRAVITY;
             }
-            if(physicsBody.velocity.x == 0) {
+            if(Mathf.Abs(physicsBody.velocity.x) <= 0.01f) {
                 // against a wall
                 currentWalls.Add(collision.gameObject);
             }
