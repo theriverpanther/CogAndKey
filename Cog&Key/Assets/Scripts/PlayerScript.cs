@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +10,12 @@ public class PlayerScript : MonoBehaviour
     {
         Grounded,
         Aerial,
-        AgainstWallMidair
     }
 
     private const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
     private const float JUMP_VELOCITY = 13.0f;
+    private const float CLING_VELOCITY = -1.5f; // the maximum downward speed when pressed against a wall
 
     private const float WALK_SPEED = 7.0f; // per second
     private const float WALK_ACCEL = 100.0f; // per second^2
@@ -24,6 +25,7 @@ public class PlayerScript : MonoBehaviour
     private PlayerInput input;
 
     private float coyoteTime;
+    private List<GameObject> currentWalls; // the wall the player is currently up against, can be multiple at once
 
     void Start()
     {
@@ -31,6 +33,7 @@ public class PlayerScript : MonoBehaviour
         physicsBody.gravityScale = FALL_GRAVITY;
         currentState = State.Aerial;
         input = new PlayerInput();
+        currentWalls = new List<GameObject>();
     }
 
     void Update()
@@ -39,15 +42,37 @@ public class PlayerScript : MonoBehaviour
         Vector2 velocity = physicsBody.velocity;
         float friction = 0f; // per second^2
 
+        // if against a wall, check if still next to it
+        for(int i = 0; i < currentWalls.Count; i++) {
+            if(!IsAgainstWall(currentWalls[i])) {
+                currentWalls.RemoveAt(i);
+                i--;
+            }
+        }
+
         // vertical movement
         switch(currentState)
         {
             case State.Aerial:
                 friction = 5f;
 
-                // extend jump height while jump is still held
-                if(physicsBody.gravityScale == JUMP_GRAVITY && (physicsBody.velocity.y <= 0 || !input.IsPressed(PlayerInput.Action.Jump)) ) {
+                // extend jump height while jump is held
+                if(physicsBody.gravityScale == JUMP_GRAVITY && 
+                    (physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
+                ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
+                }
+
+                // cling to walls
+                if(velocity.y < CLING_VELOCITY) {
+                    foreach(GameObject wall in currentWalls) {
+                        if(velocity.x > 0 && wall.transform.position.x > transform.position.x
+                            || velocity.x < 0 && wall.transform.position.x < transform.position.x
+                        ) {
+                            velocity.y = CLING_VELOCITY;
+                            break;
+                        }
+                    }
                 }
 
                 // allow jump during coyote time
@@ -64,7 +89,7 @@ public class PlayerScript : MonoBehaviour
             case State.Grounded:
                 friction = 30f;
 
-                if(input.JumpBuffered) {
+                if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
                 }
                 else if(velocity.y < 0) {
@@ -72,9 +97,6 @@ public class PlayerScript : MonoBehaviour
                     currentState = State.Aerial;
                     coyoteTime = 0.05f;
                 }
-                break;
-
-            case State.AgainstWallMidair:
                 break;
         }
 
@@ -120,8 +142,26 @@ public class PlayerScript : MonoBehaviour
     {
         if(collision.gameObject.tag == "Wall") {
             if(physicsBody.velocity.y == 0) {
+                // land on ground, from aerial or wall state
                 currentState = State.Grounded;
+                physicsBody.gravityScale = FALL_GRAVITY;
+            }
+            if(physicsBody.velocity.x == 0) {
+                // against a wall
+                currentWalls.Add(collision.gameObject);
             }
         }
+    }
+
+    // determines if the player is up against the input wall on the left or right side
+    private bool IsAgainstWall(GameObject wall) {
+        if(transform.position.y + transform.localScale.y / 2 <= wall.transform.position.y - wall.transform.localScale.y / 2
+            || transform.position.y - transform.localScale.y / 2 >= wall.transform.position.y + wall.transform.localScale.y / 2
+        ) {
+            // above or below the wall
+            return false;
+        }
+
+        return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.localScale.x + transform.localScale.x) / 2 < 0.1f;
     }
 }
