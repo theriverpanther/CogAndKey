@@ -25,6 +25,10 @@ public class PlayerScript : MonoBehaviour
     private PlayerInput input;
 
     private float coyoteTime;
+    private float moveLockTime; // locks horizontal movement for some time, used for wall jumping
+    private bool moveLockRight = false; // prevents the player from moving in this direction. false is left
+    private bool RightLocked { get { return moveLockTime > 0 && moveLockRight; } }
+    private bool LeftLocked { get { return moveLockTime > 0 && !moveLockRight; } }
     private List<GameObject> currentWalls; // the wall the player is currently up against, can be multiple at once
 
     void Start()
@@ -41,6 +45,10 @@ public class PlayerScript : MonoBehaviour
         input.Update();
         Vector2 velocity = physicsBody.velocity;
         float friction = 0f; // per second^2
+
+        if(moveLockTime > 0) {
+            moveLockTime -= Time.deltaTime;
+        }
 
         // if against a wall, check if still next to it
         for(int i = 0; i < currentWalls.Count; i++) {
@@ -75,6 +83,16 @@ public class PlayerScript : MonoBehaviour
                     }
                 }
 
+                // wall jump
+                if(currentWalls.Count > 0 && input.JustPressed(PlayerInput.Action.Jump)) {
+                    physicsBody.gravityScale = JUMP_GRAVITY;
+                    int jumpDirection = (transform.position.x > currentWalls[0].transform.position.x ? 1 : -1);
+                    velocity.y = 10.0f;
+                    velocity.x = jumpDirection * 6.0f;
+                    moveLockTime = 0.37f;
+                    moveLockRight = (jumpDirection == -1);
+                }
+
                 // allow jump during coyote time
                 if(coyoteTime > 0) {
                     if(input.JustPressed(PlayerInput.Action.Jump)) {
@@ -102,8 +120,8 @@ public class PlayerScript : MonoBehaviour
 
         // horizontal movement
         float walkAccel = WALK_ACCEL * Time.deltaTime;
-        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x < WALK_SPEED;
-        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && velocity.x > -WALK_SPEED;
+        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x < WALK_SPEED && !RightLocked;
+        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && velocity.x > -WALK_SPEED && !LeftLocked;
         if(moveRight == moveLeft) { // both pressed is same as neither pressed
             // apply friction
             if(velocity != Vector2.zero) {
@@ -130,7 +148,6 @@ public class PlayerScript : MonoBehaviour
         }
 
         physicsBody.velocity = velocity;
-        //Debug.Log(currentState);
     }
 
     private void Jump(ref Vector2 newVelocity) {
@@ -142,6 +159,7 @@ public class PlayerScript : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.gameObject.tag == "Wall") {
+            moveLockTime = 0;
             if(Mathf.Abs(physicsBody.velocity.y) <= 0.01f) {
                 // land on ground, from aerial or wall state
                 currentState = State.Grounded;
