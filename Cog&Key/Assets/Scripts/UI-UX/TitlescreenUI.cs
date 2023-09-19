@@ -9,6 +9,8 @@ public class TitlescreenUI : MonoBehaviour
     // First scene must be the starting scene shown to player
     public List<GameObject> screens;
     private GameObject currentlyEnabled;
+    public Animator wallpaperUI;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,4 +87,21 @@ public class TitlescreenUI : MonoBehaviour
             Debug.Log("Scene does not exist in current format; Check your capitalization.");
         }
     }
+
+    public void ButtonPress(string button)
+    {
+        switch(button) {
+            case "settings":
+                wallpaperUI.SetBool("MoveWallpaper", true);
+                SwitchScreen("Settings Screen");
+                break;
+            case "end":
+                break;
+            case "backtitle":
+                wallpaperUI.SetBool("MoveWallpaper", false);
+                currentlyEnabled.GetComponent<Animator>().SetBool("FadeOut", true);
+                SwitchScreen("Main Screen");
+                break;
+        }
+    } 
 }
