@@ -1,16 +1,17 @@
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
-public class Toy : Agent
+public class Robot : Agent
 {
     // Start is called before the first frame update
     protected override void Start()
     {
         state = KeyState.Normal;
         base.Start();
-        direction = new Vector3(1, 0, 0);
+        direction = new Vector2(-1, 0);
     }
 
     // Update is called once per frame
@@ -25,23 +26,47 @@ public class Toy : Agent
         {
             case KeyState.Normal:
                 // Move forward until an edge is hit, turn around on the edge
+                // Hits edge = either collision on side or edge of platform
+                EdgeDetectMovement();
+                rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
                 break;
             case KeyState.Reverse:
+                // Change direction
+                // Might try to cache old movement for full reversal
+                // For now, just use the opposite of the direction
+                EdgeDetectMovement();
+                rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
                 break;
             case KeyState.Lock:
                 // Stop in place
                 // Lock until removed
+                // Will have logic in future iterations
+                rb.velocity = Vector2.zero;
                 break;
             case KeyState.Fast:
                 // Same movement, scale the speed by a fast value, do not edge detect
+                rb.velocity = new Vector2(movementSpeed * direction.x * fastScalar, rb.velocity.y);
                 break;
             default:
                 break;
+        }
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            state += 1;
+            if (state > KeyState.Fast) state = 0;
+            Debug.Log(state);
         }
     }
     
     public void AttachKey(KeyState key)
     {
 
+    }
+
+    private void EdgeDetectMovement()
+    {
+        int tempDir = EdgeDetect(collidingObjs);
+        direction.x = tempDir != 0 ? tempDir : direction.x;
     }
 }
