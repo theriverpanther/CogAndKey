@@ -29,11 +29,9 @@ public class CameraScript : MonoBehaviour
         position.z = z;
 
         // fit the camera into the level bounds
-        List<Rect> cameraBounds = LevelData.Instance.LevelAreas;
         Rect cameraArea = new Rect((Vector2)position - dimensions / 2, dimensions);
-
         List<Rect> overlapZones = new List<Rect>();
-        foreach(Rect cameraBound in cameraBounds) {
+        foreach(Rect cameraBound in LevelData.Instance.LevelAreas) {
             if(cameraBound.Overlaps(cameraArea)) {
                 overlapZones.Add(cameraBound);
             }
@@ -43,98 +41,37 @@ public class CameraScript : MonoBehaviour
             return position;
         }
 
-        Vector2 topLeft = new Vector2(cameraArea.xMin, cameraArea.yMax);
-        Vector2 topRight = new Vector2(cameraArea.xMax, cameraArea.yMax);
-        Vector2 bottomLeft = new Vector2(cameraArea.xMin, cameraArea.yMin);
-        Vector2 bottomRight = new Vector2(cameraArea.xMax, cameraArea.yMin);
-
-        float? maxY = null;
-        float? minY = null;
-        float? maxX = null;
-        float? minX = null;
-
-        // top
-        if(!IsSideCovered(overlapZones, topLeft, topRight)) {
-            float max = overlapZones[0].yMax;
-            for(int i = 1; i < overlapZones.Count; i++) {
-                max = Mathf.Max(overlapZones[i - 1].yMax, overlapZones[i].yMax);
-            }
-
-            maxY = max - dimensions.y / 2;
-        }
-        // bottom
-        if(!IsSideCovered(overlapZones, bottomLeft, bottomRight)) {
-            float min = overlapZones[0].yMin;
-            for(int i = 1; i < overlapZones.Count; i++) {
-                min = Mathf.Min(overlapZones[i - 1].yMin, overlapZones[i].yMin);
-            }
-
-            minY = min + dimensions.y / 2;
-        }
-        // right
-        if(!IsSideCovered(overlapZones, topRight, bottomRight)) {
-            float max = overlapZones[0].xMax;
-            for(int i = 1; i < overlapZones.Count; i++) {
-                max = Mathf.Max(overlapZones[i - 1].xMax, overlapZones[i].xMax);
-            }
-
-            maxX = max - dimensions.x / 2;
-        }
-        // left
-        if(!IsSideCovered(overlapZones, topLeft, bottomLeft)) {
-            float min = overlapZones[0].xMin;
-            for(int i = 1; i < overlapZones.Count; i++) {
-                min = Mathf.Min(overlapZones[i - 1].xMin, overlapZones[i].xMin);
-            }
-
-            minX = min + dimensions.x / 2;
+        // form a rectangle from the furthest edges of all overlapped areas
+        Rect overlapArea = overlapZones[0]; 
+        for(int i = 1; i < overlapZones.Count; i++) {
+            overlapArea.xMin = Mathf.Min(overlapArea.xMin, overlapZones[i].xMin);
+            overlapArea.xMax = Mathf.Max(overlapArea.xMax, overlapZones[i].xMax);
+            overlapArea.yMin = Mathf.Min(overlapArea.yMin, overlapZones[i].yMin);
+            overlapArea.yMax = Mathf.Max(overlapArea.yMax, overlapZones[i].yMax);
         }
 
-        if(maxX.HasValue && minX.HasValue) {
+        if(overlapArea.width < dimensions.x) {
             // average x
-            position.x = (maxX.Value + minX.Value) /  2;
+            position.x = overlapArea.center.x;
         }
-        else if(maxX.HasValue) {
-            position.x = maxX.Value;
+        else if(cameraArea.xMax > overlapArea.xMax) {
+            position.x = overlapArea.xMax - dimensions.x / 2;
         }
-        else if(minX.HasValue) {
-            position.x = minX.Value;
+        else if(cameraArea.xMin < overlapArea.xMin) {
+            position.x = overlapArea.xMin + dimensions.x / 2;
         }
 
-        if(maxY.HasValue && minY.HasValue) {
+        if(overlapArea.height < dimensions.y) {
             // average y
-            position.y = (maxY.Value + minY.Value) /  2;
-            Debug.Log(position.y);
+            position.y = overlapArea.center.y;
         }
-        else if(maxY.HasValue) {
-            position.y = maxY.Value;
+        else if(cameraArea.yMax > overlapArea.yMax) {
+            position.y = overlapArea.yMax - dimensions.y / 2;
         }
-        else if(minY.HasValue) {
-            position.y = minY.Value;
+        else if(cameraArea.yMin < overlapArea.yMin) {
+            position.y = overlapArea.yMin + dimensions.y / 2;
         }
 
         return position;
-    }
-
-    // determines if the two corners and middle of a side of a rectangle are within a list of rectangle areas, used for containing the camera
-    // currently considers the whole side covered if either corner is covered
-    private bool IsSideCovered(List<Rect> testZones, Vector2 corner1, Vector2 corner2) {
-        bool corner1Covered = false;
-        bool corner2Covered = false;
-        bool middleCovered = false;
-        Vector2 middle = (corner1 + corner2) / 2;
-        foreach(Rect zone in testZones) { 
-            if(zone.Contains(corner1)) {
-                corner1Covered = true;
-            }
-            if(zone.Contains(corner2)) {
-                corner2Covered = true;
-            }
-            if(zone.Contains(middle)) {
-                middleCovered = true;
-            }
-        }
-
-        return corner1Covered || corner2Covered || middleCovered;
     }
 }
