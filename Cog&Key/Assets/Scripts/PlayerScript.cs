@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -148,6 +149,11 @@ public class PlayerScript : MonoBehaviour
         }
 
         physicsBody.velocity = velocity;
+    }
+
+    // restarts the level from the most recent checkpoint
+    public void Die() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void Jump(ref Vector2 newVelocity) {

@@ -6,12 +6,13 @@ using UnityEngine.SceneManagement;
 // one of these scripts should exist per level. Does not delete when the level is reloaded, but deletes when going to a new level
 public class LevelData : MonoBehaviour
 {
-    private Scene level;
+    private string levelName;
     private static LevelData instance;
     public static LevelData Instance { get { return instance; } }
 
     private List<Rect> levelAreas = new List<Rect>();
     public List<Rect> LevelAreas { get { return levelAreas; } }
+    public GameObject CurrentCheckpoint { get; set; }
 
     void Awake() {
         // store the level's boundaries, must delete bounds every time the level is loaded
@@ -29,7 +30,7 @@ public class LevelData : MonoBehaviour
 
         // set up the single instance
         instance = this;
-        level = SceneManager.GetActiveScene();
+        levelName = SceneManager.GetActiveScene().name;
         DontDestroyOnLoad(gameObject);
         SceneManager.activeSceneChanged += CheckNextLevel;
 
@@ -39,7 +40,7 @@ public class LevelData : MonoBehaviour
     // called when the scene changes, deletes the instance if it is no longer the correct level
     private void CheckNextLevel(Scene current, Scene next)
     {
-        if(next != level)
+        if(next.name != levelName)
         {
             Destroy(gameObject);
             instance = null;
