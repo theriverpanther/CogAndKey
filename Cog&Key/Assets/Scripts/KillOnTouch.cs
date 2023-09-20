@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // kills the player upon making contact, requies a trigger collider
-[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Collider2D))]
 public class KillOnTouch : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)

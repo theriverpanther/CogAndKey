@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Wall
   - LevelBound
+  - Checkpoint
   layers:
   - Default
   - TransparentFX

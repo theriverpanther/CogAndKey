@@ -39,6 +39,10 @@ public class PlayerScript : MonoBehaviour
         currentState = State.Aerial;
         input = new PlayerInput();
         currentWalls = new List<GameObject>();
+
+        if(LevelData.Instance.RespawnPoint.HasValue) {
+            transform.position = LevelData.Instance.RespawnPoint.Value;
+        }
     }
 
     void Update()
