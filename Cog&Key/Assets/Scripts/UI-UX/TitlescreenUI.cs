@@ -22,12 +22,6 @@ public class TitlescreenUI : MonoBehaviour
         mainEventSystem = EventSystem.current;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
     /// Used on button press but also a simple switch.
     /// </summary>
@@ -104,7 +98,12 @@ public class TitlescreenUI : MonoBehaviour
                 wallpaperUI.SetBool("MoveWallpaper", true);
                 SwitchScreen("Settings Screen");
                 break;
+            case "credits":
+                wallpaperUI.SetBool("MoveWallpaper", true);
+                SwitchScreen("Credits Screen");
+                break;
             case "end":
+                Application.Quit();
                 break;
             case "backtitle":
                 wallpaperUI.SetBool("MoveWallpaper", false);
