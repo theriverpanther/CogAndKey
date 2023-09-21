@@ -41,7 +41,7 @@ public class Robot : Agent
                 // Stop in place
                 // Lock until removed
                 // Will have logic in future iterations
-                rb.velocity = Vector2.zero;
+                rb.velocity = new Vector2(0, rb.velocity.y);
                 break;
             case KeyState.Fast:
                 // Same movement, scale the speed by a fast value, do not edge detect
@@ -53,9 +53,9 @@ public class Robot : Agent
 
         if(Input.GetKeyDown(KeyCode.P))
         {
-            state += 1;
-            if (state > KeyState.Fast) state = 0;
+            InsertKey((KeyState)(((int)state + 1) % 4)); ;
             Debug.Log(state);
+            //InsertKey((KeyState)Mathf.FloorToInt(Random.Range(1, 3)));
         }
     }
     
