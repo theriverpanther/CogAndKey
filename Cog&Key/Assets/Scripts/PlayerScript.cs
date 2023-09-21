@@ -24,6 +24,8 @@ public class PlayerScript : MonoBehaviour
     private Rigidbody2D physicsBody;
     private State currentState;
     private PlayerInput input;
+    private float minX;
+    private float maxX;
 
     private float coyoteTime;
     private float moveLockTime; // locks horizontal movement for some time, used for wall jumping
@@ -31,6 +33,11 @@ public class PlayerScript : MonoBehaviour
     private bool RightLocked { get { return moveLockTime > 0 && moveLockRight; } }
     private bool LeftLocked { get { return moveLockTime > 0 && !moveLockRight; } }
     private List<GameObject> currentWalls; // the wall the player is currently up against, can be multiple at once
+
+    public Rect CollisionArea {  get {
+            Vector2 size = GetComponent<BoxCollider2D>().bounds.size;
+            return new Rect((Vector2)transform.position - size / 2, size);
+    } }
 
     void Start()
     {
@@ -43,6 +50,14 @@ public class PlayerScript : MonoBehaviour
         if(LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
         }
+
+
+        minX = LevelData.Instance.LevelAreas[0].xMin;
+        maxX = LevelData.Instance.LevelAreas[0].xMax;
+        foreach(Rect area in LevelData.Instance.LevelAreas) { 
+            minX = Mathf.Min(minX, area.xMin);
+            maxX = Mathf.Max(maxX, area.xMax);
+        }
     }
 
     void Update()
@@ -53,6 +68,28 @@ public class PlayerScript : MonoBehaviour
 
         if(moveLockTime > 0) {
             moveLockTime -= Time.deltaTime;
+        }
+
+        // check if plaayer left the boundaries of the level
+        if(transform.position.x < minX) {
+            transform.position = new Vector3(minX, transform.position.y, 0);
+        }
+        else if(transform.position.x > maxX) {
+            transform.position = new Vector3(maxX, transform.position.y, 0);
+        }
+
+        bool withinBounds = false;
+        Rect collision = CollisionArea;
+        foreach(Rect area in LevelData.Instance.LevelAreas) { 
+            if(area.Overlaps(collision)) {
+                withinBounds = true;
+                break;
+            }
+        }
+
+        if(!withinBounds) {
+            Die();
+            return;
         }
 
         // if against a wall, check if still next to it
