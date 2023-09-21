@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEditor.Experimental.GraphView;
 
 public class TitlescreenUI : MonoBehaviour
 {
@@ -10,11 +13,13 @@ public class TitlescreenUI : MonoBehaviour
     public List<GameObject> screens;
     private GameObject currentlyEnabled;
     public Animator wallpaperUI;
+    private EventSystem mainEventSystem;
 
     // Start is called before the first frame update
     void Start()
     {
         currentlyEnabled = screens[0];
+        mainEventSystem = EventSystem.current;
     }
 
     // Update is called once per frame
@@ -88,9 +93,13 @@ public class TitlescreenUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Based on which type of button, do x
+    /// </summary>
+    /// <param name="button">Button String Name</param>
     public void ButtonPress(string button)
     {
-        switch(button) {
+        switch(button.Trim().ToLower()) {
             case "settings":
                 wallpaperUI.SetBool("MoveWallpaper", true);
                 SwitchScreen("Settings Screen");
@@ -104,4 +113,19 @@ public class TitlescreenUI : MonoBehaviour
                 break;
         }
     } 
+
+    /// <summary>
+    /// Changes the selected UI elemen for the Event System
+    /// </summary>
+    /// <param name="selectable">Object that is selectable</param>
+    public void SetSelected(GameObject selectable) {
+        try
+        {
+            mainEventSystem.SetSelectedGameObject(selectable);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Object is not selectable.");
+        }
+    }
 }
