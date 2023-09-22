@@ -17,6 +17,7 @@ public class PlayerScript : MonoBehaviour
     private const float JUMP_GRAVITY = 2.4f;
     private const float JUMP_VELOCITY = 13.0f;
     private const float CLING_VELOCITY = -1.5f; // the maximum downward speed when pressed against a wall
+    private const float MAX_JUMPGRAV_TIME = 0.2f;
 
     private const float WALK_SPEED = 7.0f; // per second
     private const float WALK_ACCEL = 100.0f; // per second^2
@@ -27,6 +28,7 @@ public class PlayerScript : MonoBehaviour
     private float minX;
     private float maxX;
 
+    private bool jumpHeld;
     private float coyoteTime;
     private float moveLockTime; // locks horizontal movement for some time, used for wall jumping
     private bool moveLockRight = false; // prevents the player from moving in this direction. false is left
@@ -107,7 +109,18 @@ public class PlayerScript : MonoBehaviour
                 friction = 5f;
 
                 // extend jump height while jump is held
-                if(physicsBody.gravityScale == JUMP_GRAVITY && 
+                if(physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump)) {
+                    jumpHeld = false;
+                }
+
+                // determine gravity
+                if(jumpHeld && physicsBody.velocity.y <= JUMP_VELOCITY) {
+                    physicsBody.gravityScale = JUMP_GRAVITY;
+                } else {
+                    physicsBody.gravityScale = FALL_GRAVITY;
+                }
+
+                if(physicsBody.gravityScale != FALL_GRAVITY && 
                     (physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
                 ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
@@ -127,12 +140,12 @@ public class PlayerScript : MonoBehaviour
 
                 // wall jump
                 if(currentWalls.Count > 0 && input.JustPressed(PlayerInput.Action.Jump)) {
-                    physicsBody.gravityScale = JUMP_GRAVITY;
                     int jumpDirection = (transform.position.x > currentWalls[0].transform.position.x ? 1 : -1);
                     velocity.y = 10.0f;
                     velocity.x = jumpDirection * 6.0f;
                     moveLockTime = 0.37f;
                     moveLockRight = (jumpDirection == -1);
+                    jumpHeld = true;
                 }
 
                 // allow jump during coyote time
@@ -199,8 +212,8 @@ public class PlayerScript : MonoBehaviour
 
     private void Jump(ref Vector2 newVelocity) {
         newVelocity.y = JUMP_VELOCITY;
-        physicsBody.gravityScale = JUMP_GRAVITY;
         currentState = State.Aerial;
+        jumpHeld = true;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

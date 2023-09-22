@@ -19,14 +19,11 @@ public class MovingWallScript : MonoBehaviour
     void Awake()
     {
         // construct path
-        pathPoints = new List<Vector2>();
-        pathPoints.Add(transform.position);
+        pathPoints = new List<Vector2>() { transform.position };
 
         foreach(GameObject point in Path) {
             pathPoints.Add(point.transform.position);
         }
-
-        InsertedKey = KeyState.Fast;
     }
 
     void Update()
