@@ -13,24 +13,30 @@ public class PlayerScript : MonoBehaviour
         Aerial,
     }
 
+    public bool HasFastKey;
+    public bool HasLockKey;
+    public bool HasReverseKey;
+
     private const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
     private const float JUMP_VELOCITY = 13.0f;
     private const float CLING_VELOCITY = -1.5f; // the maximum downward speed when pressed against a wall
-    private const float MAX_JUMPGRAV_TIME = 0.2f;
 
     private const float WALK_SPEED = 7.0f; // per second
     private const float WALK_ACCEL = 100.0f; // per second^2
 
     private Rigidbody2D physicsBody;
+    private KeyAttack keyAttack;
     private State currentState;
     private PlayerInput input;
     private float minX;
     private float maxX;
     private IKeyWindable keyTarget;
+    private KeyState activeKey;
 
     private bool jumpHeld;
     private float coyoteTime;
+    private float keyCooldown;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
     private List<GameObject> currentWalls; // the wall the player is currently up against, can be multiple at once
 
@@ -46,6 +52,7 @@ public class PlayerScript : MonoBehaviour
         currentState = State.Aerial;
         input = new PlayerInput();
         currentWalls = new List<GameObject>();
+        keyAttack = transform.GetChild(0).GetComponent<KeyAttack>();
 
         if(LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
@@ -202,6 +209,44 @@ public class PlayerScript : MonoBehaviour
         }
 
         physicsBody.velocity = velocity;
+
+        // manage key ability
+        if(keyCooldown <= 0) {
+            KeyState usedKey = KeyState.Normal;
+            if(HasFastKey && input.JustPressed(PlayerInput.Action.FastKey)) {
+                usedKey = KeyState.Fast;
+            }
+            else if(HasLockKey && input.JustPressed(PlayerInput.Action.LockKey)) {
+                usedKey = KeyState.Lock;
+            }
+            else if(HasReverseKey && input.JustPressed(PlayerInput.Action.ReverseKey)) {
+                usedKey = KeyState.Reverse;
+            }
+
+            if(usedKey != KeyState.Normal) {
+                // send key attack
+                if(usedKey == activeKey) {
+                    // remove active key
+                    keyTarget.InsertKey(KeyState.Normal);
+                    activeKey = KeyState.Normal;
+                    keyTarget = null;
+                }
+
+                // determine attack direction
+                Vector2 attackDirection = Vector2.right;
+                if(input.IsPressed(PlayerInput.Action.Up)) {
+                    attackDirection = Vector2.up;
+                }
+                if(input.IsPressed(PlayerInput.Action.Down)) {
+                    attackDirection = Vector2.down;
+                }
+
+                keyAttack.SendKey(usedKey, attackDirection);
+                keyCooldown = 0.5f;
+            }
+        } else {
+            keyCooldown -= Time.deltaTime;
+        }
     }
 
     // restarts the level from the most recent checkpoint
@@ -230,11 +275,20 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    // trigger off of key collision
     private void OnTriggerEnter2D(Collider2D collision)
     {
         IKeyWindable keyWindable = collision.gameObject.GetComponent<IKeyWindable>();
         if(keyWindable != null) {
-            keyWindable.InsertKey(KeyState.Fast);
+            if(keyTarget != null) {
+                // remove last key
+                keyTarget.InsertKey(KeyState.Normal);
+            }
+
+            keyTarget = keyWindable;
+            activeKey = keyAttack.keyType;
+            keyTarget.InsertKey(activeKey);
+            keyAttack.gameObject.SetActive(false);
         }
     }
 

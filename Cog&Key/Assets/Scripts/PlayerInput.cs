@@ -13,6 +13,8 @@ public class PlayerInput
         Jump = 0,
         Right,
         Left,
+        Up,
+        Down,
         FastKey,
         LockKey,
         ReverseKey
@@ -90,6 +92,8 @@ public class PlayerInput
             keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentGP.aButton, currentGP.dpad.up });
             keyBindings[Action.Right].AddRange(new List<ButtonControl>() { currentGP.leftStick.right, currentGP.dpad.right });
             keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentGP.leftStick.left, currentGP.dpad.left });
+            keyBindings[Action.Up].AddRange(new List<ButtonControl>() { currentGP.leftStick.up, currentGP.dpad.up });
+            keyBindings[Action.Down].AddRange(new List<ButtonControl>() { currentGP.leftStick.down, currentGP.dpad.down });
             keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentGP.xButton });
             keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentGP.yButton });
             keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentGP.bButton });
@@ -100,6 +104,8 @@ public class PlayerInput
             keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentKB.upArrowKey, currentKB.wKey, currentKB.spaceKey });
             keyBindings[Action.Right].AddRange(new List<ButtonControl>() { currentKB.rightArrowKey, currentKB.dKey });
             keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentKB.leftArrowKey, currentKB.aKey });
+            keyBindings[Action.Up].AddRange(new List<ButtonControl>() { currentKB.upArrowKey, currentKB.wKey });
+            keyBindings[Action.Down].AddRange(new List<ButtonControl>() { currentKB.downArrowKey, currentKB.sKey });
             keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentKB.digit1Key, currentKB.numpad1Key });
             keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentKB.digit2Key, currentKB.numpad2Key });
             keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentKB.digit3Key, currentKB.numpad3Key });
