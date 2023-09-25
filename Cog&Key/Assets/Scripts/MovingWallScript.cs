@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // path is defined by children with the waypoint tag
-public class MovingWallScript : MonoBehaviour
+public class MovingWallScript : MonoBehaviour, IKeyWindable
 {
     [SerializeField] private GameObject[] Path;
     [SerializeField] private bool LoopPath; // false, back and forth
@@ -13,8 +13,7 @@ public class MovingWallScript : MonoBehaviour
     private int nextPointIndex;
     private bool forward = true; // false: moving backwards through the path
     private List<GameObject> riders = new List<GameObject>();
-
-    public KeyState InsertedKey { get; set; }
+    private KeyState currentKey;
 
     void Awake()
     {
@@ -28,14 +27,14 @@ public class MovingWallScript : MonoBehaviour
 
     void Update()
     {
-        if(InsertedKey == KeyState.Lock) {
+        if(currentKey == KeyState.Lock) {
             return;
         }
 
         Vector3 startPosition = transform.position;
         Vector2 target = pathPoints[nextPointIndex];
         float currentSpeed = MOVE_SPEED;
-        if(InsertedKey == KeyState.Fast) {
+        if(currentKey == KeyState.Fast) {
             currentSpeed *= 2;
         }
         float shift = currentSpeed * Time.deltaTime;
@@ -104,5 +103,13 @@ public class MovingWallScript : MonoBehaviour
         if(!riders.Contains(collision.gameObject)) {
             riders.Add(collision.gameObject);
         }
+    }
+
+    public void InsertKey(KeyState key) {
+        if(currentKey != key && (currentKey == KeyState.Reverse || key == KeyState.Reverse)) {
+            forward = !forward;
+        }
+
+        currentKey = key;
     }
 }

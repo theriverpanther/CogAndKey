@@ -27,6 +27,7 @@ public class PlayerScript : MonoBehaviour
     private PlayerInput input;
     private float minX;
     private float maxX;
+    private IKeyWindable keyTarget;
 
     private bool jumpHeld;
     private float coyoteTime;
@@ -190,12 +191,14 @@ public class PlayerScript : MonoBehaviour
             if(velocity.x > WALK_SPEED) {
                 velocity.x = WALK_SPEED;
             }
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
         else if(moveLeft) {
             velocity.x -= walkAccel;
             if(velocity.x < -WALK_SPEED) {
                 velocity.x = -WALK_SPEED;
             }
+            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
 
         physicsBody.velocity = velocity;
@@ -220,22 +223,31 @@ public class PlayerScript : MonoBehaviour
                 // land on ground, from aerial or wall state
                 currentState = State.Grounded;
             }
-            if(Mathf.Abs(physicsBody.velocity.x) <= 0.01f) {
+            if(IsAgainstWall(collision.gameObject)) {
                 // against a wall
                 currentWalls.Add(collision.gameObject);
             }
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        IKeyWindable keyWindable = collision.gameObject.GetComponent<IKeyWindable>();
+        if(keyWindable != null) {
+            keyWindable.InsertKey(KeyState.Fast);
+        }
+    }
+
     // determines if the player is up against the input wall on the left or right side
     private bool IsAgainstWall(GameObject wall) {
-        if(transform.position.y + transform.localScale.y / 2 <= wall.transform.position.y - wall.transform.localScale.y / 2
-            || transform.position.y - transform.localScale.y / 2 >= wall.transform.position.y + wall.transform.localScale.y / 2
+        float halfHeight = GetComponent<BoxCollider2D>().bounds.extents.y;
+        if(transform.position.y + halfHeight <= wall.transform.position.y - wall.transform.localScale.y / 2
+            || transform.position.y - halfHeight >= wall.transform.position.y + wall.transform.localScale.y / 2
         ) {
             // above or below the wall
             return false;
         }
 
-        return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.localScale.x + transform.localScale.x) / 2 < 0.1f;
+        return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.localScale.x + GetComponent<BoxCollider2D>().bounds.size.x) / 2 < 0.1f;
     }
 }

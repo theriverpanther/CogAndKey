@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Build;
 using UnityEngine;
 
-public enum KeyState
-{
-    Normal, Reverse, Lock, Fast
-}
-
-public class Agent : MonoBehaviour
+public class Agent : MonoBehaviour, IKeyWindable
 {
     #region Fields
     protected KeyState state;
@@ -101,7 +96,7 @@ public class Agent : MonoBehaviour
                 returnVal = 1;
             }
         }
-        Debug.Log(returnVal);
+
         return returnVal;
         
     }
