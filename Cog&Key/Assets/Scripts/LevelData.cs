@@ -46,6 +46,7 @@ public class LevelData : MonoBehaviour
         SceneManager.activeSceneChanged += CheckNextLevel;
 
         foreach(GameObject checkpoint in checkpoints) {
+            checkpoint.transform.SetParent(null, true);
             DontDestroyOnLoad(checkpoint);
         }
     }

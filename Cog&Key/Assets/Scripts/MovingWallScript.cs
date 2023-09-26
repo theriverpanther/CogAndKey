@@ -62,7 +62,7 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
                 || riderArea.xMax < platformArea.xMin - BUFFER
             ) {
                 Rigidbody2D rb = riders[i].GetComponent<Rigidbody2D>();
-                if(rb != null) {
+                if(currentKey == KeyState.Fast && rb != null) {
                     rb.velocity += currentSpeed * (Vector2)displacement.normalized;
                 }
 

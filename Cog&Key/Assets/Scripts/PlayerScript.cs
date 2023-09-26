@@ -81,8 +81,9 @@ public class PlayerScript : MonoBehaviour
         if(transform.position.x < minX) {
             transform.position = new Vector3(minX, transform.position.y, 0);
         }
-        else if(transform.position.x > maxX) {
-            transform.position = new Vector3(maxX, transform.position.y, 0);
+        else if(transform.position.x  > maxX) {
+            SceneManager.LoadScene("Titlescreen");
+            //transform.position = new Vector3(maxX, transform.position.y, 0);
         }
 
         bool withinBounds = false;
@@ -119,8 +120,11 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // determine gravity
-                if(jumpHeld && physicsBody.velocity.y <= JUMP_VELOCITY) {
+                if (jumpHeld) { //} && physicsBody.velocity.y <= JUMP_VELOCITY) {
                     physicsBody.gravityScale = JUMP_GRAVITY;
+                    if(physicsBody.velocity.y > JUMP_VELOCITY) {
+                        physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
+                    }
                 } else {
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
@@ -264,7 +268,7 @@ public class PlayerScript : MonoBehaviour
     {
         if(collision.gameObject.tag == "Wall") {
             moveLockedRight = null;
-            if(Mathf.Abs(physicsBody.velocity.y) <= 0.01f) {
+            if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
                 // land on ground, from aerial or wall state
                 currentState = State.Grounded;
             }
