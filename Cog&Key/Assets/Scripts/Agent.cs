@@ -82,7 +82,7 @@ public class Agent : MonoBehaviour
         }
     }
 
-    protected int EdgeDetect(List<GameObject> objects)
+    protected int EdgeDetect(List<GameObject> objects, bool detectFloorEdges)
     {
         int returnVal = 0;
         foreach (GameObject obj in collidingObjs)
@@ -92,16 +92,15 @@ public class Agent : MonoBehaviour
             {
                 returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
             }
-            else if (transform.position.x + GetComponent<BoxCollider2D>().bounds.size.x / 2 > obj.transform.position.x + obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
+            else if (detectFloorEdges && transform.position.x + GetComponent<BoxCollider2D>().bounds.size.x / 2 > obj.transform.position.x + obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
             {
                 returnVal = -1;
             }
-            else if(transform.position.x - GetComponent<BoxCollider2D>().bounds.size.x / 2 < obj.transform.position.x - obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
+            else if(detectFloorEdges && transform.position.x - GetComponent<BoxCollider2D>().bounds.size.x / 2 < obj.transform.position.x - obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
             {
                 returnVal = 1;
             }
         }
-        Debug.Log(returnVal);
         return returnVal;
         
     }

@@ -27,14 +27,14 @@ public class Robot : Agent
             case KeyState.Normal:
                 // Move forward until an edge is hit, turn around on the edge
                 // Hits edge = either collision on side or edge of platform
-                EdgeDetectMovement();
+                EdgeDetectMovement(true);
                 rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
                 break;
             case KeyState.Reverse:
                 // Change direction
                 // Might try to cache old movement for full reversal
                 // For now, just use the opposite of the direction
-                EdgeDetectMovement();
+                EdgeDetectMovement(true);
                 rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
                 break;
             case KeyState.Lock:
@@ -44,7 +44,8 @@ public class Robot : Agent
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 break;
             case KeyState.Fast:
-                // Same movement, scale the speed by a fast value, do not edge detect
+                // Same movement, scale the speed by a fast value, do not edge detect ground
+                EdgeDetectMovement(false);
                 rb.velocity = new Vector2(movementSpeed * direction.x * fastScalar, rb.velocity.y);
                 break;
             default:
@@ -64,9 +65,9 @@ public class Robot : Agent
 
     }
 
-    private void EdgeDetectMovement()
+    private void EdgeDetectMovement(bool detectFloorEdges)
     {
-        int tempDir = EdgeDetect(collidingObjs);
+        int tempDir = EdgeDetect(collidingObjs, detectFloorEdges);
         direction.x = tempDir != 0 ? tempDir : direction.x;
     }
 }
