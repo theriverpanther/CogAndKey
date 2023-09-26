@@ -110,6 +110,9 @@ public class TitlescreenUI : MonoBehaviour
                 currentlyEnabled.GetComponent<Animator>().SetBool("FadeOut", true);
                 SwitchScreen("Main Screen");
                 break;
+            case "play":
+                SetScene("Level1");
+                break;
         }
     } 
 
