@@ -58,6 +58,7 @@ public class LevelData : MonoBehaviour
                 Destroy(checkpoint);
             }
 
+            SceneManager.activeSceneChanged -= CheckNextLevel;
             Destroy(gameObject);
             instance = null;
         }
