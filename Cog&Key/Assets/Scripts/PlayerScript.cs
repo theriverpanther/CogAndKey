@@ -13,9 +13,9 @@ public class PlayerScript : MonoBehaviour
         Aerial,
     }
 
-    public bool HasFastKey;
-    public bool HasLockKey;
-    public bool HasReverseKey;
+    public bool FastKeyEquipped { get; set; }
+    public bool LockKeyEquipped { get; set; }
+    public bool ReverseKeyEquipped { get; set; }
 
     private const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
@@ -26,7 +26,6 @@ public class PlayerScript : MonoBehaviour
     private const float WALK_ACCEL = 100.0f; // per second^2
 
     private Rigidbody2D physicsBody;
-    private KeyAttack keyAttack;
     private State currentState;
     private PlayerInput input;
     private float minX;
@@ -52,7 +51,6 @@ public class PlayerScript : MonoBehaviour
         currentState = State.Aerial;
         input = new PlayerInput();
         currentWalls = new List<GameObject>();
-        keyAttack = transform.GetChild(0).GetComponent<KeyAttack>();
 
         if(LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
@@ -120,7 +118,7 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // determine gravity
-                if (jumpHeld) { //} && physicsBody.velocity.y <= JUMP_VELOCITY) {
+                if(jumpHeld) {
                     physicsBody.gravityScale = JUMP_GRAVITY;
                     if(physicsBody.velocity.y > JUMP_VELOCITY) {
                         physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
@@ -217,13 +215,13 @@ public class PlayerScript : MonoBehaviour
         // manage key ability
         if(keyCooldown <= 0) {
             KeyState usedKey = KeyState.Normal;
-            if(HasFastKey && input.JustPressed(PlayerInput.Action.FastKey)) {
+            if(FastKeyEquipped && input.JustPressed(PlayerInput.Action.FastKey)) {
                 usedKey = KeyState.Fast;
             }
-            else if(HasLockKey && input.JustPressed(PlayerInput.Action.LockKey)) {
+            else if(LockKeyEquipped && input.JustPressed(PlayerInput.Action.LockKey)) {
                 usedKey = KeyState.Lock;
             }
-            else if(HasReverseKey && input.JustPressed(PlayerInput.Action.ReverseKey)) {
+            else if(ReverseKeyEquipped && input.JustPressed(PlayerInput.Action.ReverseKey)) {
                 usedKey = KeyState.Reverse;
             }
 
@@ -245,7 +243,7 @@ public class PlayerScript : MonoBehaviour
                     attackDirection = Vector2.down;
                 }
 
-                keyAttack.SendKey(usedKey, attackDirection);
+                //keyAttack.SendKey(usedKey, attackDirection);
                 keyCooldown = 0.5f;
             }
         } else {
@@ -290,9 +288,9 @@ public class PlayerScript : MonoBehaviour
             }
 
             keyTarget = keyWindable;
-            activeKey = keyAttack.keyType;
+            //activeKey = keyAttack.keyType;
             keyTarget.InsertKey(activeKey);
-            keyAttack.gameObject.SetActive(false);
+            //keyAttack.gameObject.SetActive(false);
         }
     }
 

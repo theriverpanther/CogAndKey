@@ -17,6 +17,8 @@ public class LevelData : MonoBehaviour
     public List<Rect> LevelAreas { get { return levelAreas; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
 
+    public List<KeyState> StartingKeys;
+
     void Awake() {
         // store the level's boundaries and checkpoints
         GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
@@ -49,6 +51,15 @@ public class LevelData : MonoBehaviour
             checkpoint.transform.SetParent(null, true);
             DontDestroyOnLoad(checkpoint);
         }
+
+        // equip the player with the starting keys
+        GameObject[] keys = GameObject.FindGameObjectsWithTag("Key");
+        foreach(GameObject key in keys) {
+            KeyScript keyScript = key.GetComponent<KeyScript>();
+            if(StartingKeys.Contains(keyScript.Type)) {
+                keyScript.Equip();
+            }
+        }
     }
 
     // called when the scene changes, deletes the instance if it is no longer the correct level
@@ -76,5 +87,17 @@ public class LevelData : MonoBehaviour
 
         currentCheckpoint = checkpoint;
         currentCheckpoint.SetAsCheckpoint(true);
+
+        // save keys acquired since the last checkpoint
+        PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+        if(!StartingKeys.Contains(KeyState.Fast) && player.FastKeyEquipped) {
+            StartingKeys.Add(KeyState.Fast);
+        }
+        if(!StartingKeys.Contains(KeyState.Lock) && player.LockKeyEquipped) {
+            StartingKeys.Add(KeyState.Lock);
+        }
+        if(!StartingKeys.Contains(KeyState.Reverse) && player.ReverseKeyEquipped) {
+            StartingKeys.Add(KeyState.Reverse);
+        }
     }
 }

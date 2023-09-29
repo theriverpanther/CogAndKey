@@ -8,8 +8,8 @@ public class KeyAttack : MonoBehaviour
     private Vector2 direction;
     public KeyState keyType;
 
-    private const float SPEED = 7f;
-    private const float RANGE = 1f;
+    private const float SPEED = 6f;
+    private const float RANGE = 1.5f;
 
     void Update()
     {

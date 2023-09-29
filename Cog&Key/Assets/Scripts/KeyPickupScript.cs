@@ -14,15 +14,15 @@ public class KeyPickupScript : MonoBehaviour
             switch(providedKey)
             {
                 case KeyState.Fast:
-                    player.HasFastKey = true;
+                    player.FastKeyEquipped = true;
                     break;
 
                 case KeyState.Lock:
-                    player.HasLockKey = true;
+                    player.LockKeyEquipped = true;
                     break;
 
                 case KeyState.Reverse:
-                    player.HasReverseKey = true;
+                    player.ReverseKeyEquipped = true;
                     break;
             }
 
