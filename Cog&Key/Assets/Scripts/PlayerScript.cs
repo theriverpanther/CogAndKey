@@ -13,9 +13,9 @@ public class PlayerScript : MonoBehaviour
         Aerial,
     }
 
-    public bool FastKeyEquipped { get; set; }
-    public bool LockKeyEquipped { get; set; }
-    public bool ReverseKeyEquipped { get; set; }
+    public KeyScript FastKey { get; set; }
+    public KeyScript LockKey { get; set; }
+    public KeyScript ReverseKey { get; set; }
 
     private const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
@@ -30,8 +30,7 @@ public class PlayerScript : MonoBehaviour
     private PlayerInput input;
     private float minX;
     private float maxX;
-    private IKeyWindable keyTarget;
-    private KeyState activeKey;
+    private KeyScript activeKey;
 
     private bool jumpHeld;
     private float coyoteTime;
@@ -200,6 +199,7 @@ public class PlayerScript : MonoBehaviour
             if(velocity.x > WALK_SPEED) {
                 velocity.x = WALK_SPEED;
             }
+
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
         else if(moveLeft) {
@@ -207,6 +207,7 @@ public class PlayerScript : MonoBehaviour
             if(velocity.x < -WALK_SPEED) {
                 velocity.x = -WALK_SPEED;
             }
+                
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
 
@@ -215,38 +216,52 @@ public class PlayerScript : MonoBehaviour
         // manage key ability
         if(keyCooldown <= 0) {
             KeyState usedKey = KeyState.Normal;
-            if(FastKeyEquipped && input.JustPressed(PlayerInput.Action.FastKey)) {
+            if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
                 usedKey = KeyState.Fast;
             }
-            else if(LockKeyEquipped && input.JustPressed(PlayerInput.Action.LockKey)) {
+            else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
                 usedKey = KeyState.Lock;
             }
-            else if(ReverseKeyEquipped && input.JustPressed(PlayerInput.Action.ReverseKey)) {
+            else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
                 usedKey = KeyState.Reverse;
             }
 
             if(usedKey != KeyState.Normal) {
                 // send key attack
-                if(usedKey == activeKey) {
+                if(activeKey != null && usedKey == activeKey.Type) {
                     // remove active key
-                    keyTarget.InsertKey(KeyState.Normal);
-                    activeKey = KeyState.Normal;
-                    keyTarget = null;
+                    activeKey = null;
                 }
 
                 // determine attack direction
-                Vector2 attackDirection = Vector2.right;
+                Vector2 attackDirection = Vector2.zero;
                 if(input.IsPressed(PlayerInput.Action.Up)) {
                     attackDirection = Vector2.up;
                 }
                 if(input.IsPressed(PlayerInput.Action.Down)) {
                     attackDirection = Vector2.down;
                 }
+                if(attackDirection == Vector2.zero) {
+                    attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
+                }
 
-                //keyAttack.SendKey(usedKey, attackDirection);
+                switch(usedKey) {
+                    case KeyState.Fast:
+                        activeKey = FastKey;
+                        break;
+                    case KeyState.Lock:
+                        activeKey = LockKey;
+                        break;
+                    case KeyState.Reverse:
+                        activeKey = ReverseKey;
+                        break;
+                }
+
+                activeKey.Attack(attackDirection);
                 keyCooldown = 0.5f;
             }
-        } else {
+        }
+        else {
             keyCooldown -= Time.deltaTime;
         }
     }
@@ -278,21 +293,21 @@ public class PlayerScript : MonoBehaviour
     }
 
     // trigger off of key collision
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        IKeyWindable keyWindable = collision.gameObject.GetComponent<IKeyWindable>();
-        if(keyWindable != null) {
-            if(keyTarget != null) {
-                // remove last key
-                keyTarget.InsertKey(KeyState.Normal);
-            }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    IKeyWindable keyWindable = collision.gameObject.GetComponent<IKeyWindable>();
+    //    if(keyWindable != null) {
+    //        if(keyTarget != null) {
+    //            // remove last key
+    //            keyTarget.InsertKey(KeyState.Normal);
+    //        }
 
-            keyTarget = keyWindable;
-            //activeKey = keyAttack.keyType;
-            keyTarget.InsertKey(activeKey);
-            //keyAttack.gameObject.SetActive(false);
-        }
-    }
+    //        keyTarget = keyWindable;
+    //        //activeKey = keyAttack.keyType;
+    //        keyTarget.InsertKey(activeKey.Type);
+    //        //keyAttack.gameObject.SetActive(false);
+    //    }
+    //}
 
     // determines if the player is up against the input wall on the left or right side
     private bool IsAgainstWall(GameObject wall) {

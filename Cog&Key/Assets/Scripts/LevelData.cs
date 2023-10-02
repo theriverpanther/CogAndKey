@@ -90,13 +90,13 @@ public class LevelData : MonoBehaviour
 
         // save keys acquired since the last checkpoint
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        if(!StartingKeys.Contains(KeyState.Fast) && player.FastKeyEquipped) {
+        if(!StartingKeys.Contains(KeyState.Fast) && player.FastKey != null) {
             StartingKeys.Add(KeyState.Fast);
         }
-        if(!StartingKeys.Contains(KeyState.Lock) && player.LockKeyEquipped) {
+        if(!StartingKeys.Contains(KeyState.Lock) && player.LockKey != null) {
             StartingKeys.Add(KeyState.Lock);
         }
-        if(!StartingKeys.Contains(KeyState.Reverse) && player.ReverseKeyEquipped) {
+        if(!StartingKeys.Contains(KeyState.Reverse) && player.ReverseKey != null) {
             StartingKeys.Add(KeyState.Reverse);
         }
     }
