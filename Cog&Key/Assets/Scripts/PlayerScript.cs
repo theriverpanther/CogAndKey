@@ -20,7 +20,7 @@ public class PlayerScript : MonoBehaviour
     private const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
     private const float JUMP_VELOCITY = 13.0f;
-    private const float CLING_VELOCITY = -1.5f; // the maximum downward speed when pressed against a wall
+    private const float CLING_VELOCITY = -1.0f; // the maximum downward speed when pressed against a wall
 
     private const float WALK_SPEED = 7.0f; // per second
     private const float WALK_ACCEL = 100.0f; // per second^2
@@ -230,6 +230,7 @@ public class PlayerScript : MonoBehaviour
                 // send key attack
                 if(activeKey != null && usedKey == activeKey.Type) {
                     // remove active key
+                    activeKey.Detach();
                     activeKey = null;
                 }
 
@@ -277,8 +278,7 @@ public class PlayerScript : MonoBehaviour
         jumpHeld = true;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
+    private void OnCollisionEnter2D(Collision2D collision) {
         if(collision.gameObject.tag == "Wall") {
             moveLockedRight = null;
             if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
@@ -291,23 +291,6 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
-
-    // trigger off of key collision
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    IKeyWindable keyWindable = collision.gameObject.GetComponent<IKeyWindable>();
-    //    if(keyWindable != null) {
-    //        if(keyTarget != null) {
-    //            // remove last key
-    //            keyTarget.InsertKey(KeyState.Normal);
-    //        }
-
-    //        keyTarget = keyWindable;
-    //        //activeKey = keyAttack.keyType;
-    //        keyTarget.InsertKey(activeKey.Type);
-    //        //keyAttack.gameObject.SetActive(false);
-    //    }
-    //}
 
     // determines if the player is up against the input wall on the left or right side
     private bool IsAgainstWall(GameObject wall) {

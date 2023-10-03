@@ -53,13 +53,7 @@ public class LevelData : MonoBehaviour
         }
 
         // equip the player with the starting keys
-        GameObject[] keys = GameObject.FindGameObjectsWithTag("Key");
-        foreach(GameObject key in keys) {
-            KeyScript keyScript = key.GetComponent<KeyScript>();
-            if(StartingKeys.Contains(keyScript.Type)) {
-                keyScript.Equip();
-            }
-        }
+        EquipStartKeys();
     }
 
     // called when the scene changes, deletes the instance if it is no longer the correct level
@@ -72,6 +66,9 @@ public class LevelData : MonoBehaviour
             SceneManager.activeSceneChanged -= CheckNextLevel;
             Destroy(gameObject);
             instance = null;
+        } else {
+            // level restarted
+            EquipStartKeys();
         }
     }
 
@@ -98,6 +95,17 @@ public class LevelData : MonoBehaviour
         }
         if(!StartingKeys.Contains(KeyState.Reverse) && player.ReverseKey != null) {
             StartingKeys.Add(KeyState.Reverse);
+        }
+    }
+
+    private void EquipStartKeys() {
+        GameObject[] keys = GameObject.FindGameObjectsWithTag("Key");
+        foreach(GameObject key in keys) {
+            KeyScript keyScript = key.GetComponent<KeyScript>();
+            if(StartingKeys.Contains(keyScript.Type)) {
+                Debug.Log(keyScript.Type);
+                keyScript.Equip();
+            }
         }
     }
 }

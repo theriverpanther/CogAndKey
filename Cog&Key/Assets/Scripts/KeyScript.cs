@@ -13,12 +13,13 @@ public class KeyScript : MonoBehaviour
         Returning
     }
 
-    private const float SPEED = 12f;
-    private const float RANGE = 3f;
+    private const float SPEED = 14f;
+    private const float RANGE = 4f;
 
     private State currentState;
     private Vector2 attackDirection;
     private float distanceTravelled;
+    private IKeyWindable insertTarget;
 
     [SerializeField] private KeyState type;
     public KeyState Type { get { return type; } }
@@ -113,14 +114,26 @@ public class KeyScript : MonoBehaviour
         }
     }
 
+    public void Detach() {
+        if(insertTarget == null || currentState != State.Attached) {
+            return;
+        }
+
+        insertTarget.InsertKey(KeyState.Normal);
+        insertTarget = null;
+        transform.SetParent(null);
+        SetState(State.Returning);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision) {
         PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
         if(currentState == State.Pickup && player != null) {
             Equip();
         }
 
-        IKeyWindable insertTarget = collision.gameObject.GetComponent<IKeyWindable>();
-        if(currentState == State.Attacking && insertTarget != null) {
+        IKeyWindable windable = collision.gameObject.GetComponent<IKeyWindable>();
+        if(currentState == State.Attacking && windable != null) {
+            insertTarget = windable;
             insertTarget.InsertKey(type);
             SetState(State.Attached);
             transform.SetParent(collision.gameObject.transform);
