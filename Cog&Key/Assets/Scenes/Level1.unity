@@ -2572,6 +2572,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Key Pickup
       objectReference: {fileID: 0}
+    - target: {fileID: 2262845593173028102, guid: bc8ec14e6ef4bd04999287adfcb05250, type: 3}
+      propertyPath: type
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3883599818648426896, guid: bc8ec14e6ef4bd04999287adfcb05250, type: 3}
       propertyPath: providedKey
       value: 3

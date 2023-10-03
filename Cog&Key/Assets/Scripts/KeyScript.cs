@@ -51,6 +51,7 @@ public class KeyScript : MonoBehaviour
 
     public void SetState(State keyState) {
         currentState = keyState;
+        transform.SetParent(null);
 
         switch(currentState)
         {
@@ -121,7 +122,6 @@ public class KeyScript : MonoBehaviour
 
         insertTarget.InsertKey(KeyState.Normal);
         insertTarget = null;
-        transform.SetParent(null);
         SetState(State.Returning);
     }
 
