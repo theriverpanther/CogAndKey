@@ -299,13 +299,13 @@ public class PlayerScript : MonoBehaviour
     // determines if the player is up against the input wall on the left or right side
     private bool IsAgainstWall(GameObject wall) {
         float halfHeight = GetComponent<BoxCollider2D>().bounds.extents.y;
-        if(transform.position.y + halfHeight <= wall.transform.position.y - wall.transform.localScale.y / 2
-            || transform.position.y - halfHeight >= wall.transform.position.y + wall.transform.localScale.y / 2
+        if(transform.position.y + halfHeight <= wall.transform.position.y - wall.transform.lossyScale.y / 2
+            || transform.position.y - halfHeight >= wall.transform.position.y + wall.transform.lossyScale.y / 2
         ) {
             // above or below the wall
             return false;
         }
 
-        return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.localScale.x + GetComponent<BoxCollider2D>().bounds.size.x) / 2 < 0.1f;
+        return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.lossyScale.x + GetComponent<BoxCollider2D>().bounds.size.x) / 2 < 0.1f;
     }
 }
