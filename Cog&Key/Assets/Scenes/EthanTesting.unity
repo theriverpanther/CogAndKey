@@ -1520,6 +1520,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level Bounds (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7916772503336937272, guid: bbdad16589b141540b1ecfe34e6660ba, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

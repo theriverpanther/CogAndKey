@@ -43,6 +43,21 @@ public class CameraScript : MonoBehaviour
             return position;
         }
 
+        // form a rectangle from the furthest edges of all overlapped areas and another from the closest edges
+        Rect maxArea = overlapZones[0];
+        Rect minArea = overlapZones[0];
+        for(int i = 1; i < overlapZones.Count; i++) {
+            maxArea.xMin = Mathf.Min(maxArea.xMin, overlapZones[i].xMin);
+            maxArea.xMax = Mathf.Max(maxArea.xMax, overlapZones[i].xMax);
+            maxArea.yMin = Mathf.Min(maxArea.yMin, overlapZones[i].yMin);
+            maxArea.yMax = Mathf.Max(maxArea.yMax, overlapZones[i].yMax);
+
+            minArea.xMin = Mathf.Max(minArea.xMin, overlapZones[i].xMin);
+            minArea.xMax = Mathf.Min(minArea.xMax, overlapZones[i].xMax);
+            minArea.yMin = Mathf.Max(minArea.yMin, overlapZones[i].yMin);
+            minArea.yMax = Mathf.Min(minArea.yMax, overlapZones[i].yMax);
+        }
+
         // determine which corners of the camera are outside the bounds
         bool topLeftCovered = false;
         bool topRightCovered = false;
@@ -60,55 +75,57 @@ public class CameraScript : MonoBehaviour
         }
 
         // shift camera inside the bounds
-        if(!topLeftCovered && !topRightCovered) {
-
+        bool shifted = false;
+        if(!bottomLeftCovered && !bottomRightCovered) {
+            position.y = maxArea.yMin + dimensions.y/2;
+            shifted = true;
         }
         else if(!topLeftCovered && !topRightCovered) {
-
+            position.y = minArea.yMax - dimensions.y/2;
+            shifted = true;
         }
-        if(!topLeftCovered && !topRightCovered) {
-
+        if(!topLeftCovered && !bottomLeftCovered) {
+            position.x = maxArea.xMin + dimensions.x/2;
+            shifted = true;
         }
-        else if(!topLeftCovered && !topRightCovered) {
-
+        else if(!topRightCovered && !bottomRightCovered) {
+            position.x = maxArea.xMax - dimensions.x/2;
+            shifted = true;
         }
 
-        // form a rectangle from the furthest edges of all overlapped areas and another from the closest edges
-        //Rect maxArea = overlapZones[0];
-        //Rect minArea = overlapZones[0];
-        //for(int i = 1; i < overlapZones.Count; i++) {
-        //    maxArea.xMin = Mathf.Min(maxArea.xMin, overlapZones[i].xMin);
-        //    maxArea.xMax = Mathf.Max(maxArea.xMax, overlapZones[i].xMax);
-        //    maxArea.yMin = Mathf.Min(maxArea.yMin, overlapZones[i].yMin);
-        //    maxArea.yMax = Mathf.Max(maxArea.yMax, overlapZones[i].yMax);
+        if(shifted) {
+            return position;
+        }
 
-        //    minArea.xMin = Mathf.Max(minArea.xMin, overlapZones[i].xMin);
-        //    minArea.xMax = Mathf.Min(minArea.xMax, overlapZones[i].xMax);
-        //    minArea.yMin = Mathf.Max(minArea.yMin, overlapZones[i].yMin);
-        //    minArea.yMax = Mathf.Min(minArea.yMax, overlapZones[i].yMax);
-        //}
+        // check for individual corners sticking out
+        Vector2? option1 = null;
+        Vector2? option2 = null;
+        Vector2 shiftRight = new Vector2(minArea.xMin + dimensions.x/2, position.y);
+        Vector2 shiftLeft = new Vector2(minArea.xMax - dimensions.x/2, position.y);
+        Vector2 shiftUp = new Vector2(position.x, minArea.yMin + dimensions.y/2);
+        Vector2 shiftDown = new Vector2(position.x, minArea.yMax - dimensions.y / 2);
+        if (!topLeftCovered) {
+            option1 = shiftRight;
+            option2 = shiftDown;
+        }
+        else if(!topRightCovered) {
+            option1 = shiftLeft;
+            option2 = shiftDown;
+        }
+        else if(!bottomLeftCovered) {
+            option1 = shiftRight;
+            option2 = shiftUp;
+        }
+        else if(!bottomRightCovered) {
+            option1 = shiftLeft;
+            option2 = shiftUp;
+        }
 
-        //if(maxArea.width < dimensions.x) {
-        //    // average x
-        //    position.x = maxArea.center.x;
-        //}
-        //else if(cameraArea.xMax > maxArea.xMax) {
-        //    position.x = maxArea.xMax - dimensions.x / 2;
-        //}
-        //else if(cameraArea.xMin < maxArea.xMin) {
-        //    position.x = maxArea.xMin + dimensions.x / 2;
-        //}
-
-        //if(maxArea.height < dimensions.y) {
-        //    // average y
-        //    position.y = maxArea.center.y;
-        //}
-        //else if(cameraArea.yMax > maxArea.yMax) {
-        //    position.y = maxArea.yMax - dimensions.y / 2;
-        //}
-        //else if(cameraArea.yMin < maxArea.yMin) {
-        //    position.y = maxArea.yMin + dimensions.y / 2;
-        //}
+        if(option1.HasValue && option2.HasValue) {
+            position = (Vector2.Distance(position, option1.Value) < Vector2.Distance(position, option2.Value) ? option1.Value : option2.Value);
+            position.z = z;
+            return position;
+        }
 
         return position;
     }
