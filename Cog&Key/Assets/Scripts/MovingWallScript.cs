@@ -25,7 +25,7 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
         }
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if(currentKey == KeyState.Lock) {
             return;

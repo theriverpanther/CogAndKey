@@ -15,15 +15,24 @@ public class CameraScript : MonoBehaviour
     {
         player = GameObject.FindWithTag("Player");
         z = transform.position.z;
-        transform.position = FindTargetPosition();
 
         dimensions.y = GetComponent<Camera>().orthographicSize * 2;
         dimensions.x = dimensions.y * 16/9; // 16/9 aspect ratio
+
+        transform.position = FindTargetPosition();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        transform.position = FindTargetPosition();
+        float speed = 12f;
+        float shift = speed * Time.deltaTime;
+        Vector3 target = FindTargetPosition();
+        float distance = Vector3.Distance(transform.position, target);
+        if(distance <= shift) {
+            transform.position = target;
+        } else {
+            transform.position += shift * (target - transform.position).normalized;
+        }
     }
 
     // determines where the camera should ideally be positioned in the current situation

@@ -13,17 +13,26 @@ public class LevelData : MonoBehaviour
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
     private List<Rect> levelAreas = new List<Rect>();
+    private float xMin;
+    private float xMax;
 
     public List<Rect> LevelAreas { get { return levelAreas; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
+    public float XMin { get { return xMin; } }
+    public float XMax { get { return xMax; } }
 
     public List<KeyState> StartingKeys;
 
     void Awake() {
         // store the level's boundaries and checkpoints
         GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
+        xMin = float.MaxValue;
+        xMax = float.MinValue;
         foreach(GameObject bound in bounds) {
-            levelAreas.Add(new Rect(bound.transform.position - bound.transform.localScale / 2, bound.transform.localScale));
+            Rect area = new Rect(bound.transform.position - bound.transform.localScale / 2, bound.transform.localScale);
+            levelAreas.Add(area);
+            xMin = Mathf.Min(xMin, area.xMin);
+            xMax = Mathf.Max(xMax, area.xMax);
             Destroy(bound);
         }
 

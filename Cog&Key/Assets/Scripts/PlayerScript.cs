@@ -28,8 +28,6 @@ public class PlayerScript : MonoBehaviour
     private Rigidbody2D physicsBody;
     private State currentState;
     private PlayerInput input;
-    private float minX;
-    private float maxX;
     private KeyScript activeKey;
 
     private bool jumpHeld;
@@ -43,7 +41,7 @@ public class PlayerScript : MonoBehaviour
             return new Rect((Vector2)transform.position - size / 2, size);
     } }
 
-    void Start()
+    void Awake()
     {
         physicsBody = GetComponent<Rigidbody2D>();
         physicsBody.gravityScale = FALL_GRAVITY;
@@ -53,14 +51,6 @@ public class PlayerScript : MonoBehaviour
 
         if(LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
-        }
-
-
-        minX = LevelData.Instance.LevelAreas[0].xMin;
-        maxX = LevelData.Instance.LevelAreas[0].xMax;
-        foreach(Rect area in LevelData.Instance.LevelAreas) { 
-            minX = Mathf.Min(minX, area.xMin);
-            maxX = Mathf.Max(maxX, area.xMax);
         }
     }
 
@@ -75,10 +65,10 @@ public class PlayerScript : MonoBehaviour
         }
 
         // check if player left the boundaries of the level
-        if(transform.position.x < minX) {
-            transform.position = new Vector3(minX, transform.position.y, 0);
+        if(transform.position.x < LevelData.Instance.XMin) {
+            transform.position = new Vector3(LevelData.Instance.XMin, transform.position.y, 0);
         }
-        else if(transform.position.x  > maxX) {
+        else if(transform.position.x  > LevelData.Instance.XMax) {
             SceneManager.LoadScene("Titlescreen");
             //transform.position = new Vector3(maxX, transform.position.y, 0);
         }
