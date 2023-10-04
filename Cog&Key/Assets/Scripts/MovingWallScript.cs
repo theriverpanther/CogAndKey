@@ -25,7 +25,7 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
         }
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if(currentKey == KeyState.Lock) {
             return;
@@ -55,7 +55,7 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
 
             // check if no longer a rider
             Rect riderArea = Global.GetCollisionArea(riders[i]);
-            float BUFFER = 0.15f;
+            float BUFFER = 0.05f;
             if(riderArea.yMin > platformArea.yMax + BUFFER
                 || riderArea.yMax < platformArea.yMin - BUFFER
                 || riderArea.xMin > platformArea.xMax + BUFFER

@@ -13,15 +13,26 @@ public class LevelData : MonoBehaviour
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
     private List<Rect> levelAreas = new List<Rect>();
+    private float xMin;
+    private float xMax;
 
     public List<Rect> LevelAreas { get { return levelAreas; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
+    public float XMin { get { return xMin; } }
+    public float XMax { get { return xMax; } }
+
+    public List<KeyState> StartingKeys;
 
     void Awake() {
         // store the level's boundaries and checkpoints
         GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
+        xMin = float.MaxValue;
+        xMax = float.MinValue;
         foreach(GameObject bound in bounds) {
-            levelAreas.Add(new Rect(bound.transform.position - bound.transform.localScale / 2, bound.transform.localScale));
+            Rect area = new Rect(bound.transform.position - bound.transform.localScale / 2, bound.transform.localScale);
+            levelAreas.Add(area);
+            xMin = Mathf.Min(xMin, area.xMin);
+            xMax = Mathf.Max(xMax, area.xMax);
             Destroy(bound);
         }
 
@@ -49,6 +60,9 @@ public class LevelData : MonoBehaviour
             checkpoint.transform.SetParent(null, true);
             DontDestroyOnLoad(checkpoint);
         }
+
+        // equip the player with the starting keys
+        EquipStartKeys();
     }
 
     // called when the scene changes, deletes the instance if it is no longer the correct level
@@ -58,8 +72,12 @@ public class LevelData : MonoBehaviour
                 Destroy(checkpoint);
             }
 
+            SceneManager.activeSceneChanged -= CheckNextLevel;
             Destroy(gameObject);
             instance = null;
+        } else {
+            // level restarted
+            EquipStartKeys();
         }
     }
 
@@ -75,5 +93,28 @@ public class LevelData : MonoBehaviour
 
         currentCheckpoint = checkpoint;
         currentCheckpoint.SetAsCheckpoint(true);
+
+        // save keys acquired since the last checkpoint
+        PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+        if(!StartingKeys.Contains(KeyState.Fast) && player.FastKey != null) {
+            StartingKeys.Add(KeyState.Fast);
+        }
+        if(!StartingKeys.Contains(KeyState.Lock) && player.LockKey != null) {
+            StartingKeys.Add(KeyState.Lock);
+        }
+        if(!StartingKeys.Contains(KeyState.Reverse) && player.ReverseKey != null) {
+            StartingKeys.Add(KeyState.Reverse);
+        }
+    }
+
+    private void EquipStartKeys() {
+        GameObject[] keys = GameObject.FindGameObjectsWithTag("Key");
+        foreach(GameObject key in keys) {
+            KeyScript keyScript = key.GetComponent<KeyScript>();
+            if(StartingKeys.Contains(keyScript.Type)) {
+                Debug.Log(keyScript.Type);
+                keyScript.Equip();
+            }
+        }
     }
 }
