@@ -9,13 +9,16 @@ public class CameraScript : MonoBehaviour
     private GameObject player;
     private float z;
 
-    private Vector2 dimensions = new Vector2(17.78f, 10); // hard coded for camera size 5
+    private Vector2 dimensions;
 
     void Start()
     {
         player = GameObject.FindWithTag("Player");
         z = transform.position.z;
         transform.position = FindTargetPosition();
+
+        dimensions.y = GetComponent<Camera>().orthographicSize * 2;
+        dimensions.x = dimensions.y * 16/9; // 16/9 aspect ratio
     }
 
     void Update()
