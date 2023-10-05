@@ -39,20 +39,48 @@ public class CameraScript : MonoBehaviour
     private Vector3 FindTargetPosition() {
         // ideally place the camera near the player
         Vector3 position = player.transform.position;
-        position.x += 3; // face the future of the level
         position.z = z;
 
         // fit the camera into the level bounds
+        LevelBoundScript playerBound = null;
         Rect cameraArea = new Rect((Vector2)position - dimensions / 2, dimensions);
         List<Rect> overlapZones = new List<Rect>();
-        foreach(Rect cameraBound in LevelData.Instance.LevelAreas) {
-            if(cameraBound.Overlaps(cameraArea)) {
-                overlapZones.Add(cameraBound);
+        foreach(LevelBoundScript cameraBound in LevelData.Instance.LevelAreas) {
+            if(cameraBound.Area.Overlaps(cameraArea)) {
+                overlapZones.Add(cameraBound.Area);
+            }
+
+            if(cameraBound.Area.Contains(player.transform.position)) {
+                playerBound = cameraBound;
             }
         }
 
         if(overlapZones.Count <= 0) {
             return position;
+        }
+
+        // shift camera towards the next part of the level
+        if(playerBound != null) {
+            switch(playerBound.AreaType) {
+                case LevelBoundScript.Type.Right:
+                    position.x += 4;
+                    break;
+
+                case LevelBoundScript.Type.Left:
+                    position.x -= 4;
+                    break;
+
+                case LevelBoundScript.Type.Up:
+                    position.y += 2.5f;
+                    break;
+
+                case LevelBoundScript.Type.Down:
+                    position.y -= 2.5f;
+                    break;
+
+                case LevelBoundScript.Type.Lock:
+                    break;
+            }
         }
 
         // form a rectangle from the furthest edges of all overlapped areas and another from the closest edges

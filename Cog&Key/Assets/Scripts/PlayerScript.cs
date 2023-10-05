@@ -75,8 +75,8 @@ public class PlayerScript : MonoBehaviour
 
         bool withinBounds = false;
         Rect collision = CollisionArea;
-        foreach(Rect area in LevelData.Instance.LevelAreas) { 
-            if(area.Overlaps(collision)) {
+        foreach(LevelBoundScript bound in LevelData.Instance.LevelAreas) { 
+            if(bound.Area.Overlaps(collision)) {
                 withinBounds = true;
                 break;
             }

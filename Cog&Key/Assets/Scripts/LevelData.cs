@@ -12,11 +12,11 @@ public class LevelData : MonoBehaviour
     private string levelName;
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
-    private List<Rect> levelAreas = new List<Rect>();
+    private List<LevelBoundScript> levelAreas = new List<LevelBoundScript>();
     private float xMin;
     private float xMax;
 
-    public List<Rect> LevelAreas { get { return levelAreas; } }
+    public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
     public float XMin { get { return xMin; } }
     public float XMax { get { return xMax; } }
@@ -24,25 +24,20 @@ public class LevelData : MonoBehaviour
     public List<KeyState> StartingKeys;
 
     void Awake() {
-        // store the level's boundaries and checkpoints
-        GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
-        xMin = float.MaxValue;
-        xMax = float.MinValue;
-        foreach(GameObject bound in bounds) {
-            Rect area = new Rect(bound.transform.position - bound.transform.localScale / 2, bound.transform.localScale);
-            levelAreas.Add(area);
-            xMin = Mathf.Min(xMin, area.xMin);
-            xMax = Mathf.Max(xMax, area.xMax);
-            Destroy(bound);
-        }
-
        checkpoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Checkpoint"));
+       GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
 
         // delete duplicates
         if(instance != null) {
             foreach(GameObject checkpoint in checkpoints) {
                 if(!instance.checkpoints.Contains(checkpoint)) {
                     Destroy(checkpoint);
+                }
+            }
+
+            foreach(GameObject bound in bounds) {
+                if(!instance.levelAreas.Contains(bound.GetComponent<LevelBoundScript>())) {
+                    Destroy(bound);
                 }
             }
 
@@ -56,9 +51,21 @@ public class LevelData : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         SceneManager.activeSceneChanged += CheckNextLevel;
 
+        // store the level's boundaries and checkpoints
         foreach(GameObject checkpoint in checkpoints) {
             checkpoint.transform.SetParent(null, true);
             DontDestroyOnLoad(checkpoint);
+        }
+
+        xMin = float.MaxValue;
+        xMax = float.MinValue;
+        foreach(GameObject bound in bounds) {
+            LevelBoundScript boundScript = bound.GetComponent<LevelBoundScript>();
+            boundScript.Area = new Rect(bound.transform.position - bound.transform.lossyScale / 2, bound.transform.lossyScale);
+            levelAreas.Add(boundScript);
+            xMin = Mathf.Min(xMin, boundScript.Area.xMin);
+            xMax = Mathf.Max(xMax, boundScript.Area.xMax);
+            bound.GetComponent<SpriteRenderer>().enabled = false;
         }
 
         // equip the player with the starting keys

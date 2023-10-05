@@ -15,10 +15,5 @@ public class LevelBoundScript : MonoBehaviour
 
     [SerializeField] private Type type;
     public Type AreaType { get { return type; } }
-    public Rect Area { get; private set; }
-
-    void Start()
-    {
-        Area = new Rect(transform.position - transform.lossyScale / 2, transform.lossyScale);
-    }
+    public Rect Area { get; set; }
 }
