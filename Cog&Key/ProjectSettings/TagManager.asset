@@ -8,6 +8,7 @@ TagManager:
   - LevelBound
   - Checkpoint
   - Waypoint
+  - Key
   layers:
   - Default
   - TransparentFX

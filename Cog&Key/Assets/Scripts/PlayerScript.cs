@@ -13,26 +13,22 @@ public class PlayerScript : MonoBehaviour
         Aerial,
     }
 
-    public bool HasFastKey;
-    public bool HasLockKey;
-    public bool HasReverseKey;
+    public KeyScript FastKey { get; set; }
+    public KeyScript LockKey { get; set; }
+    public KeyScript ReverseKey { get; set; }
 
     private const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
     private const float JUMP_VELOCITY = 13.0f;
-    private const float CLING_VELOCITY = -1.5f; // the maximum downward speed when pressed against a wall
+    private const float CLING_VELOCITY = -1.0f; // the maximum downward speed when pressed against a wall
 
     private const float WALK_SPEED = 7.0f; // per second
     private const float WALK_ACCEL = 100.0f; // per second^2
 
     private Rigidbody2D physicsBody;
-    private KeyAttack keyAttack;
     private State currentState;
     private PlayerInput input;
-    private float minX;
-    private float maxX;
-    private IKeyWindable keyTarget;
-    private KeyState activeKey;
+    private KeyScript activeKey;
 
     private bool jumpHeld;
     private float coyoteTime;
@@ -45,25 +41,16 @@ public class PlayerScript : MonoBehaviour
             return new Rect((Vector2)transform.position - size / 2, size);
     } }
 
-    void Start()
+    void Awake()
     {
         physicsBody = GetComponent<Rigidbody2D>();
         physicsBody.gravityScale = FALL_GRAVITY;
         currentState = State.Aerial;
         input = new PlayerInput();
         currentWalls = new List<GameObject>();
-        keyAttack = transform.GetChild(0).GetComponent<KeyAttack>();
 
         if(LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
-        }
-
-
-        minX = LevelData.Instance.LevelAreas[0].xMin;
-        maxX = LevelData.Instance.LevelAreas[0].xMax;
-        foreach(Rect area in LevelData.Instance.LevelAreas) { 
-            minX = Mathf.Min(minX, area.xMin);
-            maxX = Mathf.Max(maxX, area.xMax);
         }
     }
 
@@ -78,10 +65,10 @@ public class PlayerScript : MonoBehaviour
         }
 
         // check if player left the boundaries of the level
-        if(transform.position.x < minX) {
-            transform.position = new Vector3(minX, transform.position.y, 0);
+        if(transform.position.x < LevelData.Instance.XMin) {
+            transform.position = new Vector3(LevelData.Instance.XMin, transform.position.y, 0);
         }
-        else if(transform.position.x  > maxX) {
+        else if(transform.position.x  > LevelData.Instance.XMax) {
             SceneManager.LoadScene("Titlescreen");
             //transform.position = new Vector3(maxX, transform.position.y, 0);
         }
@@ -120,7 +107,7 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // determine gravity
-                if (jumpHeld) { //} && physicsBody.velocity.y <= JUMP_VELOCITY) {
+                if(jumpHeld) {
                     physicsBody.gravityScale = JUMP_GRAVITY;
                     if(physicsBody.velocity.y > JUMP_VELOCITY) {
                         physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
@@ -202,6 +189,7 @@ public class PlayerScript : MonoBehaviour
             if(velocity.x > WALK_SPEED) {
                 velocity.x = WALK_SPEED;
             }
+
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
         else if(moveLeft) {
@@ -209,6 +197,7 @@ public class PlayerScript : MonoBehaviour
             if(velocity.x < -WALK_SPEED) {
                 velocity.x = -WALK_SPEED;
             }
+                
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
 
@@ -217,38 +206,53 @@ public class PlayerScript : MonoBehaviour
         // manage key ability
         if(keyCooldown <= 0) {
             KeyState usedKey = KeyState.Normal;
-            if(HasFastKey && input.JustPressed(PlayerInput.Action.FastKey)) {
+            if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
                 usedKey = KeyState.Fast;
             }
-            else if(HasLockKey && input.JustPressed(PlayerInput.Action.LockKey)) {
+            else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
                 usedKey = KeyState.Lock;
             }
-            else if(HasReverseKey && input.JustPressed(PlayerInput.Action.ReverseKey)) {
+            else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
                 usedKey = KeyState.Reverse;
             }
 
             if(usedKey != KeyState.Normal) {
                 // send key attack
-                if(usedKey == activeKey) {
+                if(activeKey != null && usedKey == activeKey.Type) {
                     // remove active key
-                    keyTarget.InsertKey(KeyState.Normal);
-                    activeKey = KeyState.Normal;
-                    keyTarget = null;
+                    activeKey.Detach();
+                    activeKey = null;
                 }
 
                 // determine attack direction
-                Vector2 attackDirection = Vector2.right;
+                Vector2 attackDirection = Vector2.zero;
                 if(input.IsPressed(PlayerInput.Action.Up)) {
                     attackDirection = Vector2.up;
                 }
                 if(input.IsPressed(PlayerInput.Action.Down)) {
                     attackDirection = Vector2.down;
                 }
+                if(attackDirection == Vector2.zero) {
+                    attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
+                }
 
-                keyAttack.SendKey(usedKey, attackDirection);
+                switch(usedKey) {
+                    case KeyState.Fast:
+                        activeKey = FastKey;
+                        break;
+                    case KeyState.Lock:
+                        activeKey = LockKey;
+                        break;
+                    case KeyState.Reverse:
+                        activeKey = ReverseKey;
+                        break;
+                }
+
+                activeKey.Attack(attackDirection);
                 keyCooldown = 0.5f;
             }
-        } else {
+        }
+        else {
             keyCooldown -= Time.deltaTime;
         }
     }
@@ -264,8 +268,7 @@ public class PlayerScript : MonoBehaviour
         jumpHeld = true;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
+    private void OnCollisionEnter2D(Collision2D collision) {
         if(collision.gameObject.tag == "Wall") {
             moveLockedRight = null;
             if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
@@ -279,33 +282,16 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    // trigger off of key collision
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        IKeyWindable keyWindable = collision.gameObject.GetComponent<IKeyWindable>();
-        if(keyWindable != null) {
-            if(keyTarget != null) {
-                // remove last key
-                keyTarget.InsertKey(KeyState.Normal);
-            }
-
-            keyTarget = keyWindable;
-            activeKey = keyAttack.keyType;
-            keyTarget.InsertKey(activeKey);
-            keyAttack.gameObject.SetActive(false);
-        }
-    }
-
     // determines if the player is up against the input wall on the left or right side
     private bool IsAgainstWall(GameObject wall) {
         float halfHeight = GetComponent<BoxCollider2D>().bounds.extents.y;
-        if(transform.position.y + halfHeight <= wall.transform.position.y - wall.transform.localScale.y / 2
-            || transform.position.y - halfHeight >= wall.transform.position.y + wall.transform.localScale.y / 2
+        if(transform.position.y + halfHeight <= wall.transform.position.y - wall.transform.lossyScale.y / 2
+            || transform.position.y - halfHeight >= wall.transform.position.y + wall.transform.lossyScale.y / 2
         ) {
             // above or below the wall
             return false;
         }
 
-        return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.localScale.x + GetComponent<BoxCollider2D>().bounds.size.x) / 2 < 0.1f;
+        return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.lossyScale.x + GetComponent<BoxCollider2D>().bounds.size.x) / 2 < 0.1f;
     }
 }
