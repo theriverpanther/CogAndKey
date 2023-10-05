@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - LevelBound
+  - Checkpoint
+  - Waypoint
+  - Key
   layers:
   - Default
   - TransparentFX

@@ -1,14 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Build;
 using UnityEngine;
 
-public enum KeyState
-{
-    Normal, Reverse, Lock, Fast
-}
-
-public class Agent : MonoBehaviour
+public class Agent : MonoBehaviour, IKeyWindable
 {
     #region Fields
     protected KeyState state;
@@ -72,6 +66,12 @@ public class Agent : MonoBehaviour
         {
             collidingObjs.Add(collision.gameObject);
         }
+
+        PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
+        if (player != null)
+        {
+            player.Die();
+        }
     }
 
     protected void OnCollisionExit2D(Collision2D collision)
@@ -101,6 +101,7 @@ public class Agent : MonoBehaviour
                 returnVal = 1;
             }
         }
+
         return returnVal;
         
     }
