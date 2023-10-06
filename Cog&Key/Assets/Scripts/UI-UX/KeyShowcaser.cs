@@ -22,22 +22,8 @@ public class KeyShowcaser : MonoBehaviour
     [SerializeField]
     GameObject mainKey;
 
-    private GameObject player;
-
-
-    void Start()
-    {
-        player = GameObject.Find("Player");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
-    /// Updates the main key to display the currently used key
+    /// Updates the main key to display the currently used key, in inv or disabled
     /// </summary>
     /// <param name="status">If in use or not</param>
     /// <param name="keyNumber">0, 1, 2 key values</param>
@@ -49,5 +35,14 @@ public class KeyShowcaser : MonoBehaviour
             return;
         } 
         mainKey.GetComponent<Image>().color = colorsDisabled[keyNumber];
+    }
+
+    /// <summary>
+    /// Updates the smaller UI keys to display the newly picked up key as an option.
+    /// </summary>
+    /// <param name="keyNumber"></param>
+    void PickedUpKey(int keyNumber)
+    {
+        keyManage[keyNumber].GetComponent<Image>().color = colorsDisabled[keyNumber];
     }
 }
