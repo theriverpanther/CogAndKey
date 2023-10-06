@@ -81,7 +81,7 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
 
             }
         }
-        Debug.Log(momentumBufferTime);
+
         if(momentumBufferTime > 0) {
             momentumBufferTime -= Time.deltaTime;
         }

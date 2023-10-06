@@ -69,7 +69,13 @@ public class PlayerScript : MonoBehaviour
             transform.position = new Vector3(LevelData.Instance.XMin, transform.position.y, 0);
         }
         else if(transform.position.x  > LevelData.Instance.XMax) {
-            SceneManager.LoadScene("Titlescreen");
+            int currentLevel = SceneManager.GetActiveScene().buildIndex;
+            currentLevel++;
+            if(currentLevel >= SceneManager.sceneCountInBuildSettings) {
+                SceneManager.LoadScene("Titlescreen");
+            } else {
+                SceneManager.LoadScene(currentLevel);
+            }
             //transform.position = new Vector3(maxX, transform.position.y, 0);
         }
 
