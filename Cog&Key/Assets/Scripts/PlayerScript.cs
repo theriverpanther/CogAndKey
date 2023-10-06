@@ -49,7 +49,7 @@ public class PlayerScript : MonoBehaviour
         input = new PlayerInput();
         currentWalls = new List<GameObject>();
 
-        if(LevelData.Instance.RespawnPoint.HasValue) {
+        if(LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
         }
     }

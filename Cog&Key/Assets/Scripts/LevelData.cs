@@ -66,6 +66,7 @@ public class LevelData : MonoBehaviour
             xMin = Mathf.Min(xMin, boundScript.Area.xMin);
             xMax = Mathf.Max(xMax, boundScript.Area.xMax);
             bound.GetComponent<SpriteRenderer>().enabled = false;
+            DontDestroyOnLoad(bound);
         }
 
         // equip the player with the starting keys
@@ -77,6 +78,10 @@ public class LevelData : MonoBehaviour
         if(next.name != levelName) {
             foreach(GameObject checkpoint in checkpoints) {
                 Destroy(checkpoint);
+            }
+
+            foreach(LevelBoundScript bound in levelAreas) {
+                Destroy(bound.gameObject);
             }
 
             SceneManager.activeSceneChanged -= CheckNextLevel;

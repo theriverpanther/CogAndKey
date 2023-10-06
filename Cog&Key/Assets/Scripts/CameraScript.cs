@@ -41,27 +41,16 @@ public class CameraScript : MonoBehaviour
         Vector3 position = player.transform.position;
         position.z = z;
 
-        // fit the camera into the level bounds
-        LevelBoundScript playerBound = null;
-        Rect cameraArea = new Rect((Vector2)position - dimensions / 2, dimensions);
-        List<Rect> overlapZones = new List<Rect>();
-        foreach(LevelBoundScript cameraBound in LevelData.Instance.LevelAreas) {
-            if(cameraBound.Area.Overlaps(cameraArea)) {
-                overlapZones.Add(cameraBound.Area);
-            }
-
-            if(cameraBound.Area.Contains(player.transform.position)) {
-                playerBound = cameraBound;
-            }
-        }
-
-        if(overlapZones.Count <= 0) {
-            return position;
-        }
-
         // shift camera towards the next part of the level
-        if(playerBound != null) {
-            switch(playerBound.AreaType) {
+        LevelBoundScript currentZone = null;
+        foreach(LevelBoundScript cameraBound in LevelData.Instance.LevelAreas) {
+            if(cameraBound.Area.Contains(player.transform.position)) {
+                currentZone = cameraBound;
+            }
+        }
+
+        if(currentZone != null) {
+            switch(currentZone.AreaType) {
                 case LevelBoundScript.Type.Right:
                     position.x += 4;
                     break;
@@ -81,6 +70,19 @@ public class CameraScript : MonoBehaviour
                 case LevelBoundScript.Type.Lock:
                     break;
             }
+        }
+
+        // fit the camera into the level bounds
+        Rect cameraArea = new Rect((Vector2)position - dimensions / 2, dimensions);
+        List<Rect> overlapZones = new List<Rect>();
+        foreach(LevelBoundScript cameraBound in LevelData.Instance.LevelAreas) {
+            if(cameraBound.Area.Overlaps(cameraArea)) {
+                overlapZones.Add(cameraBound.Area);
+            }
+        }
+
+        if(overlapZones.Count <= 0) {
+            return position;
         }
 
         // form a rectangle from the furthest edges of all overlapped areas and another from the closest edges
@@ -121,7 +123,7 @@ public class CameraScript : MonoBehaviour
             shifted = true;
         }
         else if(!topLeftCovered && !topRightCovered) {
-            position.y = minArea.yMax - dimensions.y/2;
+            position.y = maxArea.yMax - dimensions.y/2;
             shifted = true;
         }
         if(!topLeftCovered && !bottomLeftCovered) {
