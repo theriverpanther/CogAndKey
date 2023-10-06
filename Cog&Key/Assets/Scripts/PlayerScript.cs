@@ -78,19 +78,8 @@ public class PlayerScript : MonoBehaviour
             }
             //transform.position = new Vector3(maxX, transform.position.y, 0);
         }
-
-        bool withinBounds = false;
-        Rect collision = CollisionArea;
-        foreach(LevelBoundScript bound in LevelData.Instance.LevelAreas) { 
-            if(bound.Area.Overlaps(collision)) {
-                withinBounds = true;
-                break;
-            }
-        }
-
-        if(!withinBounds) {
+        else if(transform.position.y + transform.localScale.y/2 < LevelData.Instance.YMin) {
             Die();
-            return;
         }
 
         // if against a wall, check if still next to it

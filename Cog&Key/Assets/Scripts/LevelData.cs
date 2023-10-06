@@ -13,13 +13,12 @@ public class LevelData : MonoBehaviour
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
     private List<LevelBoundScript> levelAreas = new List<LevelBoundScript>();
-    private float xMin;
-    private float xMax;
 
     public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
-    public float XMin { get { return xMin; } }
-    public float XMax { get { return xMax; } }
+    public float XMin { get; private set; }
+    public float XMax { get; private set; }
+    public float YMin { get; private set; }
 
     public List<KeyState> StartingKeys;
 
@@ -57,14 +56,16 @@ public class LevelData : MonoBehaviour
             DontDestroyOnLoad(checkpoint);
         }
 
-        xMin = float.MaxValue;
-        xMax = float.MinValue;
+        XMin = float.MaxValue;
+        XMax = float.MinValue;
+        YMin = float.MaxValue;
         foreach(GameObject bound in bounds) {
             LevelBoundScript boundScript = bound.GetComponent<LevelBoundScript>();
             boundScript.Area = new Rect(bound.transform.position - bound.transform.lossyScale / 2, bound.transform.lossyScale);
             levelAreas.Add(boundScript);
-            xMin = Mathf.Min(xMin, boundScript.Area.xMin);
-            xMax = Mathf.Max(xMax, boundScript.Area.xMax);
+            XMin = Mathf.Min(XMin, boundScript.Area.xMin);
+            XMax = Mathf.Max(XMax, boundScript.Area.xMax);
+            YMin = Mathf.Min(YMin, boundScript.Area.yMin);
             bound.GetComponent<SpriteRenderer>().enabled = false;
             DontDestroyOnLoad(bound);
         }
@@ -124,7 +125,6 @@ public class LevelData : MonoBehaviour
         foreach(GameObject key in keys) {
             KeyScript keyScript = key.GetComponent<KeyScript>();
             if(StartingKeys.Contains(keyScript.Type)) {
-                Debug.Log(keyScript.Type);
                 keyScript.Equip();
             }
         }
