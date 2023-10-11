@@ -41,7 +41,7 @@ public class PlayerScript : MonoBehaviour
             return new Rect((Vector2)transform.position - size / 2, size);
     } }
 
-    void Awake()
+    void Start()
     {
         physicsBody = GetComponent<Rigidbody2D>();
         physicsBody.gravityScale = FALL_GRAVITY;
@@ -51,6 +51,7 @@ public class PlayerScript : MonoBehaviour
 
         if(LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
+            CameraScript.Instance.SetInitialPosition();
         }
     }
 
