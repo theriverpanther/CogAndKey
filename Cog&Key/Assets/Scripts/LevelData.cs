@@ -159,18 +159,29 @@ public class LevelData : MonoBehaviour
         for(int i = 0; i < levelAreas.Count; i++) {
             // find which level bounds are adjacent to this one
             Rect bufferedArea = levelAreas[i].Area.MakeExpanded(0.2f);
-            List<Rect> adjacentBounds = new List<Rect>();
-            for(int j = 0; j < levelAreas.Count; j++) {
-                if(i == j) {
-                    continue;
-                }
-
+            for(int j = i + 1; j < levelAreas.Count; j++) {
                 if(bufferedArea.Overlaps(levelAreas[j].Area)) {
-                    adjacentBounds.Add(levelAreas[j].Area);
+                    // add a camera zone connecting these zones together
+                    if(cameraZones[i].yMax > cameraZones[j].yMin && cameraZones[i].yMin < cameraZones[j].yMax) {
+                        // horizontally adjacent
+                        float yMax = Mathf.Min(cameraZones[i].yMax, cameraZones[j].yMax);
+                        float yMin = Mathf.Max(cameraZones[i].yMin, cameraZones[j].yMin);
+                        float xMax = Mathf.Max(cameraZones[i].xMin, cameraZones[j].xMin);
+                        float xMin = Mathf.Min(cameraZones[i].xMax, cameraZones[j].xMax);
+                        addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
+                        Debug.Log("added hori zone");
+                    }
+                    else if(cameraZones[i].xMax > cameraZones[j].xMin && cameraZones[i].xMin < cameraZones[j].xMax) {
+                        // vertically adjacent
+                        float xMax = Mathf.Min(cameraZones[i].xMax, cameraZones[j].xMax);
+                        float xMin = Mathf.Max(cameraZones[i].xMin, cameraZones[j].xMin);
+                        float yMax = Mathf.Max(cameraZones[i].yMin, cameraZones[j].yMin);
+                        float yMin = Mathf.Min(cameraZones[i].yMax, cameraZones[j].yMax);
+                        addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
+                        Debug.Log("added vert zone");
+                    }
                 }
             }
-
-
         }
 
         cameraZones.AddRange(addedZones);
