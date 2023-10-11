@@ -151,18 +151,17 @@ public class PlayerScript : MonoBehaviour
 
             case State.Grounded:
                 friction = 30f;
-
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
                 }
-                else if(velocity.y < 0) {
+                else if(velocity.y < -0.01f) {
                     // fall off platform
                     currentState = State.Aerial;
                     coyoteTime = 0.05f;
                 }
                 break;
         }
-
+        Debug.Log(currentState);
         // horizontal movement
         float walkAccel = WALK_ACCEL * Time.deltaTime;
         bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x < WALK_SPEED && moveLockedRight != true;
@@ -266,6 +265,7 @@ public class PlayerScript : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision) {
         if(collision.gameObject.tag == "Wall") {
             moveLockedRight = null;
+            float test = Mathf.Abs(physicsBody.velocity.y);
             if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
                 // land on ground, from aerial or wall state
                 currentState = State.Grounded;

@@ -169,7 +169,6 @@ public class LevelData : MonoBehaviour
                         float xMax = Mathf.Max(cameraZones[i].xMin, cameraZones[j].xMin);
                         float xMin = Mathf.Min(cameraZones[i].xMax, cameraZones[j].xMax);
                         addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
-                        Debug.Log("added hori zone");
                     }
                     else if(cameraZones[i].xMax > cameraZones[j].xMin && cameraZones[i].xMin < cameraZones[j].xMax) {
                         // vertically adjacent
@@ -178,7 +177,6 @@ public class LevelData : MonoBehaviour
                         float yMax = Mathf.Max(cameraZones[i].yMin, cameraZones[j].yMin);
                         float yMin = Mathf.Min(cameraZones[i].yMax, cameraZones[j].yMax);
                         addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
-                        Debug.Log("added vert zone");
                     }
                 }
             }
