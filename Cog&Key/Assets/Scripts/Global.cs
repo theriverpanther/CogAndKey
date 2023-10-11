@@ -8,4 +8,8 @@ public static class Global
         Bounds bound = objectWithBoxCollider.GetComponent<BoxCollider2D>().bounds;
         return new Rect(bound.center - bound.size / 2, bound.size);
     }
+
+    public static Rect MakeExpanded(this Rect original, float amount) {
+        return new Rect(original.xMin - amount, original.yMin - amount, original.width + 2 * amount, original.height + 2 * amount);
+    }
 }

@@ -13,8 +13,10 @@ public class LevelData : MonoBehaviour
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
     private List<LevelBoundScript> levelAreas = new List<LevelBoundScript>();
+    private List<Rect> cameraZones;
 
     public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
+    public List<Rect> CameraZones { get { return cameraZones; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
     public float XMin { get; private set; }
     public float XMax { get; private set; }
@@ -22,9 +24,10 @@ public class LevelData : MonoBehaviour
 
     public List<KeyState> StartingKeys;
 
-    void Awake() {
-       checkpoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Checkpoint"));
-       GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
+    // needs CameraScript Awake() to run first
+    void Start() {
+        checkpoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Checkpoint"));
+        GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
 
         // delete duplicates
         if(instance != null) {
@@ -69,6 +72,9 @@ public class LevelData : MonoBehaviour
             bound.GetComponent<SpriteRenderer>().enabled = false;
             DontDestroyOnLoad(bound);
         }
+
+        GenerateCameraZones();
+        CameraScript.Instance.SetInitialPosition();
 
         // equip the player with the starting keys
         EquipStartKeys();
@@ -128,5 +134,45 @@ public class LevelData : MonoBehaviour
                 keyScript.Equip();
             }
         }
+    }
+
+    // uses the level bounds to determine where the camera is allowed to be centered
+    private void GenerateCameraZones() {
+        cameraZones = new List<Rect>();
+        Vector2 cameraDims = CameraScript.Instance.Dimensions;
+
+        // add areas in the middle of each level boundary
+        foreach(LevelBoundScript levelBound in levelAreas) {
+            Rect middleZone = new Rect(levelBound.Area.xMin + cameraDims.x/2, levelBound.Area.yMin + cameraDims.y/2, levelBound.Area.width - cameraDims.x, levelBound.Area.height - cameraDims.y);
+            if(middleZone.yMin > middleZone.yMax) {
+                
+                middleZone = new Rect(middleZone.x, (middleZone.yMax + middleZone.yMin) / 2, middleZone.width, 0);
+            }
+            if(middleZone.xMin > middleZone.xMax) {
+                middleZone = new Rect((middleZone.xMax + middleZone.xMin) / 2, middleZone.y, 0, middleZone.height);
+            }
+            cameraZones.Add(middleZone);
+        }
+
+        // add areas connecting adjacent boundaries together
+        List<Rect> addedZones = new List<Rect>();
+        for(int i = 0; i < levelAreas.Count; i++) {
+            // find which level bounds are adjacent to this one
+            Rect bufferedArea = levelAreas[i].Area.MakeExpanded(0.2f);
+            List<Rect> adjacentBounds = new List<Rect>();
+            for(int j = 0; j < levelAreas.Count; j++) {
+                if(i == j) {
+                    continue;
+                }
+
+                if(bufferedArea.Overlaps(levelAreas[j].Area)) {
+                    adjacentBounds.Add(levelAreas[j].Area);
+                }
+            }
+
+
+        }
+
+        cameraZones.AddRange(addedZones);
     }
 }
