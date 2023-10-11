@@ -161,7 +161,7 @@ public class PlayerScript : MonoBehaviour
                 }
                 break;
         }
-        Debug.Log(currentState);
+
         // horizontal movement
         float walkAccel = WALK_ACCEL * Time.deltaTime;
         bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x < WALK_SPEED && moveLockedRight != true;
