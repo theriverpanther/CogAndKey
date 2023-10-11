@@ -20,6 +20,7 @@ public class KeyScript : MonoBehaviour
     private Vector2 attackDirection;
     private float distanceTravelled;
     private IKeyWindable insertTarget;
+    private KeyShowcaser uiKeys;
 
     [SerializeField] private KeyState type;
     public KeyState Type { get { return type; } }
@@ -27,6 +28,7 @@ public class KeyScript : MonoBehaviour
     void Start()
     {
         currentState = State.Pickup;
+        uiKeys = GameObject.Find("OverlayMain").GetComponent<KeyShowcaser>();
     }
 
     void Update()
@@ -59,13 +61,19 @@ public class KeyScript : MonoBehaviour
                 break;
             case State.PlayerHeld:
                 gameObject.SetActive(false);
+                uiKeys.MainKeyStatusUpdate(true, Type);
+                uiKeys.SmallKeyStatusUpdate(true, Type);
                 break;
             case State.Attacking:
                 gameObject.SetActive(true);
+                uiKeys.MainKeyStatusUpdate(false, Type);
+                uiKeys.SmallKeyStatusUpdate(false, Type);
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
                 distanceTravelled = 0;
                 break;
             case State.Attached:
+                uiKeys.MainKeyStatusUpdate(false, Type);
+                uiKeys.SmallKeyStatusUpdate(false, Type);
                 break;
         }
     }
@@ -78,16 +86,20 @@ public class KeyScript : MonoBehaviour
         switch(Type) {
             case KeyState.Fast:
                 player.FastKey = this;
+                uiKeys.SmallKeyStatusUpdate(true, Type);
                 break;
 
             case KeyState.Lock:
                 player.LockKey = this;
+                uiKeys.SmallKeyStatusUpdate(true, Type);
                 break;
 
             case KeyState.Reverse:
                 player.ReverseKey = this;
+                uiKeys.SmallKeyStatusUpdate(true, Type);
                 break;
         }
+
     }
 
     // called when the player shoots the key out to try and insert it
@@ -119,6 +131,8 @@ public class KeyScript : MonoBehaviour
         if(insertTarget == null || currentState != State.Attached) {
             return;
         }
+
+        uiKeys.MainKeyStatusUpdate(false, Type);
 
         insertTarget.InsertKey(KeyState.Normal);
         insertTarget = null;

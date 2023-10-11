@@ -46,3 +46,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: UI-UXGame
+    uniqueID: 2011998787
+    locked: 0
+  - name: UI-UXOverlay
+    uniqueID: 2978995399
+    locked: 0
