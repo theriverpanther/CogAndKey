@@ -49,7 +49,7 @@ public class PlayerScript : MonoBehaviour
         input = new PlayerInput();
         currentWalls = new List<GameObject>();
 
-        if(LevelData.Instance.RespawnPoint.HasValue) {
+        if(LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
         }
     }
@@ -69,22 +69,17 @@ public class PlayerScript : MonoBehaviour
             transform.position = new Vector3(LevelData.Instance.XMin, transform.position.y, 0);
         }
         else if(transform.position.x  > LevelData.Instance.XMax) {
-            SceneManager.LoadScene("Titlescreen");
+            int currentLevel = SceneManager.GetActiveScene().buildIndex;
+            currentLevel++;
+            if(currentLevel >= SceneManager.sceneCountInBuildSettings) {
+                SceneManager.LoadScene("Titlescreen");
+            } else {
+                SceneManager.LoadScene(currentLevel);
+            }
             //transform.position = new Vector3(maxX, transform.position.y, 0);
         }
-
-        bool withinBounds = false;
-        Rect collision = CollisionArea;
-        foreach(Rect area in LevelData.Instance.LevelAreas) { 
-            if(area.Overlaps(collision)) {
-                withinBounds = true;
-                break;
-            }
-        }
-
-        if(!withinBounds) {
+        else if(transform.position.y + transform.localScale.y/2 < LevelData.Instance.YMin) {
             Die();
-            return;
         }
 
         // if against a wall, check if still next to it
@@ -156,11 +151,10 @@ public class PlayerScript : MonoBehaviour
 
             case State.Grounded:
                 friction = 30f;
-
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
                 }
-                else if(velocity.y < 0) {
+                else if(velocity.y < -0.01f) {
                     // fall off platform
                     currentState = State.Aerial;
                     coyoteTime = 0.05f;
@@ -271,6 +265,7 @@ public class PlayerScript : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision) {
         if(collision.gameObject.tag == "Wall") {
             moveLockedRight = null;
+            float test = Mathf.Abs(physicsBody.velocity.y);
             if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
                 // land on ground, from aerial or wall state
                 currentState = State.Grounded;

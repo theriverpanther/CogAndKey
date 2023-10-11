@@ -14,6 +14,8 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
     private bool forward = true; // false: moving backwards through the path
     private List<GameObject> riders = new List<GameObject>();
     private KeyState currentKey;
+    private float momentumBufferTime;
+    private Vector2 bufferedMomentum;
 
     void Awake()
     {
@@ -43,8 +45,12 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
             // reached target point
             transform.position = target;
             NextWaypoint();
+
+            // buffer momentum when changing direction
+            momentumBufferTime = 0.2f;
+            bufferedMomentum = currentSpeed * (transform.position - startPosition).normalized;
         } else {
-            // moving towards starting point
+            // moving towards target point
             transform.position += shift * ((Vector3)target - transform.position).normalized;
         }
 
@@ -63,13 +69,21 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
             ) {
                 Rigidbody2D rb = riders[i].GetComponent<Rigidbody2D>();
                 if(currentKey == KeyState.Fast && rb != null) {
-                    rb.velocity += currentSpeed * (Vector2)displacement.normalized;
+                    if(momentumBufferTime > 0) {
+                        rb.velocity += bufferedMomentum;
+                    } else {
+                        rb.velocity += currentSpeed * (Vector2)displacement.normalized;
+                    }
                 }
 
                 riders.RemoveAt(i);
                 i--;
 
             }
+        }
+
+        if(momentumBufferTime > 0) {
+            momentumBufferTime -= Time.deltaTime;
         }
     }
 
@@ -108,6 +122,7 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
     public void InsertKey(KeyState key) {
         if(currentKey != key && (currentKey == KeyState.Reverse || key == KeyState.Reverse)) {
             forward = !forward;
+            NextWaypoint();
         }
 
         currentKey = key;
