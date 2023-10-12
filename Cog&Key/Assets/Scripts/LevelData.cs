@@ -12,7 +12,7 @@ public class LevelData : MonoBehaviour
     private string levelName;
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
-    private List<LevelBoundScript> levelAreas = new List<LevelBoundScript>();
+    [SerializeField] private List<LevelBoundScript> levelAreas = new List<LevelBoundScript>();
     private List<Rect> cameraZones;
 
     public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
@@ -34,6 +34,7 @@ public class LevelData : MonoBehaviour
             foreach(GameObject checkpoint in checkpoints) {
                 if(!instance.checkpoints.Contains(checkpoint)) {
                     Destroy(checkpoint);
+                    
                 }
             }
 
@@ -63,13 +64,15 @@ public class LevelData : MonoBehaviour
         YMin = float.MaxValue;
         foreach(GameObject bound in bounds) {
             LevelBoundScript boundScript = bound.GetComponent<LevelBoundScript>();
-            boundScript.Area = new Rect(bound.transform.position - bound.transform.lossyScale / 2, bound.transform.lossyScale);
-            levelAreas.Add(boundScript);
-            XMin = Mathf.Min(XMin, boundScript.Area.xMin);
-            XMax = Mathf.Max(XMax, boundScript.Area.xMax);
-            YMin = Mathf.Min(YMin, boundScript.Area.yMin);
-            bound.GetComponent<SpriteRenderer>().enabled = false;
-            DontDestroyOnLoad(bound);
+            if(boundScript != null) {
+                boundScript.Area = new Rect(bound.transform.position - bound.transform.lossyScale / 2, bound.transform.lossyScale);
+                levelAreas.Add(boundScript);
+                XMin = Mathf.Min(XMin, boundScript.Area.xMin);
+                XMax = Mathf.Max(XMax, boundScript.Area.xMax);
+                YMin = Mathf.Min(YMin, boundScript.Area.yMin);
+                bound.GetComponent<SpriteRenderer>().enabled = false;
+                DontDestroyOnLoad(bound);
+            }
         }
 
         GenerateCameraZones();
@@ -83,21 +86,31 @@ public class LevelData : MonoBehaviour
     // called when the scene changes, deletes the instance if it is no longer the correct level
     private void CheckNextLevel(Scene current, Scene next) {
         if(next.name != levelName) {
-            foreach(GameObject checkpoint in checkpoints) {
-                Destroy(checkpoint);
-            }
-
-            foreach(LevelBoundScript bound in levelAreas) {
-                Destroy(bound.gameObject);
-            }
-
             SceneManager.activeSceneChanged -= CheckNextLevel;
-            Destroy(gameObject);
-            instance = null;
+            SceneManager.sceneLoaded += NewLevelLoaded;
         } else {
             // level restarted
             EquipStartKeys();
         }
+    }
+
+    private void NewLevelLoaded(Scene scene, LoadSceneMode mode) {
+        foreach (GameObject checkpoint in checkpoints)
+        {
+            Destroy(checkpoint);
+        }
+        checkpoints.Clear();
+
+        foreach (LevelBoundScript bound in levelAreas)
+        {
+            // Unity warns against this but needs to be done or it won't be cleaned before Start is called
+            DestroyImmediate(bound.gameObject);
+        }
+        levelAreas.Clear();
+
+        Destroy(gameObject);
+        instance = null;
+        SceneManager.sceneLoaded -= NewLevelLoaded;
     }
 
     // called by checkpoint objects when they are triggered
