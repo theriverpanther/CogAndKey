@@ -158,17 +158,20 @@ public class LevelData : MonoBehaviour
         List<Rect> addedZones = new List<Rect>();
         for(int i = 0; i < levelAreas.Count; i++) {
             // find which level bounds are adjacent to this one
-            Rect bufferedArea = levelAreas[i].Area.MakeExpanded(0.2f);
+            Rect bufferedArea = levelAreas[i].Area.MakeExpanded(0.5f);
             for(int j = i + 1; j < levelAreas.Count; j++) {
-                if(bufferedArea.Overlaps(levelAreas[j].Area)) {
+                if(bufferedArea.Overlaps(levelAreas[j].Area) && !AreZonesOppositeDirection(levelAreas[i], levelAreas[j])) {
+                    Debug.Log("found adjacent zones");
                     // add a camera zone connecting these zones together
-                    if(cameraZones[i].yMax > cameraZones[j].yMin && cameraZones[i].yMin < cameraZones[j].yMax) {
+                    const float BUFFER = 0.1f;
+                    if(cameraZones[i].yMax + BUFFER > cameraZones[j].yMin - BUFFER && cameraZones[i].yMin - BUFFER < cameraZones[j].yMax + BUFFER) {
                         // horizontally adjacent
                         float yMax = Mathf.Min(cameraZones[i].yMax, cameraZones[j].yMax);
                         float yMin = Mathf.Max(cameraZones[i].yMin, cameraZones[j].yMin);
                         float xMax = Mathf.Max(cameraZones[i].xMin, cameraZones[j].xMin);
                         float xMin = Mathf.Min(cameraZones[i].xMax, cameraZones[j].xMax);
                         addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
+                        Debug.Log("added horizontal zone");
                     }
                     else if(cameraZones[i].xMax > cameraZones[j].xMin && cameraZones[i].xMin < cameraZones[j].xMax) {
                         // vertically adjacent
@@ -177,11 +180,21 @@ public class LevelData : MonoBehaviour
                         float yMax = Mathf.Max(cameraZones[i].yMin, cameraZones[j].yMin);
                         float yMin = Mathf.Min(cameraZones[i].yMax, cameraZones[j].yMax);
                         addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
+                        Debug.Log("added vertical zone");
                     }
                 }
             }
         }
 
         cameraZones.AddRange(addedZones);
+    }
+
+    private bool AreZonesOppositeDirection(LevelBoundScript one, LevelBoundScript other)
+    {
+        bool hasUp = one.AreaType == CamerBoundType.Up || other.AreaType == CamerBoundType.Up;
+        bool hasDown = one.AreaType == CamerBoundType.Down || other.AreaType == CamerBoundType.Down;
+        bool hasLeft = one.AreaType == CamerBoundType.Left || other.AreaType == CamerBoundType.Left;
+        bool hasRight = one.AreaType == CamerBoundType.Right || other.AreaType == CamerBoundType.Right;
+        return hasUp && hasDown || hasLeft && hasRight;
     }
 }
