@@ -131,6 +131,10 @@ public class Hunter : Agent
                     playerPosition = Vector2.zero;
                 }
             }
+            else
+            {
+                huntTimer = 0f;
+            }
 
             // TODO
             // NEED TO ACCOUNT FOR LOWER BOUNDS AKA FALLING OFF INTO DEATH
