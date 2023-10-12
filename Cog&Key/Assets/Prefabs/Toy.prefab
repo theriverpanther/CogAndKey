@@ -810,4 +810,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collidedPlayer: 0
-  type: 0
+  type: 2
