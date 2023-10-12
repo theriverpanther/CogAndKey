@@ -1,19 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Agent : MonoBehaviour, IKeyWindable
 {
+    protected enum JumpState
+    {
+        Grounded,
+        Aerial,
+    }
+
     #region Fields
     protected KeyState state;
+    protected JumpState jumpState;
 
     [Header("Agent Statistics")]
-    [SerializeField]
-    protected float movementSpeed = 1f;
-    [SerializeField]
-    protected float attackSpeed;
-    [SerializeField]
-    protected float fastScalar = 3f;
+    [SerializeField] protected float movementSpeed = 2f;
+    [SerializeField] protected float jumpSpeed = 2f;
+    [SerializeField] protected float attackSpeed;
+    [SerializeField] protected float fastScalar = 3f;
+
     protected Rigidbody2D rb;
     /// <summary>
     /// Degree of error for prediction built in for a less perfect agent
@@ -34,7 +41,11 @@ public class Agent : MonoBehaviour, IKeyWindable
     [SerializeField]
     protected Vector2 direction = Vector2.zero;
 
-    private Vector3 playerPosition = Vector3.zero;
+    protected Vector3 playerPosition = Vector3.zero;
+    protected float distToGround;
+
+    protected float turnDelay = 0.5f;
+    protected float turnTimer = 0.0f;
 
     #endregion
 
@@ -62,13 +73,15 @@ public class Agent : MonoBehaviour, IKeyWindable
         {
             senses.Add(transform.GetChild(i+1).GetComponent<Sense>());
         }
+        IsGrounded();
+        distToGround = GetComponent<BoxCollider2D>().bounds.extents.y;
     }
 
     // Update is called once per frame
     protected virtual void Update()
     {
         if(!keyInserted) state = KeyState.Normal;
-
+        if(jumpState == JumpState.Aerial) IsGrounded();
     }
 
     public void InsertKey(KeyState keyState)
@@ -81,6 +94,16 @@ public class Agent : MonoBehaviour, IKeyWindable
     {
         rb.velocity = new Vector2(walkSpeed * direction.x, rb.velocity.y);
     }
+
+    protected virtual void Jump()
+    {
+        if(jumpState != JumpState.Aerial)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+            jumpState = JumpState.Aerial;
+        }
+    }
+
     #region Edge Detection
     protected void OnCollisionEnter2D(Collision2D collision)
     {
@@ -104,7 +127,14 @@ public class Agent : MonoBehaviour, IKeyWindable
         }
     }
 
-    protected int EdgeDetect(List<GameObject> objects, bool detectFloorEdges, bool detectWalls)
+    /// <summary>
+    /// Change direction based off of environmental data
+    /// </summary>
+    /// <param name="objects">List of objects to detect based off of</param>
+    /// <param name="detectFloorEdges">Detect floor edges</param>
+    /// <param name="detectWalls">Detect walls to turn around at</param>
+    /// <returns>x direction to turn towards</returns>
+    protected int EdgeDetect(bool detectFloorEdges, bool detectWalls)
     {
         int returnVal = 0;
         foreach (GameObject obj in collidingObjs)
@@ -116,16 +146,25 @@ public class Agent : MonoBehaviour, IKeyWindable
             }
             else if (detectFloorEdges && transform.position.x + GetComponent<BoxCollider2D>().bounds.size.x / 2 > obj.transform.position.x + obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
             {
+                jumpState = JumpState.Grounded;
                 returnVal = -1;
             }
             else if(detectFloorEdges && transform.position.x - GetComponent<BoxCollider2D>().bounds.size.x / 2 < obj.transform.position.x - obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
             {
+                jumpState = JumpState.Grounded;
                 returnVal = 1;
             }
         }
 
         return returnVal;
         
+    }
+
+    protected void IsGrounded()
+    {
+        bool grounded = Physics2D.Raycast(transform.position, -Vector2.up, distToGround + 0.1f) && Mathf.Abs(rb.velocity.y) <= Mathf.Epsilon;
+        jumpState = grounded ? JumpState.Grounded : JumpState.Aerial;
+        Debug.DrawRay(transform.position, -Vector2.up, Color.red, 2.0f);
     }
     #endregion
 }

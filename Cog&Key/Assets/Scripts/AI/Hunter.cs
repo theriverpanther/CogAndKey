@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro.Examples;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class Hunter : Agent
 {
-    [SerializeField]
-    private float distThreshold = 0.2f;
+    [SerializeField] private float distThreshold = 0.2f;
+    [SerializeField] private bool wallDetected;
+
+    private float maxHuntTime = 10f;
+    private float huntTimer = 0f;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -16,6 +20,7 @@ public class Hunter : Agent
         state = KeyState.Normal;
         base.Start();
         direction = new Vector2(-1, 0);
+        wallDetected = false;
     }
 
     // Update is called once per frame
@@ -53,7 +58,7 @@ public class Hunter : Agent
         }
 
         transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
-
+        base.Update();
         //if(Input.GetKeyDown(KeyCode.P))
         //{
         //    InsertKey((KeyState)(((int)state + 1) % 4)); ;
@@ -62,20 +67,20 @@ public class Hunter : Agent
         //}
     }
     
-    public void AttachKey(KeyState key)
-    {
+    //public void AttachKey(KeyState key)
+    //{
 
-    }
+    //}
 
     private void EdgeDetectMovement(bool detectFloorEdges, bool detectWalls)
     {
-        int tempDir = EdgeDetect(collidingObjs, detectFloorEdges, detectWalls);
+        int tempDir = EdgeDetect(detectFloorEdges, detectWalls);
         direction.x = tempDir != 0 ? tempDir : direction.x;
     }
 
     protected override void BehaviorTree(float walkSpeed, bool fast)
     {
-        float sqrDist = Mathf.Pow(PlayerPosition.x - direction.x, 2) + Mathf.Pow(PlayerPosition.y - direction.y, 2);
+        float sqrDist = Mathf.Pow(playerPosition.x - direction.x, 2) + Mathf.Pow(playerPosition.y - direction.y, 2);
 
         bool playerSensed = false;
         foreach(Sense s in senses)
@@ -83,7 +88,6 @@ public class Hunter : Agent
             if (s.collidedPlayer)
                 playerSensed = true;
         }
-
 
         if(sqrDist <= distThreshold * distThreshold && !playerSensed)
         {
@@ -94,23 +98,62 @@ public class Hunter : Agent
         {
             // patrol
             // for now just deal with edge detection
-            EdgeDetectMovement(true, true);
+            EdgeDetectMovement(!fast, true);
         }
         else if (sqrDist > distThreshold * distThreshold)
         {
-            // chase player
-            direction.x = (PlayerPosition - transform.position).x;
-            direction = direction.normalized;
+            // try to chase the player
+            float tempX = (playerPosition - transform.position).x;
+            if(Mathf.Sign(tempX) != Mathf.Sign(direction.x)) 
+            {
+                if (turnTimer <= 0)
+                {
+                    direction.x = tempX;
+                    direction = direction.normalized;
+                    turnTimer = turnDelay;
+                }
+                else
+                {
+                    turnTimer -= Time.deltaTime;
+                }
+            }
+            // If there's a wall in front and the player is above it, try to jump
+            if(wallDetected && playerSensed && playerPosition.y > transform.position.y)
+            {
+                if(jumpState == JumpState.Grounded) Jump();
+            }
+            if(!playerSensed)
+            {
+                huntTimer += Time.deltaTime;
+                if(huntTimer >= maxHuntTime)
+                {
+                    huntTimer = 0f;
+                    playerPosition = Vector2.zero;
+                }
+            }
 
-            // Chase and player at height, move
-            // Chase and blocked by wall, see if it can be jumped over, if it can then do it
-            // If the player falls, follow them downward
+            // TODO
+            // NEED TO ACCOUNT FOR LOWER BOUNDS AKA FALLING OFF INTO DEATH
         }
         else
         {
             // stop moving, attack player
+            base.BehaviorTree(0, fast);
+            return;
         }
 
         base.BehaviorTree(walkSpeed, fast);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        wallDetected = other.tag == "Wall";
+    }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.tag == "Wall")
+        {
+            wallDetected = false;
+        }
     }
 }
