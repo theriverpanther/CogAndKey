@@ -119,11 +119,11 @@ public class Agent : MonoBehaviour, IKeyWindable
             collidingObjs.Add(collision.gameObject);
         }
 
-        //PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
-        //if (player != null)
-        //{
-        //    player.Die();
-        //}
+        PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
+        if (player != null)
+        {
+            player.Die();
+        }
     }
 
     protected void OnCollisionExit2D(Collision2D collision)
