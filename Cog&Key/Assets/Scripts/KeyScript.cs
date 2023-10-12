@@ -29,6 +29,7 @@ public class KeyScript : MonoBehaviour
     {
         currentState = State.Pickup;
         uiKeys = GameObject.Find("OverlayMain").GetComponent<KeyShowcaser>();
+
     }
 
     void Update()
