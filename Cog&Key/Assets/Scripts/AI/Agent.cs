@@ -104,6 +104,13 @@ public class Agent : MonoBehaviour, IKeyWindable
         }
     }
 
+    protected void IsGrounded()
+    {
+        bool grounded = Physics2D.Raycast(transform.position, -Vector2.up, distToGround + 0.1f) && Mathf.Abs(rb.velocity.y) <= Mathf.Epsilon;
+        jumpState = grounded ? JumpState.Grounded : JumpState.Aerial;
+        Debug.DrawRay(transform.position, -Vector2.up, Color.red, 2.0f);
+    }
+
     #region Edge Detection
     protected void OnCollisionEnter2D(Collision2D collision)
     {
@@ -158,13 +165,6 @@ public class Agent : MonoBehaviour, IKeyWindable
 
         return returnVal;
         
-    }
-
-    protected void IsGrounded()
-    {
-        bool grounded = Physics2D.Raycast(transform.position, -Vector2.up, distToGround + 0.1f) && Mathf.Abs(rb.velocity.y) <= Mathf.Epsilon;
-        jumpState = grounded ? JumpState.Grounded : JumpState.Aerial;
-        Debug.DrawRay(transform.position, -Vector2.up, Color.red, 2.0f);
     }
     #endregion
 }
