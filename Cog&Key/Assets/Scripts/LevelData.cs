@@ -42,11 +42,10 @@ public class LevelData : MonoBehaviour
                     Destroy(bound);
                 }
             }
-
             Destroy(gameObject);
             return;
         }
-
+        
         // set up the single instance
         instance = this;
         levelName = SceneManager.GetActiveScene().name;
@@ -78,6 +77,7 @@ public class LevelData : MonoBehaviour
 
         // equip the player with the starting keys
         EquipStartKeys();
+        Debug.Log("level data start: " + levelAreas.Count);
     }
 
     // called when the scene changes, deletes the instance if it is no longer the correct level
@@ -161,7 +161,6 @@ public class LevelData : MonoBehaviour
             Rect bufferedArea = levelAreas[i].Area.MakeExpanded(0.5f);
             for(int j = i + 1; j < levelAreas.Count; j++) {
                 if(bufferedArea.Overlaps(levelAreas[j].Area) && !AreZonesOppositeDirection(levelAreas[i], levelAreas[j])) {
-                    Debug.Log("found adjacent zones");
                     // add a camera zone connecting these zones together
                     const float BUFFER = 0.1f;
                     if(cameraZones[i].yMax + BUFFER > cameraZones[j].yMin - BUFFER && cameraZones[i].yMin - BUFFER < cameraZones[j].yMax + BUFFER) {
@@ -171,7 +170,6 @@ public class LevelData : MonoBehaviour
                         float xMax = Mathf.Max(cameraZones[i].xMin, cameraZones[j].xMin);
                         float xMin = Mathf.Min(cameraZones[i].xMax, cameraZones[j].xMax);
                         addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
-                        Debug.Log("added horizontal zone");
                     }
                     else if(cameraZones[i].xMax > cameraZones[j].xMin && cameraZones[i].xMin < cameraZones[j].xMax) {
                         // vertically adjacent
@@ -180,7 +178,6 @@ public class LevelData : MonoBehaviour
                         float yMax = Mathf.Max(cameraZones[i].yMin, cameraZones[j].yMin);
                         float yMin = Mathf.Min(cameraZones[i].yMax, cameraZones[j].yMax);
                         addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
-                        Debug.Log("added vertical zone");
                     }
                 }
             }

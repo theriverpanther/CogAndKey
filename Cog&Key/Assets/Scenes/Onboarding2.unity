@@ -321,7 +321,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7916772503336937272, guid: bbdad16589b141540b1ecfe34e6660ba, type: 3}
       propertyPath: m_Name
-      value: Level Bounds (1)
+      value: Level Bounds (1) lvl2
       objectReference: {fileID: 0}
     - target: {fileID: 8803701092378720327, guid: bbdad16589b141540b1ecfe34e6660ba, type: 3}
       propertyPath: m_Enabled
@@ -588,10 +588,6 @@ PrefabInstance:
     - target: {fileID: 2277918459891144790, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
       propertyPath: m_RootOrder
       value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2277918459891144790, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2277918459891144790, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2133,7 +2129,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 558086584133581980, guid: 4bfa60f11e6eef44e98111336531e0b4, type: 3}
       propertyPath: m_Name
-      value: Level Data Saver
+      value: Level Data Saver lvl 2
       objectReference: {fileID: 0}
     - target: {fileID: 1964980060257973756, guid: 4bfa60f11e6eef44e98111336531e0b4, type: 3}
       propertyPath: m_RootOrder
@@ -2453,7 +2449,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7916772503336937272, guid: bbdad16589b141540b1ecfe34e6660ba, type: 3}
       propertyPath: m_Name
-      value: Level Bounds (2)
+      value: Level Bounds (2) lvl2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4383,7 +4379,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7916772503336937272, guid: bbdad16589b141540b1ecfe34e6660ba, type: 3}
       propertyPath: m_Name
-      value: Level Bounds (3)
+      value: Level Bounds (3) lvl2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6211,7 +6207,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7916772503336937272, guid: bbdad16589b141540b1ecfe34e6660ba, type: 3}
       propertyPath: m_Name
-      value: Level Bounds
+      value: Level Bounds lvl2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

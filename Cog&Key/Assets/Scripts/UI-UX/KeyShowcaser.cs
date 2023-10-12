@@ -24,7 +24,7 @@ public class KeyShowcaser : MonoBehaviour
     [SerializeField]
     GameObject mainKey;
 
-    private void Start()
+    private void Awake()
     {
         keys.Add(KeyState.Normal, keyManage[0]);
         keys.Add(KeyState.Fast, keyManage[0]);

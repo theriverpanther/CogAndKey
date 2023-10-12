@@ -25,7 +25,7 @@ public class KeyScript : MonoBehaviour
     [SerializeField] private KeyState type;
     public KeyState Type { get { return type; } }
 
-    void Start()
+    void Awake()
     {
         currentState = State.Pickup;
         uiKeys = GameObject.Find("OverlayMain").GetComponent<KeyShowcaser>();
