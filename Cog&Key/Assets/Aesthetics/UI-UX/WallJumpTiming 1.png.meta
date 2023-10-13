@@ -1,0 +1,1570 @@
+fileFormatVersion: 2
+guid: a8a0b900ca40dd442a6682a25b4ce604
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: WallJumpTiming 1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 711a0a1381242514cb7501b393686d44
+      internalID: -1221669738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_1
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95f4c35903c02844498501bd75de03fc
+      internalID: 1598863286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_2
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cd6d22d4a7fe6440b018504e1eef54f
+      internalID: 2134673826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_3
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8afd4a8d57ae8ab48bf1e0eb2d3b6430
+      internalID: -1530449601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_4
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e298ab3806a0ec144a4c0c6ed6b443cc
+      internalID: -597052865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_5
+      rect:
+        serializedVersion: 2
+        x: 1095
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1775a85f5d159847bbf408ae3da5293
+      internalID: -1634966085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_6
+      rect:
+        serializedVersion: 2
+        x: 1314
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2bdfe846e7cad9740b6cafc45f14a3a9
+      internalID: 1168495025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_7
+      rect:
+        serializedVersion: 2
+        x: 1533
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 16b177e33b583574a8528dbaef9133fd
+      internalID: 1501535394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_8
+      rect:
+        serializedVersion: 2
+        x: 1752
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dab4f036a9cda0443bc87003ec29a5e9
+      internalID: -272781190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_9
+      rect:
+        serializedVersion: 2
+        x: 1971
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c37749daf4b2c2147866360fc76d5b44
+      internalID: 63687324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_10
+      rect:
+        serializedVersion: 2
+        x: 2190
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41ea9ef5141b0ef4daabe28557b483c0
+      internalID: 777969865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_11
+      rect:
+        serializedVersion: 2
+        x: 2409
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57df3d6b9e2af474d903d2cf4ba70fcc
+      internalID: 117513941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_12
+      rect:
+        serializedVersion: 2
+        x: 2628
+        y: 2224
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec06cfc44a9814c4ea4503698dae0851
+      internalID: 144391148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23632f8c599ac8b4195eeb2d85e384a5
+      internalID: 1303753410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_14
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab911ebaa028f4746b50f3eed2f0193e
+      internalID: 851423995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_15
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 726f078b303f1a64d9963563d92c6386
+      internalID: -1054843172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_16
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e71858d244a50214e82973fa59662320
+      internalID: -208092623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_17
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63bccefa3b60f7c4e83e3e9f4bf9e5f3
+      internalID: 1178635855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_18
+      rect:
+        serializedVersion: 2
+        x: 1095
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c39807a0be4c2d4da69c224273e52a8
+      internalID: -473614724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_19
+      rect:
+        serializedVersion: 2
+        x: 1314
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd602f7cf0ae1d24ebd5e7ee08dc8bd7
+      internalID: -666688278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_20
+      rect:
+        serializedVersion: 2
+        x: 1533
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2bd51b6f0c55254180bbed615ae2188
+      internalID: -1470741787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_21
+      rect:
+        serializedVersion: 2
+        x: 1752
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebca5b6b2d82ca0439dec0753cd30c37
+      internalID: 36097352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_22
+      rect:
+        serializedVersion: 2
+        x: 1971
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 002def17d40bfb0488e77b4a825a4f4d
+      internalID: 721978053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_23
+      rect:
+        serializedVersion: 2
+        x: 2190
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cba128a88be3150448a12cdb1ad95801
+      internalID: -1732251903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_24
+      rect:
+        serializedVersion: 2
+        x: 2409
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a04949b7e4f7fe24f8b68b7ef54009c2
+      internalID: 290650728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_25
+      rect:
+        serializedVersion: 2
+        x: 2628
+        y: 1668
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 205a1c516eb77d041966ea02c3064580
+      internalID: -323034363
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b13e065266c1b144fb2f957aa191a292
+      internalID: -1347155320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_27
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d9e61121ec89c74c80741eccf470ada
+      internalID: -493838769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_28
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c778626d70da508488707e20e2c4dc33
+      internalID: -1716999755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_29
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b370c54f3b88e548ab6e0298ff8bfa1
+      internalID: -370255734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_30
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2257525ad38fb14a9b5e06291fe99cf
+      internalID: -2021367363
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_31
+      rect:
+        serializedVersion: 2
+        x: 1095
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 068d7028a9a90ea47982e244452ec5bf
+      internalID: 1248277685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_32
+      rect:
+        serializedVersion: 2
+        x: 1314
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e49f55a695ccc444c9156bf8d9037fd5
+      internalID: 200529134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_33
+      rect:
+        serializedVersion: 2
+        x: 1533
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8fc3de80e1b92149bb5da85cd3f4df9
+      internalID: -1599806272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_34
+      rect:
+        serializedVersion: 2
+        x: 1752
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3920500c29ef35647bb9aa6c99e902be
+      internalID: 100762759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_35
+      rect:
+        serializedVersion: 2
+        x: 1971
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a41b5f3968ff5c7429799e81f03b7f40
+      internalID: 1853000097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_36
+      rect:
+        serializedVersion: 2
+        x: 2190
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 72204af5f64c71449aad5e50f02408aa
+      internalID: -811826874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_37
+      rect:
+        serializedVersion: 2
+        x: 2409
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 53d97e85711365b40b98ec933042b2a7
+      internalID: -1471867195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_38
+      rect:
+        serializedVersion: 2
+        x: 2628
+        y: 1112
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95be983534b906d40a3f602f524c5c04
+      internalID: 2020318323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 120fe58c1abdadf45a865e27f06ceb06
+      internalID: -1705712150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_40
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a84eebfe9848894b924ce253ec3e960
+      internalID: -774694688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_41
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bd87d578d9699d44985dcbee143f84a
+      internalID: 1668064311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_42
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3014b9fd668b3784fb6caa999603c1c7
+      internalID: -1169771229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_43
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a004576153e6484dbf8333644edc6ce
+      internalID: -1920561107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_44
+      rect:
+        serializedVersion: 2
+        x: 1095
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64e869452b0f1a742ad9d230220f0b02
+      internalID: 552644596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_45
+      rect:
+        serializedVersion: 2
+        x: 1314
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c236bb42b5eecaa44959dd5b81ebe84a
+      internalID: 2113988603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_46
+      rect:
+        serializedVersion: 2
+        x: 1533
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e752072e839c4e241b56c74e44c8b8dd
+      internalID: -438556721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_47
+      rect:
+        serializedVersion: 2
+        x: 1752
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a814b23653bb59146ae4d833ab778acf
+      internalID: -1043685069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_48
+      rect:
+        serializedVersion: 2
+        x: 1971
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2401bde82a403d64d993893aea4ac86b
+      internalID: 892451439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_49
+      rect:
+        serializedVersion: 2
+        x: 2190
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb1d3772856cda141b9f021acb076f47
+      internalID: -1427328390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_50
+      rect:
+        serializedVersion: 2
+        x: 2409
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eca681cf86a865746a0563fde6761612
+      internalID: -2005615154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_51
+      rect:
+        serializedVersion: 2
+        x: 2628
+        y: 556
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36101f4f318a8d44186dcf02bf42d02c
+      internalID: -1017326534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_52
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec4d496d4f4389249b3ae1a83c780d12
+      internalID: -1402042748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_53
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d77b19f9b25d0b543bd956c917d5c49d
+      internalID: -1837944236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_54
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5bc6b619085e4814098419079db9a8da
+      internalID: -1451232560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_55
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95076c91702eea84d8cc5e4370f086f2
+      internalID: -1821951444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_56
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c81978c960039354b86e5d007f91829f
+      internalID: 2134063474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_57
+      rect:
+        serializedVersion: 2
+        x: 1095
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 833e758c576419c47bb141d99f4bdf14
+      internalID: 662703391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_58
+      rect:
+        serializedVersion: 2
+        x: 1314
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 487496ccbc64c0d41923e761572da185
+      internalID: -1542083441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_59
+      rect:
+        serializedVersion: 2
+        x: 1533
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa1ff997e57de5b4cb842014db14491f
+      internalID: 398204685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_60
+      rect:
+        serializedVersion: 2
+        x: 1752
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2798ae16261aa2d44953fd80086c5920
+      internalID: 361370348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_61
+      rect:
+        serializedVersion: 2
+        x: 1971
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c8e4adaf048980489064dc56fdd0ae9
+      internalID: 1969652512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_62
+      rect:
+        serializedVersion: 2
+        x: 2190
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9f92c0535fbeed488840c389bc9b9cd
+      internalID: -106782472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_63
+      rect:
+        serializedVersion: 2
+        x: 2409
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3571e7773f28ad743bd0d9b71d36dd03
+      internalID: -39851958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallJumpTiming 1_64
+      rect:
+        serializedVersion: 2
+        x: 2628
+        y: 0
+        width: 219
+        height: 556
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4832aaa4ee6cc1d43a1cac0e1acaa428
+      internalID: -839849892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      WallJumpTiming 1_0: -1221669738
+      WallJumpTiming 1_1: 1598863286
+      WallJumpTiming 1_10: 777969865
+      WallJumpTiming 1_11: 117513941
+      WallJumpTiming 1_12: 144391148
+      WallJumpTiming 1_13: 1303753410
+      WallJumpTiming 1_14: 851423995
+      WallJumpTiming 1_15: -1054843172
+      WallJumpTiming 1_16: -208092623
+      WallJumpTiming 1_17: 1178635855
+      WallJumpTiming 1_18: -473614724
+      WallJumpTiming 1_19: -666688278
+      WallJumpTiming 1_2: 2134673826
+      WallJumpTiming 1_20: -1470741787
+      WallJumpTiming 1_21: 36097352
+      WallJumpTiming 1_22: 721978053
+      WallJumpTiming 1_23: -1732251903
+      WallJumpTiming 1_24: 290650728
+      WallJumpTiming 1_25: -323034363
+      WallJumpTiming 1_26: -1347155320
+      WallJumpTiming 1_27: -493838769
+      WallJumpTiming 1_28: -1716999755
+      WallJumpTiming 1_29: -370255734
+      WallJumpTiming 1_3: -1530449601
+      WallJumpTiming 1_30: -2021367363
+      WallJumpTiming 1_31: 1248277685
+      WallJumpTiming 1_32: 200529134
+      WallJumpTiming 1_33: -1599806272
+      WallJumpTiming 1_34: 100762759
+      WallJumpTiming 1_35: 1853000097
+      WallJumpTiming 1_36: -811826874
+      WallJumpTiming 1_37: -1471867195
+      WallJumpTiming 1_38: 2020318323
+      WallJumpTiming 1_39: -1705712150
+      WallJumpTiming 1_4: -597052865
+      WallJumpTiming 1_40: -774694688
+      WallJumpTiming 1_41: 1668064311
+      WallJumpTiming 1_42: -1169771229
+      WallJumpTiming 1_43: -1920561107
+      WallJumpTiming 1_44: 552644596
+      WallJumpTiming 1_45: 2113988603
+      WallJumpTiming 1_46: -438556721
+      WallJumpTiming 1_47: -1043685069
+      WallJumpTiming 1_48: 892451439
+      WallJumpTiming 1_49: -1427328390
+      WallJumpTiming 1_5: -1634966085
+      WallJumpTiming 1_50: -2005615154
+      WallJumpTiming 1_51: -1017326534
+      WallJumpTiming 1_52: -1402042748
+      WallJumpTiming 1_53: -1837944236
+      WallJumpTiming 1_54: -1451232560
+      WallJumpTiming 1_55: -1821951444
+      WallJumpTiming 1_56: 2134063474
+      WallJumpTiming 1_57: 662703391
+      WallJumpTiming 1_58: -1542083441
+      WallJumpTiming 1_59: 398204685
+      WallJumpTiming 1_6: 1168495025
+      WallJumpTiming 1_60: 361370348
+      WallJumpTiming 1_61: 1969652512
+      WallJumpTiming 1_62: -106782472
+      WallJumpTiming 1_63: -39851958
+      WallJumpTiming 1_64: -839849892
+      WallJumpTiming 1_7: 1501535394
+      WallJumpTiming 1_8: -272781190
+      WallJumpTiming 1_9: 63687324
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
