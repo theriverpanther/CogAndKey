@@ -61,18 +61,22 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
 
             // check if no longer a rider
             Rect riderArea = Global.GetCollisionArea(riders[i]);
+            Rigidbody2D riderRB = riders[i].GetComponent<Rigidbody2D>();
             float BUFFER = 0.05f;
             if(riderArea.yMin > platformArea.yMax + BUFFER
                 || riderArea.yMax < platformArea.yMin - BUFFER
                 || riderArea.xMin > platformArea.xMax + BUFFER
                 || riderArea.xMax < platformArea.xMin - BUFFER
+
+                || OnSide(riderArea) && 
+                    (riderArea.center.x < platformArea.center.x && riderRB.velocity.x <= 0 
+                    || riderArea.center.x > platformArea.center.x && riderRB.velocity.x >= 0)
             ) {
-                Rigidbody2D rb = riders[i].GetComponent<Rigidbody2D>();
-                if(currentKey == KeyState.Fast && rb != null) {
+                if(currentKey == KeyState.Fast) {
                     if(momentumBufferTime > 0) {
-                        rb.velocity += bufferedMomentum;
+                        riderRB.velocity += bufferedMomentum;
                     } else {
-                        rb.velocity += currentSpeed * (Vector2)displacement.normalized;
+                        riderRB.velocity += currentSpeed * (Vector2)displacement.normalized;
                     }
                 }
 
@@ -114,9 +118,16 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
-        if(!riders.Contains(collision.gameObject)) {
+        Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
+        if(rb != null && !riders.Contains(collision.gameObject)) {
             riders.Add(collision.gameObject);
         }
+    }
+
+    // checks if the input collider is not above or below this wall
+    private bool OnSide(Rect collider) {
+        Rect platformArea = Global.GetCollisionArea(gameObject);
+        return collider.yMin < platformArea.yMax && collider.yMax > platformArea.yMin;
     }
 
     public void InsertKey(KeyState key) {
