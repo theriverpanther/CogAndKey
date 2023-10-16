@@ -190,7 +190,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3620713396818469456, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_Name
-      value: Moving Wall Variant
+      value: Horizontal Moving Wall
       objectReference: {fileID: 0}
     - target: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_RootOrder
