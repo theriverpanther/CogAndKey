@@ -28,7 +28,7 @@ public class KeyScript : MonoBehaviour
     void Awake()
     {
         currentState = State.Pickup;
-        uiKeys = GameObject.Find("OverlayMain").GetComponent<KeyShowcaser>();
+        uiKeys = GameObject.Find("OverlayMain")?.GetComponent<KeyShowcaser>();
 
     }
 
@@ -62,19 +62,19 @@ public class KeyScript : MonoBehaviour
                 break;
             case State.PlayerHeld:
                 gameObject.SetActive(false);
-                uiKeys.MainKeyStatusUpdate(true, Type);
-                uiKeys.SmallKeyStatusUpdate(true, Type);
+                uiKeys?.MainKeyStatusUpdate(true, Type);
+                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
             case State.Attacking:
                 gameObject.SetActive(true);
-                uiKeys.MainKeyStatusUpdate(false, Type);
-                uiKeys.SmallKeyStatusUpdate(false, Type);
+                uiKeys?.MainKeyStatusUpdate(false, Type);
+                uiKeys?.SmallKeyStatusUpdate(false, Type);
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
                 distanceTravelled = 0;
                 break;
             case State.Attached:
-                uiKeys.MainKeyStatusUpdate(false, Type);
-                uiKeys.SmallKeyStatusUpdate(false, Type);
+                uiKeys?.MainKeyStatusUpdate(false, Type);
+                uiKeys?.SmallKeyStatusUpdate(false, Type);
                 break;
         }
     }
@@ -87,17 +87,17 @@ public class KeyScript : MonoBehaviour
         switch(Type) {
             case KeyState.Fast:
                 player.FastKey = this;
-                uiKeys.SmallKeyStatusUpdate(true, Type);
+                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
 
             case KeyState.Lock:
                 player.LockKey = this;
-                uiKeys.SmallKeyStatusUpdate(true, Type);
+                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
 
             case KeyState.Reverse:
                 player.ReverseKey = this;
-                uiKeys.SmallKeyStatusUpdate(true, Type);
+                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
         }
 
@@ -133,7 +133,7 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
-        uiKeys.MainKeyStatusUpdate(false, Type);
+        uiKeys?.MainKeyStatusUpdate(false, Type);
 
         insertTarget.InsertKey(KeyState.Normal);
         insertTarget = null;

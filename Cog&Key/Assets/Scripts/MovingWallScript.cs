@@ -7,6 +7,7 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
 {
     [SerializeField] private GameObject[] Path;
     [SerializeField] private bool LoopPath; // false, back and forth
+    [SerializeField] private GameObject TrackPrefab;
     private const float MOVE_SPEED = 3.5f;
 
     private List<Vector2> pathPoints;
@@ -24,6 +25,16 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
 
         foreach(GameObject point in Path) {
             pathPoints.Add(point.transform.position);
+        }
+
+        // place visual tracks
+        float trackWidth = TrackPrefab.transform.localScale.x;
+        for(int i = 0; i < pathPoints.Count - 1; i++) {
+            PlaceTrack(pathPoints[i], pathPoints[i+1]);
+        }
+
+        if(LoopPath) {
+            PlaceTrack(pathPoints[pathPoints.Count -1], pathPoints[0]);
         }
     }
 
@@ -128,6 +139,20 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
     private bool OnSide(Rect collider) {
         Rect platformArea = Global.GetCollisionArea(gameObject);
         return collider.yMin < platformArea.yMax && collider.yMax > platformArea.yMin;
+    }
+
+    private void PlaceTrack(Vector2 start, Vector2 end) {
+        float trackWidth = TrackPrefab.transform.localScale.x;
+        GameObject track = Instantiate(TrackPrefab);
+        track.transform.position = (start + end) / 2;
+        if (Mathf.Abs(start.x - end.x) < 1.0f)
+        {
+            track.transform.localScale = new Vector3(trackWidth, Mathf.Abs(start.y - end.y) + trackWidth, 1);
+        }
+        else if (Mathf.Abs(start.y - end.y) < 1.0f)
+        {
+            track.transform.localScale = new Vector3(Mathf.Abs(start.x - end.x) + trackWidth, trackWidth, 1);
+        }
     }
 
     public void InsertKey(KeyState key) {

@@ -281,6 +281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: []
   LoopPath: 0
+  TrackPrefab: {fileID: 5631877555924235435, guid: 3b7ff2405be0b99419e64a740d8bdcdf, type: 3}
 --- !u!50 &-2445652180889053845
 Rigidbody2D:
   serializedVersion: 4
