@@ -29,6 +29,9 @@ public class PlayerInput
     // used to detect when a controller is plugged in or unplugged
     private Gamepad currentGP;
     private Keyboard currentKB;
+    private string controllerName;
+
+    public string ControllerName { get { return controllerName; } }
 
     private Dictionary<Action, List<ButtonControl>> keyBindings;
     private float jumpBuffer;
@@ -81,6 +84,8 @@ public class PlayerInput
     private void ConstructKeyBindings() {
         currentGP = Gamepad.current;
         currentKB = Keyboard.current;
+
+        controllerName = Input.GetJoystickNames()[0];
 
         keyBindings = new Dictionary<Action, List<ButtonControl>>();
         for(int i = 0; i < NUM_ACTIONS; i++) {
