@@ -118,6 +118,8 @@ public class Hunter : Agent
                 }
             }
             // If there's a wall in front and the player is above it, try to jump
+            // Player needs to be able to jump over enemy
+            // instead of jumping to meet, turn around
             if(wallDetected && playerSensed && playerPosition.y > transform.position.y)
             {
                 if(jumpState == JumpState.Grounded) Jump();

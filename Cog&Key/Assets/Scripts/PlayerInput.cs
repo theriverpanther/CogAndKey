@@ -29,6 +29,7 @@ public class PlayerInput
     // used to detect when a controller is plugged in or unplugged
     private Gamepad currentGP;
     private Keyboard currentKB;
+
     private string controllerName;
 
     public string ControllerName { get { return controllerName; } }
