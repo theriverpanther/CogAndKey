@@ -264,9 +264,15 @@ public class PlayerScript : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
-        if(collision.gameObject.tag == "Wall") {
-            moveLockedRight = null;
-            float test = Mathf.Abs(physicsBody.velocity.y);
+        Debug.Log("collided");
+        if(collision.gameObject.tag != "Wall") {
+            return;
+        }
+
+        moveLockedRight = null;
+        bool tilemapCollided = collision.gameObject.GetComponent<TilemapScript>() != null;
+        if(collision.gameObject.GetComponent<TilemapScript>() == null) {
+            // collided wall game object
             if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
                 // land on ground, from aerial or wall state
                 currentState = State.Grounded;
@@ -274,6 +280,24 @@ public class PlayerScript : MonoBehaviour
             if(IsAgainstWall(collision.gameObject)) {
                 // against a wall
                 currentWalls.Add(collision.gameObject);
+            }
+        } else {
+            // collided wall tilemap
+            ContactPoint2D[] contacts = new ContactPoint2D[4];
+            int numContacts = collision.GetContacts(contacts);
+            for(int i = 0; i < numContacts; i++) {
+                DebugDisplay.Instance.PlaceDot("player-wall point " + i, contacts[i].point);
+            }
+
+            Vector2 contactPoint = collision.GetContact(0).point;
+            Vector2 tileOverlap = contactPoint + 0.1f * (contactPoint - (Vector2)transform.position).normalized; // extend beyond the contact point slightly to get inside the tile
+            Vector3Int hitTile = TilemapScript.Instance.WallGrid.WorldToCell(collision.GetContact(0).point);
+            //Debug.Log(TilemapScript.Instance.WallGrid.GetTile(hitTile));
+            
+
+            if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
+                // land on ground, from aerial or wall state
+                currentState = State.Grounded;
             }
         }
     }

@@ -80,7 +80,6 @@ public class LevelData : MonoBehaviour
 
         // equip the player with the starting keys
         EquipStartKeys();
-        Debug.Log("level data start: " + levelAreas.Count);
     }
 
     // called when the scene changes, deletes the instance if it is no longer the correct level

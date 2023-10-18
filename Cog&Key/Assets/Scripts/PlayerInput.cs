@@ -86,7 +86,7 @@ public class PlayerInput
         currentGP = Gamepad.current;
         currentKB = Keyboard.current;
 
-        controllerName = Input.GetJoystickNames()[0];
+        controllerName = Input.GetJoystickNames().Length > 0 ? Input.GetJoystickNames()[0] : null;
 
         keyBindings = new Dictionary<Action, List<ButtonControl>>();
         for(int i = 0; i < NUM_ACTIONS; i++) {
