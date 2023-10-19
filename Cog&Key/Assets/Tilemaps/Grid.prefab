@@ -61,7 +61,7 @@ GameObject:
   - component: {fileID: 1551128713121663940}
   - component: {fileID: 5378952294676226824}
   m_Layer: 0
-  m_Name: Tilemap
+  m_Name: Walls
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
