@@ -12,15 +12,24 @@ public class HelperCreature : MonoBehaviour
     private float moveSpeed;
     [SerializeField]
     public GameObject player;
-    private Rigidbody2D rb;
 
-    bool stop = true;
+    private CircleCollider2D playerTrigger;
+    private Rigidbody2D rb;
+    private bool stopped = false;
+
+    public AnimationCurve myCurve;
+    private float stopX;
+    private float stopY;
+    float distanceAwayAllowed = 6f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         moveSpeed = 2f;
-
+        stopX = 0f;
+        stopY = 0f;
+        Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+        playerTrigger = player.GetComponent<CircleCollider2D>();
     }
 
     // Update is called once per frame
@@ -38,12 +47,21 @@ public class HelperCreature : MonoBehaviour
     {
         directionToplayer = (player.transform.position - transform.position).normalized;
         float dis = Vector2.Distance(player.transform.position, transform.position);
-        Debug.Log("Distance: " + dis);
 
-        if(!stop)
+        Debug.Log(dis);
+
+        if(dis > distanceAwayAllowed)
         {
+            if (stopped)
+            {
+                stopped = false;
+            }
             rb.velocity = new Vector2(directionToplayer.x, directionToplayer.y) * moveSpeed;
+        } else
+        {
+            FloatInPlace();
         }
+        FloatInPlace();
 
         ChangeSpeedBasedOnDistance(dis);
     }
@@ -57,18 +75,11 @@ public class HelperCreature : MonoBehaviour
             {
                 moveSpeed -= 0.2f;
             }
-
-            if (moveSpeed < 0f)
-            {
-                moveSpeed = 0f;
-                stop = true;
-            }
         }
 
         //speed up
         if (distance > 4)
         {
-            stop = false;
             moveSpeed += 0.2f;
         } else
         {
@@ -84,4 +95,20 @@ public class HelperCreature : MonoBehaviour
         }
     }
 
+    void FloatInPlace()
+    {
+        Debug.Log("Stopped?: " + stopped);
+        if (!stopped)
+        {
+            stopped = true;
+            stopX = transform.position.x;
+            stopY = transform.position.y;
+        } else
+        {
+            float yTo = myCurve.Evaluate((Time.time % myCurve.length));
+            // Mathf.Lerp(transform.position.y, transform.position.y + yTo
+            transform.position = new Vector3(stopX, Mathf.Lerp(transform.position.y, stopY + yTo, Time.time), transform.position.z);
+        }
+
+    }
 }
