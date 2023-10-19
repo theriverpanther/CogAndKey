@@ -34,7 +34,6 @@ public class PlayerScript : MonoBehaviour
     private float coyoteTime;
     private float keyCooldown;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
-    private List<GameObject> currentWalls; // the wall the player is currently up against, can be multiple at once
 
     public Rect CollisionArea {  get {
             Vector2 size = GetComponent<BoxCollider2D>().bounds.size;
@@ -47,7 +46,6 @@ public class PlayerScript : MonoBehaviour
         physicsBody.gravityScale = FALL_GRAVITY;
         currentState = State.Aerial;
         input = new PlayerInput();
-        currentWalls = new List<GameObject>();
 
         if(LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
@@ -83,14 +81,6 @@ public class PlayerScript : MonoBehaviour
             Die();
         }
 
-        // if against a wall, check if still next to it
-        for(int i = 0; i < currentWalls.Count; i++) {
-            if(!IsAgainstWall(currentWalls[i])) {
-                currentWalls.RemoveAt(i);
-                i--;
-            }
-        }
-
         // vertical movement
         switch(currentState)
         {
@@ -103,7 +93,6 @@ public class PlayerScript : MonoBehaviour
 
                     // land on the ground
                     if(leftRaycast.collider != null && leftRaycast.distance < 0.2f || rightRaycast.collider != null && rightRaycast.distance < 0.2f) {
-                        Debug.Log("landed on the ground");
                         currentState = State.Grounded;
                         break;
                     }
@@ -131,22 +120,19 @@ public class PlayerScript : MonoBehaviour
                 ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
+                
+                Direction adjWallDir = GetAdjacentWallDireciton();
 
                 // cling to walls
-                if(velocity.y < CLING_VELOCITY) {
-                    foreach(GameObject wall in currentWalls) {
-                        if(velocity.x > 0 && wall.transform.position.x > transform.position.x
-                            || velocity.x < 0 && wall.transform.position.x < transform.position.x
-                        ) {
-                            velocity.y = CLING_VELOCITY;
-                            break;
-                        }
-                    }
+                if(velocity.y < CLING_VELOCITY && 
+                    (adjWallDir == Direction.Left && input.IsPressed(PlayerInput.Action.Left) || adjWallDir == Direction.Right && input.IsPressed(PlayerInput.Action.Right))
+                ) {
+                    velocity.y = CLING_VELOCITY;
                 }
 
                 // wall jump
-                if(currentWalls.Count > 0 && input.JustPressed(PlayerInput.Action.Jump)) {
-                    int jumpDirection = (transform.position.x > currentWalls[0].transform.position.x ? 1 : -1);
+                if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
+                    int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
                     velocity.y = 11.0f;
                     velocity.x = jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
@@ -277,43 +263,27 @@ public class PlayerScript : MonoBehaviour
         jumpHeld = true;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
-        if(collision.gameObject.tag != "Wall") {
-            return;
+    // checks if the player's left and right sides are against any surfaces. Returns Direction.None for no wall, and left or right if there is a wall
+    private Direction GetAdjacentWallDireciton() {
+        Rect collisionArea = CollisionArea;
+
+        const float BUFFER = 0.05f;
+
+        RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.yMax, 0), Vector2.left);
+        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.center.y, 0), Vector2.left);
+        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.yMin, 0), Vector2.left);
+
+        RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.yMax, 0), Vector2.right);
+        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.center.y, 0), Vector2.right);
+        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.yMin, 0), Vector2.right);
+
+        if(leftTop.collider != null && leftTop.distance < 2 * BUFFER || leftMid.collider != null && leftMid.distance < 2 * BUFFER || leftBot.collider != null && leftBot.distance < 2 * BUFFER) {
+            return Direction.Left;
+        }
+        if(rightTop.collider != null && rightTop.distance < 2 * BUFFER || rightMid.collider != null && rightMid.distance < 2 * BUFFER || rightBot.collider != null && rightBot.distance < 2 * BUFFER) {
+            return Direction.Right;
         }
 
-        moveLockedRight = null;
-        bool tilemapCollided = collision.gameObject.GetComponent<TilemapScript>() != null;
-        if(collision.gameObject.GetComponent<TilemapScript>() == null) {
-            if(IsAgainstWall(collision.gameObject)) {
-                // against a wall
-                currentWalls.Add(collision.gameObject);
-            }
-        } else {
-            // collided wall tilemap
-            ContactPoint2D[] contacts = new ContactPoint2D[4];
-            int numContacts = collision.GetContacts(contacts);
-            for(int i = 0; i < numContacts; i++) {
-                //DebugDisplay.Instance.PlaceDot("player-wall point " + i, contacts[i].point);
-            }
-
-            Vector2 contactPoint = collision.GetContact(0).point;
-            Vector2 tileOverlap = contactPoint + 0.1f * (contactPoint - (Vector2)transform.position).normalized; // extend beyond the contact point slightly to get inside the tile
-            Vector3Int hitTile = TilemapScript.Instance.WallGrid.WorldToCell(collision.GetContact(0).point);
-            //Debug.Log(TilemapScript.Instance.WallGrid.GetTile(hitTile));
-        }
-    }
-
-    // determines if the player is up against the input wall on the left or right side
-    private bool IsAgainstWall(GameObject wall) {
-        float halfHeight = GetComponent<BoxCollider2D>().bounds.extents.y;
-        if(transform.position.y + halfHeight <= wall.transform.position.y - wall.transform.lossyScale.y / 2
-            || transform.position.y - halfHeight >= wall.transform.position.y + wall.transform.lossyScale.y / 2
-        ) {
-            // above or below the wall
-            return false;
-        }
-
-        return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.lossyScale.x + GetComponent<BoxCollider2D>().bounds.size.x) / 2 < 0.1f;
+        return Direction.None;
     }
 }
