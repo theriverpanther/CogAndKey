@@ -36,6 +36,10 @@ public class PlayerScript : MonoBehaviour
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
     private List<GameObject> currentWalls; // the wall the player is currently up against, can be multiple at once
 
+    [SerializeField]
+    public GameObject helper;
+    private HelperCreature helperScript;
+
     public Rect CollisionArea {  get {
             Vector2 size = GetComponent<BoxCollider2D>().bounds.size;
             return new Rect((Vector2)transform.position - size / 2, size);
@@ -53,6 +57,8 @@ public class PlayerScript : MonoBehaviour
             transform.position = LevelData.Instance.RespawnPoint.Value;
             CameraScript.Instance.SetInitialPosition();
         }
+
+        helperScript = helper.GetComponent<HelperCreature>();
     }
 
     void Update()
@@ -289,5 +295,22 @@ public class PlayerScript : MonoBehaviour
         }
 
         return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.lossyScale.x + GetComponent<BoxCollider2D>().bounds.size.x) / 2 < 0.1f;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Helper")
+        {
+            Debug.Log("WAAAAHHH");
+            helperScript.inRange = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Helper")
+        {
+            helperScript.inRange = false;
+        }
     }
 }

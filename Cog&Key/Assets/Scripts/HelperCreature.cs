@@ -16,11 +16,12 @@ public class HelperCreature : MonoBehaviour
     private CircleCollider2D playerTrigger;
     private Rigidbody2D rb;
     private bool stopped = false;
+    public bool inRange = false;
 
     public AnimationCurve myCurve;
     private float stopX;
     private float stopY;
-    float distanceAwayAllowed = 6f;
+    float distanceAwayAllowed = 2f;
 
     void Start()
     {
@@ -48,9 +49,9 @@ public class HelperCreature : MonoBehaviour
         directionToplayer = (player.transform.position - transform.position).normalized;
         float dis = Vector2.Distance(player.transform.position, transform.position);
 
-        Debug.Log(dis);
+        //Debug.Log(dis);
 
-        if(dis > distanceAwayAllowed)
+        if(dis > distanceAwayAllowed && !inRange)
         {
             if (stopped)
             {
@@ -59,9 +60,11 @@ public class HelperCreature : MonoBehaviour
             rb.velocity = new Vector2(directionToplayer.x, directionToplayer.y) * moveSpeed;
         } else
         {
-            FloatInPlace();
+            if(inRange)
+            {
+                FloatInPlace();
+            }
         }
-        FloatInPlace();
 
         ChangeSpeedBasedOnDistance(dis);
     }
@@ -97,7 +100,6 @@ public class HelperCreature : MonoBehaviour
 
     void FloatInPlace()
     {
-        Debug.Log("Stopped?: " + stopped);
         if (!stopped)
         {
             stopped = true;
