@@ -55,7 +55,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    void Update()
+    void FixedUpdate()
     {
         input.Update();
         Vector2 velocity = physicsBody.velocity;
@@ -95,6 +95,20 @@ public class PlayerScript : MonoBehaviour
         switch(currentState)
         {
             case State.Aerial:
+                if(Mathf.Abs(velocity.y) <= 0.05f) {
+                    // check to make sure this isn't the player hitting a ceiling
+                    Rect collisionArea = CollisionArea;
+                    RaycastHit2D leftRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMin - 0.1f, 0), Vector2.down);
+                    RaycastHit2D rightRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMin - 0.1f, 0), Vector2.down);
+
+                    // land on the ground
+                    if(leftRaycast.collider != null && leftRaycast.distance < 0.2f || rightRaycast.collider != null && rightRaycast.distance < 0.2f) {
+                        Debug.Log("landed on the ground");
+                        currentState = State.Grounded;
+                        break;
+                    }
+                }
+
                 friction = 5f;
 
                 // extend jump height while jump is held
@@ -264,7 +278,6 @@ public class PlayerScript : MonoBehaviour
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
-        Debug.Log("collided");
         if(collision.gameObject.tag != "Wall") {
             return;
         }
@@ -272,11 +285,6 @@ public class PlayerScript : MonoBehaviour
         moveLockedRight = null;
         bool tilemapCollided = collision.gameObject.GetComponent<TilemapScript>() != null;
         if(collision.gameObject.GetComponent<TilemapScript>() == null) {
-            // collided wall game object
-            if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
-                // land on ground, from aerial or wall state
-                currentState = State.Grounded;
-            }
             if(IsAgainstWall(collision.gameObject)) {
                 // against a wall
                 currentWalls.Add(collision.gameObject);
@@ -286,19 +294,13 @@ public class PlayerScript : MonoBehaviour
             ContactPoint2D[] contacts = new ContactPoint2D[4];
             int numContacts = collision.GetContacts(contacts);
             for(int i = 0; i < numContacts; i++) {
-                DebugDisplay.Instance.PlaceDot("player-wall point " + i, contacts[i].point);
+                //DebugDisplay.Instance.PlaceDot("player-wall point " + i, contacts[i].point);
             }
 
             Vector2 contactPoint = collision.GetContact(0).point;
             Vector2 tileOverlap = contactPoint + 0.1f * (contactPoint - (Vector2)transform.position).normalized; // extend beyond the contact point slightly to get inside the tile
             Vector3Int hitTile = TilemapScript.Instance.WallGrid.WorldToCell(collision.GetContact(0).point);
             //Debug.Log(TilemapScript.Instance.WallGrid.GetTile(hitTile));
-            
-
-            if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
-                // land on ground, from aerial or wall state
-                currentState = State.Grounded;
-            }
         }
     }
 
