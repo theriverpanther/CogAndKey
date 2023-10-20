@@ -220,15 +220,14 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // determine attack direction
-                Vector2 attackDirection = Vector2.zero;
-                if(input.IsPressed(PlayerInput.Action.Up)) {
-                    attackDirection = Vector2.up;
-                }
-                if(input.IsPressed(PlayerInput.Action.Down)) {
-                    attackDirection = Vector2.down;
-                }
-                if(attackDirection == Vector2.zero) {
-                    attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
+                Vector2 attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
+                if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
+                    if(input.IsPressed(PlayerInput.Action.Up)) {
+                        attackDirection = Vector2.up;
+                    }
+                    if(input.IsPressed(PlayerInput.Action.Down)) {
+                        attackDirection = Vector2.down;
+                    }
                 }
 
                 switch(usedKey) {
