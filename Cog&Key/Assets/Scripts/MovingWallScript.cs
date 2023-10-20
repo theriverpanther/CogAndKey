@@ -15,8 +15,6 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
     private bool forward = true; // false: moving backwards through the path
     private List<GameObject> riders = new List<GameObject>();
     private KeyState currentKey;
-    private float momentumBufferTime;
-    private Vector2 bufferedMomentum;
 
     void Awake()
     {
@@ -58,8 +56,17 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
             NextWaypoint();
 
             // buffer momentum when changing direction
-            momentumBufferTime = 0.2f;
-            bufferedMomentum = currentSpeed * (transform.position - startPosition).normalized;
+            //momentumBufferTime = 0.2f;
+            Vector2 momentum = currentSpeed * (transform.position - startPosition).normalized;
+            Vector2 newDirection = pathPoints[nextPointIndex] - (Vector2)transform.position;
+            Debug.Log(newDirection);
+
+            // apply shift momentum to riders if platform reverses direction
+            if(currentKey == KeyState.Fast && Vector2.Dot(momentum.normalized, newDirection.normalized) < -0.5f) {
+                foreach(GameObject rider in riders) {
+                    rider.GetComponent<Rigidbody2D>().velocity += momentum;
+                }
+            }
         } else {
             // moving towards target point
             transform.position += shift * ((Vector3)target - transform.position).normalized;
@@ -84,21 +91,14 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
                     || riderArea.center.x > platformArea.center.x && riderRB.velocity.x >= 0)
             ) {
                 if(currentKey == KeyState.Fast) {
-                    if(momentumBufferTime > 0) {
-                        riderRB.velocity += bufferedMomentum;
-                    } else {
-                        riderRB.velocity += currentSpeed * (Vector2)displacement.normalized;
-                    }
+                    // keep platform momentum if moving fast
+                    riderRB.velocity += currentSpeed * (Vector2)displacement.normalized;
                 }
 
                 riders.RemoveAt(i);
                 i--;
 
             }
-        }
-
-        if(momentumBufferTime > 0) {
-            momentumBufferTime -= Time.deltaTime;
         }
     }
 
