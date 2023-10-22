@@ -55,16 +55,23 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
             transform.position = target;
             NextWaypoint();
 
-            // buffer momentum when changing direction
-            //momentumBufferTime = 0.2f;
+            // apply shift momentum to riders when changing direction
             Vector2 momentum = currentSpeed * (transform.position - startPosition).normalized;
             Vector2 newDirection = pathPoints[nextPointIndex] - (Vector2)transform.position;
-            Debug.Log(newDirection);
 
-            // apply shift momentum to riders if platform reverses direction
-            if(currentKey == KeyState.Fast && Vector2.Dot(momentum.normalized, newDirection.normalized) < -0.5f) {
-                foreach(GameObject rider in riders) {
-                    rider.GetComponent<Rigidbody2D>().velocity += momentum;
+            if(Vector2.Dot(momentum.normalized, newDirection.normalized) > -0.5f) {
+                // less momentum if not reversing direction
+                momentum /= 2f;
+            }
+
+            if(currentKey == KeyState.Fast) {
+                for(int i = 0; i < riders.Count; i++) {
+                    riders[i].GetComponent<Rigidbody2D>().velocity += momentum;
+
+                    if(momentum.y > 0) {
+                        // when the momentum is up, riders are launched off
+                        riders.RemoveAt(i);
+                    }
                 }
             }
         } else {
@@ -97,7 +104,6 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
 
                 riders.RemoveAt(i);
                 i--;
-
             }
         }
     }
