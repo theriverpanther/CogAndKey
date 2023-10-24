@@ -51,19 +51,12 @@ public class HelperCreature : MonoBehaviour
 
         //Debug.Log(dis);
 
-        if(dis > distanceAwayAllowed && !inRange)
+        if(dis > distanceAwayAllowed)
         {
-            if (stopped)
-            {
-                stopped = false;
-            }
             rb.velocity = new Vector2(directionToplayer.x, directionToplayer.y) * moveSpeed;
         } else
         {
-            if(inRange)
-            {
-                FloatInPlace();
-            }
+            rb.velocity = Vector3.zero;
         }
 
         ChangeSpeedBasedOnDistance(dis);
@@ -98,19 +91,52 @@ public class HelperCreature : MonoBehaviour
         }
     }
 
-    void FloatInPlace()
-    {
-        if (!stopped)
-        {
-            stopped = true;
-            stopX = transform.position.x;
-            stopY = transform.position.y;
-        } else
-        {
-            float yTo = myCurve.Evaluate((Time.time % myCurve.length));
-            // Mathf.Lerp(transform.position.y, transform.position.y + yTo
-            transform.position = new Vector3(stopX, Mathf.Lerp(transform.position.y, stopY + yTo, Time.time), transform.position.z);
-        }
+    //void FloatInPlace()
+    //{
+    //    if (!stopped)
+    //    {
+    //        stopped = true;
+    //        stopX = transform.position.x;
+    //        stopY = transform.position.y;
+    //    } else
+    //    {
+    //        float yTo = myCurve.Evaluate((Time.time % myCurve.length));
+    //        // Mathf.Lerp(transform.position.y, transform.position.y + yTo
+    //        transform.position = new Vector3(stopX, Mathf.Lerp(transform.position.y, stopY + yTo, Time.time), transform.position.z);
+    //    }
 
-    }
+    //}
+
+    //IEnumerator floatPlace()
+    //{
+
+    //    if (!stopped)
+    //    {
+    //        stopped = true;
+    //        midFrame = true;
+    //        stopX = transform.position.x;
+    //        stopY = transform.position.y;
+    //    }
+
+    //    startedCorountine = true;
+    //    rb.velocity = Vector3.zero;
+
+    //    int loopTime = 0;
+
+
+    //    float yTo = myCurve.Evaluate((Time.time % myCurve.length));
+    //    // Mathf.Lerp(transform.position.y, transform.position.y + yTo
+    //    while(currentFrame != myCurve.length)
+    //    {
+    //        transform.position = new Vector3(stopX, Mathf.Lerp(transform.position.y, stopY + yTo, Time.time), transform.position.z);
+    //        currentFrame++;
+    //    }
+
+    //    Debug.Log("hit here");
+    //    midFrame = false;
+    //    startedCorountine = false;
+    //    currentFrame = 0;
+    //    yield return null;
+    //}
+
 }
