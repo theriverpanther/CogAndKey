@@ -86,6 +86,7 @@ public class Agent : MonoBehaviour, IKeyWindable
     {
         if(!keyInserted) state = KeyState.Normal;
         if(jumpState == JumpState.Aerial) IsGrounded();
+        if (transform.position.y + distToGround <= LevelData.Instance.YMin) Destroy(gameObject);
     }
 
     public void InsertKey(KeyState keyState)
@@ -104,7 +105,8 @@ public class Agent : MonoBehaviour, IKeyWindable
 
     protected virtual void Jump()
     {
-        if(jumpState != JumpState.Aerial)
+        IsGrounded();
+        if (jumpState != JumpState.Aerial)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
             jumpState = JumpState.Aerial;
@@ -115,7 +117,29 @@ public class Agent : MonoBehaviour, IKeyWindable
     {
         bool grounded = Physics2D.Raycast(transform.position, -Vector2.up, distToGround + 0.1f) && Mathf.Abs(rb.velocity.y) <= Mathf.Epsilon;
         jumpState = grounded ? JumpState.Grounded : JumpState.Aerial;
-        Debug.DrawRay(transform.position, -Vector2.up, Color.red, 2.0f);
+        //Debug.DrawRay(transform.position, -Vector2.up, Color.red, 2.0f);
+    }
+
+    protected List<Vector2> ValidJumps()
+    {
+        List<Vector2> jumps = new List<Vector2>();
+
+        foreach(GameObject node in nodes)
+        {
+            if(IsPointOnJump(node.transform.position.x, node.transform.position.y, mistakeThreshold))
+            {
+                jumps.Add(node.transform.position);
+            }
+        }
+
+        return jumps;
+    }
+
+    protected bool IsPointOnJump(float x, float y, float threshold)
+    {
+        float offsetX = Mathf.Abs(x - transform.position.x);
+        float calcY = -rb.gravityScale * offsetX * offsetX + rb.velocity.y * offsetX + transform.position.x;
+        return calcY > y - threshold && calcY < y + threshold;
     }
 
     protected IEnumerator TurnDelay()
@@ -125,15 +149,17 @@ public class Agent : MonoBehaviour, IKeyWindable
             // Change direction
             direction.x = -direction.x;
             rb.velocity = new Vector2(0, rb.velocity.y);
-            transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
             // Idle anim
             yield return new WaitForSeconds(turnDelay);
+
+
+            transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
             // Set values back to how they used to be for a frame to prevent stunlocking
             rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
             // Wait until the agent is moving
             yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
             processingTurn = false;
-            Debug.Log("Coroutine End");
+            //Debug.Log("Coroutine End");
         }
         
         yield return null;
@@ -151,6 +177,11 @@ public class Agent : MonoBehaviour, IKeyWindable
         if (player != null)
         {
             player.Die();
+        }
+
+        if (collision.gameObject.name == "Spikes")
+        {
+            Destroy(gameObject);
         }
     }
 
