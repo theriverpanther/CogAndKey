@@ -12,25 +12,25 @@ public class HelperCreature : MonoBehaviour
     private float moveSpeed;
     [SerializeField]
     public GameObject player;
-
-    private CircleCollider2D playerTrigger;
     private Rigidbody2D rb;
-    private bool stopped = false;
-    public bool inRange = false;
-
-    public AnimationCurve myCurve;
-    private float stopX;
-    private float stopY;
+    //public AnimationCurve myCurve;
     float distanceAwayAllowed = 2f;
+    private Vector3 goPoint;
+
+    public bool followPlayer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         moveSpeed = 2f;
-        stopX = 0f;
-        stopY = 0f;
         Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
-        playerTrigger = player.GetComponent<CircleCollider2D>();
+        followPlayer = true;
+
+        if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue)
+        {
+            transform.position = LevelData.Instance.RespawnPoint.Value;
+            transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);    
+        }
     }
 
     // Update is called once per frame
@@ -46,8 +46,13 @@ public class HelperCreature : MonoBehaviour
 
     void MoveTowardsPlayer()
     {
-        directionToplayer = (player.transform.position - transform.position).normalized;
-        float dis = Vector2.Distance(player.transform.position, transform.position);
+        if (followPlayer)
+        {
+            goPoint = player.transform.position;
+
+        }
+        directionToplayer = (goPoint - transform.position).normalized;
+        float dis = Vector2.Distance(goPoint, transform.position);
 
         //Debug.Log(dis);
 
@@ -62,6 +67,10 @@ public class HelperCreature : MonoBehaviour
         ChangeSpeedBasedOnDistance(dis);
     }
 
+    /// <summary>
+    /// Changes speed based on how far the creature is from the player
+    /// </summary>
+    /// <param name="distance"></param>
     void ChangeSpeedBasedOnDistance(float distance)
     {
         //slow down
@@ -89,6 +98,15 @@ public class HelperCreature : MonoBehaviour
             }
 
         }
+    }
+
+    /// <summary>
+    /// Force respawn point
+    /// </summary>
+    /// <param name="position"></param>
+    public void SetSpawnpoint(Vector3 position)
+    {
+        transform.position = position;
     }
 
     //void FloatInPlace()

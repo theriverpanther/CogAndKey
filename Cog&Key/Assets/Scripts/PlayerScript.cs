@@ -296,21 +296,4 @@ public class PlayerScript : MonoBehaviour
 
         return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.lossyScale.x + GetComponent<BoxCollider2D>().bounds.size.x) / 2 < 0.1f;
     }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Helper")
-        {
-            Debug.Log("WAAAAHHH");
-            helperScript.inRange = true;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.tag == "Helper")
-        {
-            helperScript.inRange = false;
-        }
-    }
 }
