@@ -16,6 +16,7 @@ public class HelperCreature : MonoBehaviour
     //public AnimationCurve myCurve;
     float distanceAwayAllowed = 2f;
     private Vector3 goPoint;
+    string dir = "left";
 
     public bool followPlayer;
 
@@ -29,7 +30,7 @@ public class HelperCreature : MonoBehaviour
         if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue)
         {
             transform.position = LevelData.Instance.RespawnPoint.Value;
-            transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);    
+            transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
         }
     }
 
@@ -54,9 +55,10 @@ public class HelperCreature : MonoBehaviour
         directionToplayer = (goPoint - transform.position).normalized;
         float dis = Vector2.Distance(goPoint, transform.position);
 
+
         //Debug.Log(dis);
 
-        if(dis > distanceAwayAllowed)
+        if (dis > distanceAwayAllowed)
         {
             rb.velocity = new Vector2(directionToplayer.x, directionToplayer.y) * moveSpeed;
         } else
@@ -64,6 +66,7 @@ public class HelperCreature : MonoBehaviour
             rb.velocity = Vector3.zero;
         }
 
+        FlipSprite();
         ChangeSpeedBasedOnDistance(dis);
     }
 
@@ -107,6 +110,20 @@ public class HelperCreature : MonoBehaviour
     public void SetSpawnpoint(Vector3 position)
     {
         transform.position = position;
+    }
+
+    private void FlipSprite()
+    {
+        Debug.Log(transform.right);
+        if(directionToplayer.x > 0 && dir == "right")
+        {
+            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            dir = "left";
+        } else if (dir == "left" && directionToplayer.x < 0)
+        {
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            dir = "right";
+        }
     }
 
     //void FloatInPlace()
