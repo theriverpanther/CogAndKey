@@ -350,7 +350,7 @@ GameObject:
   - component: {fileID: 6266114410323300525}
   - component: {fileID: 2518777728627218210}
   m_Layer: 0
-  m_Name: Toy
+  m_Name: Hunter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -57,7 +57,6 @@ public class Hunter : Agent
                 break;
         }
 
-        transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
         base.Update();
         //if(Input.GetKeyDown(KeyCode.P))
         //{
@@ -75,7 +74,10 @@ public class Hunter : Agent
     private void EdgeDetectMovement(bool detectFloorEdges, bool detectWalls)
     {
         int tempDir = EdgeDetect(detectFloorEdges, detectWalls);
-        direction.x = tempDir != 0 ? tempDir : direction.x;
+        if (tempDir != direction.x && tempDir != 0)
+        {
+            StartCoroutine(TurnDelay());
+        }
     }
 
     protected override void BehaviorTree(float walkSpeed, bool fast)
@@ -104,23 +106,15 @@ public class Hunter : Agent
         {
             // try to chase the player
             float tempX = (playerPosition - transform.position).x;
-            if(Mathf.Sign(tempX) != Mathf.Sign(direction.x)) 
+            if(Mathf.Sign(tempX) != Mathf.Sign(direction.x) && !processingTurn) 
             {
-                if (turnTimer <= 0)
-                {
-                    direction.x = tempX;
-                    direction = direction.normalized;
-                    turnTimer = turnDelay;
-                }
-                else
-                {
-                    turnTimer -= Time.deltaTime;
-                }
+                StartCoroutine(TurnDelay());
             }
+            wallDetected = EdgeDetect(false, true) != 0;
             // If there's a wall in front and the player is above it, try to jump
             // Player needs to be able to jump over enemy
             // instead of jumping to meet, turn around
-            if(wallDetected && playerSensed && playerPosition.y > transform.position.y)
+            if(wallDetected && playerSensed)
             {
                 if(jumpState == JumpState.Grounded) Jump();
             }
@@ -149,17 +143,5 @@ public class Hunter : Agent
         }
 
         base.BehaviorTree(walkSpeed, fast);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        wallDetected = other.tag == "Wall";
-    }
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.tag == "Wall")
-        {
-            wallDetected = false;
-        }
     }
 }
