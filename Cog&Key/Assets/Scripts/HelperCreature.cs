@@ -19,6 +19,7 @@ public class HelperCreature : MonoBehaviour
     string dir = "left";
 
     public bool followPlayer;
+    private GameObject playerSprite;
 
     void Start()
     {
@@ -26,6 +27,7 @@ public class HelperCreature : MonoBehaviour
         moveSpeed = 2f;
         Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
         followPlayer = true;
+        playerSprite = gameObject.transform.GetChild(0).gameObject;
 
         if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue)
         {
@@ -51,18 +53,19 @@ public class HelperCreature : MonoBehaviour
         {
             goPoint = player.transform.position;
 
-        }
+        } 
         directionToplayer = (goPoint - transform.position).normalized;
         float dis = Vector2.Distance(goPoint, transform.position);
 
-
-        //Debug.Log(dis);
-
-        if (dis > distanceAwayAllowed)
+        // following player speed info
+        if (dis > distanceAwayAllowed && followPlayer)
         {
             rb.velocity = new Vector2(directionToplayer.x, directionToplayer.y) * moveSpeed;
-        } else
+        } else if (!followPlayer && dis > 0.2f)
         {
+            rb.velocity = new Vector2(directionToplayer.x, directionToplayer.y) * (moveSpeed * 3f);
+        }
+        else {
             rb.velocity = Vector3.zero;
         }
 
@@ -117,13 +120,18 @@ public class HelperCreature : MonoBehaviour
         Debug.Log(transform.right);
         if(directionToplayer.x > 0 && dir == "right")
         {
-            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            playerSprite.transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             dir = "left";
         } else if (dir == "left" && directionToplayer.x < 0)
         {
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            playerSprite.transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             dir = "right";
         }
+    }
+
+    public void SetGoPoint(Vector3 position)
+    {
+        goPoint = position;
     }
 
     //void FloatInPlace()
