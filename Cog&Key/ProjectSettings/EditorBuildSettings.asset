@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Onboarding1.unity
     guid: e30adcd9a5191f44498461562d9a88df
+  - enabled: 1
+    path: Assets/Scenes/Onboarding2.unity
+    guid: b1140aa5ae0474a45a5ed8af3a40fd16
+  - enabled: 1
+    path: Assets/Scenes/Onboarding3.unity
+    guid: 030a878b51e836c4f89cc62d2dfee935
   m_configObjects: {}

@@ -1,0 +1,1416 @@
+fileFormatVersion: 2
+guid: 820cac9f759742b45b70a2495fc9efda
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LongHoldJump_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bfd84af4f30818418b16b177458edb1
+      internalID: -2123903637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_1
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af064c385efc3c549a823f4adf6f9379
+      internalID: 956448423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_2
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dedaa88ea90ec3f4683e7c5b55291ffc
+      internalID: 616686056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_3
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5deb0dc2e0eef9048a305c110016d2be
+      internalID: 1012839999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_4
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0678459479f55d847b68a4cedb7f4059
+      internalID: -1146993487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_5
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8af9625836ecf7e42a311e89c27ef35b
+      internalID: -1541746491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_6
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4bd85f5618189964e92bbea644fdb814
+      internalID: 1308030391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_7
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f29581beee5d6c4494c235805171b10
+      internalID: -1466016092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_8
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec70532e45c8126478fce7aa48754e04
+      internalID: -1247084515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_9
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 1770
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 276cc249690703e45a749f9de7d67e81
+      internalID: 2049874315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 643e965405ef77747ae08533285f5a8e
+      internalID: -1140102545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_11
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5d7517fc13b9f234c96bfc63694aa4f4
+      internalID: -1505605414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_12
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 47d7f0559408ba844ba7896614ff3d9a
+      internalID: 1968688408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_13
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8f5b76b3f1add54dab417b54faadbbc
+      internalID: -9734067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_14
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8a9fd69cc35bd84eb7a016f9eba031c
+      internalID: 1698697409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_15
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61e82a2156315cd49b1f9dac2a51013d
+      internalID: -1847082772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_16
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b54293a235b47554cb43f24cd85fcfde
+      internalID: -28987795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_17
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51f078d6d6190fb4598acde90a8cf14e
+      internalID: 439315109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_18
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a393cf77e48325f4c89f6d185f55f2d1
+      internalID: 2137734645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_19
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 1416
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7fc8d15caab22ac4aa69927314fe7abe
+      internalID: 1926763162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad975e2341a06794b8b9292de759fbe6
+      internalID: 945538047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_21
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c342219f7ebb064d8996997bf414276
+      internalID: 424661127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_22
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 353f661115d991b4cb148f7ff8d1d3d1
+      internalID: -89961627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_23
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acdefa81bcfc495499e7a8f8d9fc4e0c
+      internalID: -129410207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_24
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce89f9db7a5db13459c6ac4fc96e8e3b
+      internalID: 1742804382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_25
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df795fd07216b7f498575b199e08592b
+      internalID: -1222694326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_26
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0ffdac25e5b9ed489d7475687cfa64f
+      internalID: 282960027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_27
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7d72c784e1afe474e9ac5112d3914351
+      internalID: 1400732318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_28
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: beb5d645d937dcf42a8ad20771b9d9b4
+      internalID: 1878325727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_29
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 1062
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50617ff2fef6231499122d2ed8627e3c
+      internalID: 1348759438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4dfa994b57cd3bb488a8de793fbb4d2f
+      internalID: -571237118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_31
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42c009fc1efb5a342aa245f9c7f09755
+      internalID: -1443268469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_32
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03271152923df04459254e13ddda0986
+      internalID: -1036531827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_33
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ef8498608f743e4799d75ad91c4e651
+      internalID: 1982092014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_34
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c76765a7eff6796449bc9c82d9112c3c
+      internalID: 408991387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_35
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc881bd8fd2f84e439370b8b67e57eb1
+      internalID: 1392565573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_36
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 769d47e4b50fbde4194d853e7a24ec72
+      internalID: 802817562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_37
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 830b462fec2b71f4a86f873234607a00
+      internalID: -614624313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_38
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0308ed921e3108847869db5c18e4fb31
+      internalID: -21615597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_39
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 708
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be73bb45446d47e4382bfd281dfd5896
+      internalID: 2031936237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee2a6e3613986c24c96ac3333424796e
+      internalID: 688796792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_41
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63d526b285b6e0742933448e527998f1
+      internalID: -1646817751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_42
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 306317ab6082adf469b6839f008b7dfa
+      internalID: 1467347839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_43
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d294e2d20f3863488eb8c5bde32e6d4
+      internalID: -410533395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_44
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6667c326e638a6546872b776c3825012
+      internalID: -1432225742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_45
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4fa4e9c295f05e240b382b7b7ef38ceb
+      internalID: -1857715598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_46
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7463eb529aea09445b3070b3834106f9
+      internalID: 299656459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_47
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a89f8a6ff264cb54a98c559feb68241d
+      internalID: -521824247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_48
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3bdbf0d5b87518e40a105cf8dcf70425
+      internalID: -2087508335
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_49
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 354
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1abebf5a13c6f1140b3fc82a79c8e217
+      internalID: -1155997637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_50
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aea56d12051d2184c94b66bcf5788348
+      internalID: 658717377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_51
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 0
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb91a21a2325d7c42a8fa194f4e09720
+      internalID: -568150272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_52
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 0
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14f45139869f78f4a8e1d198991e364f
+      internalID: 455927158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_53
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 0
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7eae13a3df5c41140ad169d4bcdd83a0
+      internalID: -589396195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_54
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 0
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91f3365209195214f903d5c94907b5b5
+      internalID: -402315422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_55
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 0
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0b7b99d8a39e70d4d8777a2e55988bef
+      internalID: -2146440106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_56
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 0
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e3382d216e83b064283e360c71c885cc
+      internalID: 1165759821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LongHoldJump_57
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 0
+        width: 140
+        height: 354
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d3a00cbf04dc554bb37e895e28e76e6
+      internalID: -1685381453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      LongHoldJump_0: -2123903637
+      LongHoldJump_1: 956448423
+      LongHoldJump_10: -1140102545
+      LongHoldJump_11: -1505605414
+      LongHoldJump_12: 1968688408
+      LongHoldJump_13: -9734067
+      LongHoldJump_14: 1698697409
+      LongHoldJump_15: -1847082772
+      LongHoldJump_16: -28987795
+      LongHoldJump_17: 439315109
+      LongHoldJump_18: 2137734645
+      LongHoldJump_19: 1926763162
+      LongHoldJump_2: 616686056
+      LongHoldJump_20: 945538047
+      LongHoldJump_21: 424661127
+      LongHoldJump_22: -89961627
+      LongHoldJump_23: -129410207
+      LongHoldJump_24: 1742804382
+      LongHoldJump_25: -1222694326
+      LongHoldJump_26: 282960027
+      LongHoldJump_27: 1400732318
+      LongHoldJump_28: 1878325727
+      LongHoldJump_29: 1348759438
+      LongHoldJump_3: 1012839999
+      LongHoldJump_30: -571237118
+      LongHoldJump_31: -1443268469
+      LongHoldJump_32: -1036531827
+      LongHoldJump_33: 1982092014
+      LongHoldJump_34: 408991387
+      LongHoldJump_35: 1392565573
+      LongHoldJump_36: 802817562
+      LongHoldJump_37: -614624313
+      LongHoldJump_38: -21615597
+      LongHoldJump_39: 2031936237
+      LongHoldJump_4: -1146993487
+      LongHoldJump_40: 688796792
+      LongHoldJump_41: -1646817751
+      LongHoldJump_42: 1467347839
+      LongHoldJump_43: -410533395
+      LongHoldJump_44: -1432225742
+      LongHoldJump_45: -1857715598
+      LongHoldJump_46: 299656459
+      LongHoldJump_47: -521824247
+      LongHoldJump_48: -2087508335
+      LongHoldJump_49: -1155997637
+      LongHoldJump_5: -1541746491
+      LongHoldJump_50: 658717377
+      LongHoldJump_51: -568150272
+      LongHoldJump_52: 455927158
+      LongHoldJump_53: -589396195
+      LongHoldJump_54: -402315422
+      LongHoldJump_55: -2146440106
+      LongHoldJump_56: 1165759821
+      LongHoldJump_57: -1685381453
+      LongHoldJump_6: 1308030391
+      LongHoldJump_7: -1466016092
+      LongHoldJump_8: -1247084515
+      LongHoldJump_9: 2049874315
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

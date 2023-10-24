@@ -13,37 +13,48 @@ public class KeyScript : MonoBehaviour
         Returning
     }
 
-    private const float SPEED = 14f;
+    private const float SPEED = 20f;
     private const float RANGE = 4f;
+    private const float ACCEL = 40.0f;
 
     private State currentState;
-    private Vector2 attackDirection;
-    private float distanceTravelled;
+    private Vector3 velocity;
     private IKeyWindable insertTarget;
+    private KeyShowcaser uiKeys;
+    private Rigidbody2D physicsBody;
 
     [SerializeField] private KeyState type;
     public KeyState Type { get { return type; } }
 
-    void Start()
+    void Awake()
     {
         currentState = State.Pickup;
+        uiKeys = GameObject.Find("OverlayMain")?.GetComponent<KeyShowcaser>();
+        physicsBody = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
         if(currentState == State.Attacking) {
-            float distance = SPEED * Time.deltaTime;
-            transform.position += distance * (Vector3)attackDirection;
-            distanceTravelled += distance;
-            if(distanceTravelled >= RANGE) {
+            Vector3 startVel = velocity;
+            velocity += Time.deltaTime * ACCEL * -velocity.normalized;
+
+            if(Vector2.Dot(startVel, velocity) < 0) {
                 SetState(State.Returning);
+            } else {
+                transform.position += Time.deltaTime * velocity;
             }
         }
         else if(currentState == State.Returning) {
             Vector3 playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;
             Vector3 towardsPlayer = (playerPos - transform.position).normalized;
-            transform.position += SPEED * Time.deltaTime * towardsPlayer;
+            float newSpeed = velocity.magnitude + Time.deltaTime * 2 * ACCEL;
+
+            velocity = newSpeed * towardsPlayer;
+            transform.position += Time.deltaTime * velocity;
+
             if(Vector2.Distance(playerPos, transform.position) <= 0.5f) {
+                // use distance check instead of collision trigger so that the key gets more to the center of the player
                 SetState(State.PlayerHeld);
             }
         }
@@ -59,13 +70,18 @@ public class KeyScript : MonoBehaviour
                 break;
             case State.PlayerHeld:
                 gameObject.SetActive(false);
+                uiKeys?.MainKeyStatusUpdate(true, Type);
+                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
             case State.Attacking:
                 gameObject.SetActive(true);
+                uiKeys?.MainKeyStatusUpdate(false, Type);
+                uiKeys?.SmallKeyStatusUpdate(false, Type);
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
-                distanceTravelled = 0;
                 break;
             case State.Attached:
+                uiKeys?.MainKeyStatusUpdate(false, Type);
+                uiKeys?.SmallKeyStatusUpdate(false, Type);
                 break;
         }
     }
@@ -78,16 +94,20 @@ public class KeyScript : MonoBehaviour
         switch(Type) {
             case KeyState.Fast:
                 player.FastKey = this;
+                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
 
             case KeyState.Lock:
                 player.LockKey = this;
+                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
 
             case KeyState.Reverse:
                 player.ReverseKey = this;
+                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
         }
+
     }
 
     // called when the player shoots the key out to try and insert it
@@ -96,20 +116,22 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
+        direction = direction.normalized;
         SetState(State.Attacking);
-        attackDirection = direction.normalized;
+        velocity = SPEED * direction;
 
+        // rotate the visual
         transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        if(attackDirection.y >= 1) {
+        if(direction.y >= 1) {
             transform.rotation = Quaternion.Euler(0, 0, 90);
         }
-        else if(attackDirection.y <= -1) {
+        else if(direction.y <= -1) {
             transform.rotation = Quaternion.Euler(0, 0, -90);
         }
-        else if(attackDirection.x >= 1) {
+        else if(direction.x >= 1) {
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
-        else if(attackDirection.x <= -1) {
+        else if(direction.x <= -1) {
             transform.rotation = Quaternion.Euler(0, 0, 0);
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
@@ -120,6 +142,8 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
+        uiKeys?.MainKeyStatusUpdate(false, Type);
+
         insertTarget.InsertKey(KeyState.Normal);
         insertTarget = null;
         SetState(State.Returning);
@@ -129,6 +153,7 @@ public class KeyScript : MonoBehaviour
         PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
         if(currentState == State.Pickup && player != null) {
             Equip();
+            return;
         }
 
         IKeyWindable windable = collision.gameObject.GetComponent<IKeyWindable>();
@@ -137,6 +162,11 @@ public class KeyScript : MonoBehaviour
             insertTarget.InsertKey(type);
             SetState(State.Attached);
             transform.SetParent(collision.gameObject.transform);
+            return;
+        }
+
+        if(collision.gameObject.tag == "Wall") {
+            SetState(State.Returning);
         }
     }
 }
