@@ -7,17 +7,20 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
 {
     [SerializeField] private GameObject[] Path;
     [SerializeField] private bool LoopPath; // false, back and forth
+    [SerializeField] private bool StartReversed;
     [SerializeField] private GameObject TrackPrefab;
     private const float MOVE_SPEED = 3.5f;
 
     private List<Vector2> pathPoints;
     private int nextPointIndex;
-    private bool forward = true; // false: moving backwards through the path
+    private bool forward; // false: moving backwards through the path
     private List<GameObject> riders = new List<GameObject>();
     private KeyState currentKey;
 
     void Awake()
     {
+        forward = !StartReversed;
+
         // construct path
         pathPoints = new List<Vector2>() { transform.position };
 

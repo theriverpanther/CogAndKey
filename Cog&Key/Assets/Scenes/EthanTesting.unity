@@ -326,6 +326,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6793805548046683359, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
+      propertyPath: StartReversed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6793805548046683359, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
       propertyPath: Path.Array.size
       value: 3
       objectReference: {fileID: 0}
