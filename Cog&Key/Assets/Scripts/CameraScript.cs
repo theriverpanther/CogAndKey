@@ -27,6 +27,7 @@ public class CameraScript : MonoBehaviour
         z = transform.position.z;
         if(LevelData.Instance != null) {
             SetInitialPosition();
+            scrollCD = 0;
         }
     }
 
@@ -81,6 +82,7 @@ public class CameraScript : MonoBehaviour
         }
 
         // face the camera towards the end of the level
+        List<Rect> cameraAreas = LevelData.Instance.CameraZones;
         switch(currentScroll) {
             case CamerBoundType.Right:
                 position.x += 4;
@@ -99,13 +101,15 @@ public class CameraScript : MonoBehaviour
                 break;
 
             case CamerBoundType.Lock:
+                Rect playerRect = playerZone.Area;
+                Vector2 dimensions = Dimensions;
+                cameraAreas = new List<Rect> { new Rect(playerRect.x + dimensions.x/2, playerRect.y + dimensions.y/2, playerRect.width - dimensions.x, playerRect.height - dimensions.y) };
                 break;
         }
 
         // lock the camera inside the available areas
         Vector3 closestPoint = Vector3.zero;
         float closestDistance = int.MaxValue;
-        List<Rect> cameraAreas = LevelData.Instance.CameraZones;
         foreach(Rect cameraArea in cameraAreas) {
             if(cameraArea.Contains(position)) {
                 position.z = z;
