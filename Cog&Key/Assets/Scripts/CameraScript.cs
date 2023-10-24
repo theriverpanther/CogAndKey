@@ -78,7 +78,7 @@ public class CameraScript : MonoBehaviour
         }
         else if(currentScroll != lastLook) {
             lastLook = currentScroll;
-            scrollCD = 2.0f;
+            scrollCD = 1.0f;
         }
 
         // face the camera towards the end of the level
