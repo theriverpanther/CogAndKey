@@ -86,7 +86,7 @@ public class PlayerInput
         currentGP = Gamepad.current;
         currentKB = Keyboard.current;
 
-        controllerName = Input.GetJoystickNames()[0];
+        controllerName = Input.GetJoystickNames().Length > 0 ? Input.GetJoystickNames()[0] : null;
 
         keyBindings = new Dictionary<Action, List<ButtonControl>>();
         for(int i = 0; i < NUM_ACTIONS; i++) {
@@ -112,9 +112,9 @@ public class PlayerInput
             keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentKB.leftArrowKey, currentKB.aKey });
             keyBindings[Action.Up].AddRange(new List<ButtonControl>() { currentKB.upArrowKey, currentKB.wKey });
             keyBindings[Action.Down].AddRange(new List<ButtonControl>() { currentKB.downArrowKey, currentKB.sKey });
-            keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentKB.digit1Key, currentKB.numpad1Key });
-            keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentKB.digit2Key, currentKB.numpad2Key });
-            keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentKB.digit3Key, currentKB.numpad3Key });
+            keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentKB.digit1Key, currentKB.numpad1Key, currentKB.zKey });
+            keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentKB.digit2Key, currentKB.numpad2Key, currentKB.xKey });
+            keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentKB.digit3Key, currentKB.numpad3Key, currentKB.cKey });
         }
     }
 }

@@ -34,7 +34,6 @@ public class PlayerScript : MonoBehaviour
     private float coyoteTime;
     private float keyCooldown;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
-    private List<GameObject> currentWalls; // the wall the player is currently up against, can be multiple at once
 
     [SerializeField]
     public GameObject helper;
@@ -51,7 +50,6 @@ public class PlayerScript : MonoBehaviour
         physicsBody.gravityScale = FALL_GRAVITY;
         currentState = State.Aerial;
         input = new PlayerInput();
-        currentWalls = new List<GameObject>();
 
         if(LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
@@ -61,7 +59,7 @@ public class PlayerScript : MonoBehaviour
         helperScript = helper.GetComponent<HelperCreature>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         input.Update();
         Vector2 velocity = physicsBody.velocity;
@@ -89,18 +87,23 @@ public class PlayerScript : MonoBehaviour
             Die();
         }
 
-        // if against a wall, check if still next to it
-        for(int i = 0; i < currentWalls.Count; i++) {
-            if(!IsAgainstWall(currentWalls[i])) {
-                currentWalls.RemoveAt(i);
-                i--;
-            }
-        }
-
         // vertical movement
         switch(currentState)
         {
             case State.Aerial:
+                if(Mathf.Abs(velocity.y) <= 0.05f) {
+                    // check to make sure this isn't the player hitting a ceiling
+                    Rect collisionArea = CollisionArea;
+                    RaycastHit2D leftRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMin - 0.1f, 0), Vector2.down);
+                    RaycastHit2D rightRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMin - 0.1f, 0), Vector2.down);
+
+                    // land on the ground
+                    if(leftRaycast.collider != null && leftRaycast.distance < 0.2f || rightRaycast.collider != null && rightRaycast.distance < 0.2f) {
+                        currentState = State.Grounded;
+                        break;
+                    }
+                }
+
                 friction = 5f;
 
                 // extend jump height while jump is held
@@ -123,22 +126,19 @@ public class PlayerScript : MonoBehaviour
                 ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
+                
+                Direction adjWallDir = GetAdjacentWallDireciton();
 
                 // cling to walls
-                if(velocity.y < CLING_VELOCITY) {
-                    foreach(GameObject wall in currentWalls) {
-                        if(velocity.x > 0 && wall.transform.position.x > transform.position.x
-                            || velocity.x < 0 && wall.transform.position.x < transform.position.x
-                        ) {
-                            velocity.y = CLING_VELOCITY;
-                            break;
-                        }
-                    }
+                if(velocity.y < CLING_VELOCITY && 
+                    (adjWallDir == Direction.Left && input.IsPressed(PlayerInput.Action.Left) || adjWallDir == Direction.Right && input.IsPressed(PlayerInput.Action.Right))
+                ) {
+                    velocity.y = CLING_VELOCITY;
                 }
 
                 // wall jump
-                if(currentWalls.Count > 0 && input.JustPressed(PlayerInput.Action.Jump)) {
-                    int jumpDirection = (transform.position.x > currentWalls[0].transform.position.x ? 1 : -1);
+                if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
+                    int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
                     velocity.y = 11.0f;
                     velocity.x = jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
@@ -226,15 +226,14 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // determine attack direction
-                Vector2 attackDirection = Vector2.zero;
-                if(input.IsPressed(PlayerInput.Action.Up)) {
-                    attackDirection = Vector2.up;
-                }
-                if(input.IsPressed(PlayerInput.Action.Down)) {
-                    attackDirection = Vector2.down;
-                }
-                if(attackDirection == Vector2.zero) {
-                    attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
+                Vector2 attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
+                if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
+                    if(input.IsPressed(PlayerInput.Action.Up)) {
+                        attackDirection = Vector2.up;
+                    }
+                    if(input.IsPressed(PlayerInput.Action.Down)) {
+                        attackDirection = Vector2.down;
+                    }
                 }
 
                 switch(usedKey) {
@@ -269,31 +268,27 @@ public class PlayerScript : MonoBehaviour
         jumpHeld = true;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
-        if(collision.gameObject.tag == "Wall") {
-            moveLockedRight = null;
-            float test = Mathf.Abs(physicsBody.velocity.y);
-            if(Mathf.Abs(physicsBody.velocity.y) <= 0.05f) {
-                // land on ground, from aerial or wall state
-                currentState = State.Grounded;
-            }
-            if(IsAgainstWall(collision.gameObject)) {
-                // against a wall
-                currentWalls.Add(collision.gameObject);
-            }
-        }
-    }
+    // checks if the player's left and right sides are against any surfaces. Returns Direction.None for no wall, and left or right if there is a wall
+    private Direction GetAdjacentWallDireciton() {
+        Rect collisionArea = CollisionArea;
 
-    // determines if the player is up against the input wall on the left or right side
-    private bool IsAgainstWall(GameObject wall) {
-        float halfHeight = GetComponent<BoxCollider2D>().bounds.extents.y;
-        if(transform.position.y + halfHeight <= wall.transform.position.y - wall.transform.lossyScale.y / 2
-            || transform.position.y - halfHeight >= wall.transform.position.y + wall.transform.lossyScale.y / 2
-        ) {
-            // above or below the wall
-            return false;
+        const float BUFFER = 0.05f;
+
+        RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.yMax, 0), Vector2.left);
+        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.center.y, 0), Vector2.left);
+        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.yMin, 0), Vector2.left);
+
+        RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.yMax, 0), Vector2.right);
+        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.center.y, 0), Vector2.right);
+        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.yMin, 0), Vector2.right);
+
+        if(leftTop.collider != null && leftTop.distance < 2 * BUFFER || leftMid.collider != null && leftMid.distance < 2 * BUFFER || leftBot.collider != null && leftBot.distance < 2 * BUFFER) {
+            return Direction.Left;
+        }
+        if(rightTop.collider != null && rightTop.distance < 2 * BUFFER || rightMid.collider != null && rightMid.distance < 2 * BUFFER || rightBot.collider != null && rightBot.distance < 2 * BUFFER) {
+            return Direction.Right;
         }
 
-        return Math.Abs(wall.transform.position.x - transform.position.x) - (wall.transform.lossyScale.x + GetComponent<BoxCollider2D>().bounds.size.x) / 2 < 0.1f;
+        return Direction.None;
     }
 }

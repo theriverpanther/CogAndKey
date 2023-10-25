@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3355836324551961513}
   - component: {fileID: 1049423040546381952}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 7613829985047059969}
   - component: {fileID: 4445013827664701914}
   - component: {fileID: -7383369428439986235}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Checkpoint
   m_TagString: Checkpoint
   m_Icon: {fileID: 0}

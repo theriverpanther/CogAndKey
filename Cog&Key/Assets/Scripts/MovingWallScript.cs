@@ -7,19 +7,20 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
 {
     [SerializeField] private GameObject[] Path;
     [SerializeField] private bool LoopPath; // false, back and forth
+    [SerializeField] private bool StartReversed;
     [SerializeField] private GameObject TrackPrefab;
     private const float MOVE_SPEED = 3.5f;
 
     private List<Vector2> pathPoints;
     private int nextPointIndex;
-    private bool forward = true; // false: moving backwards through the path
+    private bool forward; // false: moving backwards through the path
     private List<GameObject> riders = new List<GameObject>();
     private KeyState currentKey;
-    private float momentumBufferTime;
-    private Vector2 bufferedMomentum;
 
     void Awake()
     {
+        forward = !StartReversed;
+
         // construct path
         pathPoints = new List<Vector2>() { transform.position };
 
@@ -57,9 +58,25 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
             transform.position = target;
             NextWaypoint();
 
-            // buffer momentum when changing direction
-            momentumBufferTime = 0.2f;
-            bufferedMomentum = currentSpeed * (transform.position - startPosition).normalized;
+            // apply shift momentum to riders when changing direction
+            Vector2 momentum = currentSpeed * (transform.position - startPosition).normalized;
+            Vector2 newDirection = pathPoints[nextPointIndex] - (Vector2)transform.position;
+
+            if(Vector2.Dot(momentum.normalized, newDirection.normalized) > -0.5f) {
+                // less momentum if not reversing direction
+                momentum /= 2f;
+            }
+
+            if(currentKey == KeyState.Fast) {
+                for(int i = 0; i < riders.Count; i++) {
+                    riders[i].GetComponent<Rigidbody2D>().velocity += momentum;
+
+                    if(momentum.y > 0) {
+                        // when the momentum is up, riders are launched off
+                        riders.RemoveAt(i);
+                    }
+                }
+            }
         } else {
             // moving towards target point
             transform.position += shift * ((Vector3)target - transform.position).normalized;
@@ -84,21 +101,13 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
                     || riderArea.center.x > platformArea.center.x && riderRB.velocity.x >= 0)
             ) {
                 if(currentKey == KeyState.Fast) {
-                    if(momentumBufferTime > 0) {
-                        riderRB.velocity += bufferedMomentum;
-                    } else {
-                        riderRB.velocity += currentSpeed * (Vector2)displacement.normalized;
-                    }
+                    // keep platform momentum if moving fast
+                    riderRB.velocity += currentSpeed * (Vector2)displacement.normalized;
                 }
 
                 riders.RemoveAt(i);
                 i--;
-
             }
-        }
-
-        if(momentumBufferTime > 0) {
-            momentumBufferTime -= Time.deltaTime;
         }
     }
 

@@ -11,6 +11,8 @@ public class CameraScript : MonoBehaviour
     private CamerBoundType lastLook;
     private float scrollCD;
 
+    private const float SPEED = 12f;
+
     public static CameraScript Instance { get; private set; }
 
     public Vector2 Dimensions { get {
@@ -27,6 +29,7 @@ public class CameraScript : MonoBehaviour
         z = transform.position.z;
         if(LevelData.Instance != null) {
             SetInitialPosition();
+            scrollCD = 0;
         }
     }
 
@@ -37,8 +40,7 @@ public class CameraScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        float speed = 12f;
-        float shift = speed * Time.deltaTime;
+        float shift = SPEED * Time.deltaTime;
         Vector3 target = FindTargetPosition();
         float distance = Vector3.Distance(transform.position, target);
         if(distance <= shift) {
@@ -46,6 +48,25 @@ public class CameraScript : MonoBehaviour
         } else {
             transform.position += shift * (target - transform.position).normalized;
         }
+
+        // do not let the player leave the camera's view
+        Vector2 dims = Dimensions;
+        Vector3 newPos = transform.position;
+        float BUFFER = 2.0f;
+        if(player.transform.position.x < transform.position.x - dims.x / 2 + BUFFER) {
+            newPos.x = player.transform.position.x + dims.x / 2 - BUFFER;
+        }
+        else if(player.transform.position.x > transform.position.x + dims.x / 2 - BUFFER) {
+            newPos.x = player.transform.position.x - dims.x / 2 + BUFFER;
+        }
+        if(player.transform.position.y < transform.position.y - dims.y / 2 + BUFFER) {
+            newPos.y = player.transform.position.y + dims.y / 2 - BUFFER;
+        }
+        else if(player.transform.position.y > transform.position.y + dims.y / 2 - BUFFER) {
+            newPos.y = player.transform.position.y - dims.y / 2 + BUFFER;
+        }
+
+        transform.position = newPos;
 
         if(scrollCD > 0) {
             scrollCD -= Time.deltaTime;
@@ -77,10 +98,11 @@ public class CameraScript : MonoBehaviour
         }
         else if(currentScroll != lastLook) {
             lastLook = currentScroll;
-            scrollCD = 2.0f;
+            scrollCD = 1.0f;
         }
 
         // face the camera towards the end of the level
+        List<Rect> cameraAreas = LevelData.Instance.CameraZones;
         switch(currentScroll) {
             case CamerBoundType.Right:
                 position.x += 4;
@@ -99,13 +121,15 @@ public class CameraScript : MonoBehaviour
                 break;
 
             case CamerBoundType.Lock:
+                Rect playerRect = playerZone.Area;
+                Vector2 dimensions = Dimensions;
+                cameraAreas = new List<Rect> { new Rect(playerRect.x + dimensions.x/2, playerRect.y + dimensions.y/2, playerRect.width - dimensions.x, playerRect.height - dimensions.y) };
                 break;
         }
 
         // lock the camera inside the available areas
         Vector3 closestPoint = Vector3.zero;
         float closestDistance = int.MaxValue;
-        List<Rect> cameraAreas = LevelData.Instance.CameraZones;
         foreach(Rect cameraArea in cameraAreas) {
             if(cameraArea.Contains(position)) {
                 position.z = z;

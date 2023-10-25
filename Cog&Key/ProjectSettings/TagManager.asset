@@ -10,6 +10,8 @@ TagManager:
   - Waypoint
   - Key
   - Helper
+  - Node
+  - Agent
   layers:
   - Default
   - TransparentFX

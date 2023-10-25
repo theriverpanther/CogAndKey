@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Direction
+{
+    None,
+    Up,
+    Down,
+    Left,
+    Right
+}
+
 public static class Global
 {
     public static Rect GetCollisionArea(GameObject objectWithBoxCollider) {
