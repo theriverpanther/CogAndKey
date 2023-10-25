@@ -12,7 +12,7 @@ public class HelperCreature : MonoBehaviour
     private float moveSpeed;
     [SerializeField]
     public GameObject player;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     //public AnimationCurve myCurve;
     float distanceAwayAllowed = 2f;
     private Vector3 goPoint;
@@ -117,7 +117,7 @@ public class HelperCreature : MonoBehaviour
 
     private void FlipSprite()
     {
-        Debug.Log(transform.right);
+        //Debug.Log(transform.right);debug
         if(directionToplayer.x > 0 && dir == "right")
         {
             playerSprite.transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
@@ -133,6 +133,24 @@ public class HelperCreature : MonoBehaviour
     {
         goPoint = position;
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(!followPlayer)
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>() , true);
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (!followPlayer)
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), false);
+        }
+    }
+
+
 
     //void FloatInPlace()
     //{

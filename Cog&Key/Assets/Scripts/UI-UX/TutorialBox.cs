@@ -39,18 +39,25 @@ public class TutorialBox : MonoBehaviour
     {
         if(collision.tag == "Player")
         {
-            if(attachToCenterPoint)
-            {
-                helperScript.followPlayer = false;
-                helperScript.SetGoPoint(transform.position);
-                Debug.Log("Not following player.");
-            }
-            helperUI.SetTextSpeed(textSpeed);
-            helperUI.ShowHelper();
+
             if (imgToShow != null)
             {
                 helperUI.ShowImage(imgToShow);
             }
+
+            helperUI.SetTextSpeed(textSpeed);
+            helperUI.ShowHelper();
+
+            if (attachToCenterPoint)
+            {
+                helperScript.followPlayer = false;
+                helperScript.SetGoPoint(transform.position);
+                Debug.Log("Not following player.");
+            } else
+            {
+                helperScript.followPlayer = true;
+            }
+
             helperUI.StartText(textToShow);
         }
 

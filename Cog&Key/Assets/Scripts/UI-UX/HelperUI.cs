@@ -24,7 +24,9 @@ public class HelperUI : MonoBehaviour
 
     IEnumerator ShowText()
     {
-        for(int i = 0; i < fullText.Length; i++)
+        gameObject.GetComponent<Animator>().SetBool("Fade", true);
+
+        for (int i = 0; i < fullText.Length; i++)
         {
             currentTxt = fullText.Substring(0,i);
             textToMod.text = currentTxt;
@@ -56,9 +58,11 @@ public class HelperUI : MonoBehaviour
     {
         gameObject.GetComponent<Animator>().SetBool("Fade", false);
         imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", false);
+        Debug.Log("Hiding Helper...");
     }
     public void ShowHelper()
     {
+        Debug.Log("Showing Helper...");
         gameObject.GetComponent<Animator>().SetBool("Fade", true);
 
         if(imgToShow != null)
