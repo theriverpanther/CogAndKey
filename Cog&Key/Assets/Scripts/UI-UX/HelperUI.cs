@@ -33,19 +33,21 @@ public class HelperUI : MonoBehaviour
             yield return new WaitForSeconds(textSpeed);
         }
 
-        imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
+        gameObject.GetComponent<Animator>().SetBool("Fade", true);
+        //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
         yield return null;
     }
 
     public void StartText(string text)
     {
-        fullText = text;
+        fullText = text + " ";
         StartCoroutine(ShowText());
     }
 
-    public void ShowImage(Texture2D img)
+    public void ShowImage(Texture2D img, float size)
     {
         imgToShow.sprite = Sprite.Create(img, new Rect(0.0f, 0.0f, img.width, img.height), new Vector2(0.5f, 0.5f), 100.0f);
+        imgToShow.rectTransform.sizeDelta = new Vector2(size, size);
         showImage = true;
     }
 
@@ -57,17 +59,24 @@ public class HelperUI : MonoBehaviour
     public void HideHelper()
     {
         gameObject.GetComponent<Animator>().SetBool("Fade", false);
-        imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", false);
+        //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", false);
         Debug.Log("Hiding Helper...");
     }
     public void ShowHelper()
     {
         Debug.Log("Showing Helper...");
-        gameObject.GetComponent<Animator>().SetBool("Fade", true);
 
-        if(imgToShow != null)
+        if(imgToShow.sprite != null)
         {
-            imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
+            Debug.Log("Show image!");
+            imgToShow.gameObject.SetActive(true);
+            //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
+            gameObject.GetComponent<Animator>().SetBool("Fade", true);
+        }
+        else
+        {
+            gameObject.GetComponent<Animator>().SetBool("Fade", true);
+            imgToShow.gameObject.SetActive(false);
         }
     }
 

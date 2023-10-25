@@ -13,6 +13,7 @@ public class HelperCreature : MonoBehaviour
     [SerializeField]
     public GameObject player;
     public Rigidbody2D rb;
+    private float dis = 0f;
     //public AnimationCurve myCurve;
     float distanceAwayAllowed = 2f;
     private Vector3 goPoint;
@@ -55,7 +56,7 @@ public class HelperCreature : MonoBehaviour
 
         } 
         directionToplayer = (goPoint - transform.position).normalized;
-        float dis = Vector2.Distance(goPoint, transform.position);
+        dis = Vector2.Distance(goPoint, transform.position);
 
         // following player speed info
         if (dis > distanceAwayAllowed && followPlayer)
@@ -139,6 +140,19 @@ public class HelperCreature : MonoBehaviour
         if(!followPlayer)
         {
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>() , true);
+        }
+
+        if (collision.gameObject.tag == "Wall")
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Wall")
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
         }
     }
 

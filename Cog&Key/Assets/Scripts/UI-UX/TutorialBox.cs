@@ -20,6 +20,9 @@ public class TutorialBox : MonoBehaviour
     [SerializeField]
     float textSpeed = 0.1f;
 
+    [SerializeField]
+    float size = 6f;
+
 
     void Start()
     {
@@ -42,7 +45,7 @@ public class TutorialBox : MonoBehaviour
 
             if (imgToShow != null)
             {
-                helperUI.ShowImage(imgToShow);
+                helperUI.ShowImage(imgToShow , size);
             }
 
             helperUI.SetTextSpeed(textSpeed);
