@@ -122,6 +122,10 @@ public class Hunter : Agent
             {
                 Jump();
             }
+            if(playerSensed && playerPosition.y > transform.position.y)
+            {
+                Jump();
+            }
             //List<Vector2> jumps = new List<Vector2>();
             //jumps = ValidJumps();
             

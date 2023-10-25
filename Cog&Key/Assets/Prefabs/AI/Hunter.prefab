@@ -388,7 +388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 3
-  jumpSpeed: 10
+  jumpSpeed: 6
   attackSpeed: 0
   fastScalar: 2
   keyInserted: 0
