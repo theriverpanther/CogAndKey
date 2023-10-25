@@ -10,8 +10,10 @@ public class Hunter : Agent
 {
     [SerializeField] private float distThreshold = 0.2f;
     [SerializeField] private bool wallDetected;
+    [SerializeField] private Color idleColor;
+    [SerializeField] private Color huntColor;
 
-    private float maxHuntTime = 10f;
+    [SerializeField] private float maxHuntTime = 5f;
     private float huntTimer = 0f;
 
     // Start is called before the first frame update
@@ -57,7 +59,6 @@ public class Hunter : Agent
                 break;
         }
 
-        transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
         base.Update();
         //if(Input.GetKeyDown(KeyCode.P))
         //{
@@ -75,7 +76,10 @@ public class Hunter : Agent
     private void EdgeDetectMovement(bool detectFloorEdges, bool detectWalls)
     {
         int tempDir = EdgeDetect(detectFloorEdges, detectWalls);
-        direction.x = tempDir != 0 ? tempDir : direction.x;
+        if (tempDir != direction.x && tempDir != 0)
+        {
+            StartCoroutine(TurnDelay());
+        }
     }
 
     protected override void BehaviorTree(float walkSpeed, bool fast)
@@ -99,31 +103,57 @@ public class Hunter : Agent
             // patrol
             // for now just deal with edge detection
             EdgeDetectMovement(!fast, true);
+            gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().color = idleColor;
         }
         else if (sqrDist > distThreshold * distThreshold)
         {
+            gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().color = huntColor;
             // try to chase the player
             float tempX = (playerPosition - transform.position).x;
-            if(Mathf.Sign(tempX) != Mathf.Sign(direction.x)) 
+            if(Mathf.Sign(tempX) != Mathf.Sign(direction.x) && !processingTurn) 
             {
-                if (turnTimer <= 0)
-                {
-                    direction.x = tempX;
-                    direction = direction.normalized;
-                    turnTimer = turnDelay;
-                }
-                else
-                {
-                    turnTimer -= Time.deltaTime;
-                }
+                StartCoroutine(TurnDelay());
             }
+            wallDetected = EdgeDetect(false, true) != 0;
             // If there's a wall in front and the player is above it, try to jump
             // Player needs to be able to jump over enemy
             // instead of jumping to meet, turn around
-            if(wallDetected && playerSensed && playerPosition.y > transform.position.y)
+            if(wallDetected && playerSensed)
             {
-                if(jumpState == JumpState.Grounded) Jump();
+                Jump();
             }
+            //List<Vector2> jumps = new List<Vector2>();
+            //jumps = ValidJumps();
+            
+            //if (IsPointOnJump(playerPosition.x, playerPosition.y, mistakeThreshold))
+            //{
+            //    Jump();
+            //}
+            //else if(jumps.Count > 0)
+            //{
+            //    float closestDist = float.MaxValue;
+            //    Vector2 node = Vector2.zero;
+            //    float jumpSqrDist = 0f;
+            //    foreach (Vector2 v in jumps)
+            //    {
+            //        jumpSqrDist = Mathf.Pow(v.x - transform.position.x, 2) + Mathf.Pow(v.y - transform.position.y, 2);
+            //        if (jumpSqrDist < closestDist)
+            //        {
+            //            closestDist = jumpSqrDist;
+            //            node = v;
+            //        }
+            //    }
+            //    if (closestDist != float.MaxValue)
+            //    {
+            //        Vector3 directionToNode = ((Vector3)node - transform.position).normalized;
+            //        if (directionToNode.x != direction.x) 
+            //        {
+            //            StartCoroutine(TurnDelay());
+            //            Jump();
+            //        }
+
+            //    }
+            //}
             if(!playerSensed)
             {
                 huntTimer += Time.deltaTime;
@@ -143,23 +173,12 @@ public class Hunter : Agent
         }
         else
         {
+            gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().color = huntColor;
             // stop moving, attack player
             base.BehaviorTree(0, fast);
             return;
         }
 
         base.BehaviorTree(walkSpeed, fast);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        wallDetected = other.tag == "Wall";
-    }
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.tag == "Wall")
-        {
-            wallDetected = false;
-        }
     }
 }

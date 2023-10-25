@@ -13,5 +13,10 @@ public class KillOnTouch : MonoBehaviour
         {
             player.Die();
         }
+
+        if(collision.gameObject.tag == "Agent")
+        {
+            Destroy(collision.gameObject);
+        }
     }
 }

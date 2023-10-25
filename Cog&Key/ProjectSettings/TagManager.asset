@@ -9,6 +9,8 @@ TagManager:
   - Checkpoint
   - Waypoint
   - Key
+  - Node
+  - Agent
   layers:
   - Default
   - TransparentFX
