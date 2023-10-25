@@ -8,6 +8,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 402934277809698227, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.2490518
+      objectReference: {fileID: 0}
+    - target: {fileID: 402934277809698227, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.30188823
+      objectReference: {fileID: 0}
+    - target: {fileID: 402934277809698227, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.1141
+      objectReference: {fileID: 0}
     - target: {fileID: 2277918459891144790, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -75,6 +87,18 @@ PrefabInstance:
     - target: {fileID: 4709876850244793976, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
       propertyPath: m_Name
       value: Block Moving Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974723808854316312, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.308316
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974723808854316312, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.52139753
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974723808854316312, guid: 82c06906ca3a58c47a76a78a6a523630, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.0482
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
