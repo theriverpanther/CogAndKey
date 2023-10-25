@@ -11,6 +11,8 @@ public class CameraScript : MonoBehaviour
     private CamerBoundType lastLook;
     private float scrollCD;
 
+    private const float SPEED = 12f;
+
     public static CameraScript Instance { get; private set; }
 
     public Vector2 Dimensions { get {
@@ -38,8 +40,7 @@ public class CameraScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        float speed = 12f;
-        float shift = speed * Time.deltaTime;
+        float shift = SPEED * Time.deltaTime;
         Vector3 target = FindTargetPosition();
         float distance = Vector3.Distance(transform.position, target);
         if(distance <= shift) {
@@ -47,6 +48,25 @@ public class CameraScript : MonoBehaviour
         } else {
             transform.position += shift * (target - transform.position).normalized;
         }
+
+        // do not let the player leave the camera's view
+        Vector2 dims = Dimensions;
+        Vector3 newPos = transform.position;
+        float BUFFER = 2.0f;
+        if(player.transform.position.x < transform.position.x - dims.x / 2 + BUFFER) {
+            newPos.x = player.transform.position.x + dims.x / 2 - BUFFER;
+        }
+        else if(player.transform.position.x > transform.position.x + dims.x / 2 - BUFFER) {
+            newPos.x = player.transform.position.x - dims.x / 2 + BUFFER;
+        }
+        if(player.transform.position.y < transform.position.y - dims.y / 2 + BUFFER) {
+            newPos.y = player.transform.position.y + dims.y / 2 - BUFFER;
+        }
+        else if(player.transform.position.y > transform.position.y + dims.y / 2 - BUFFER) {
+            newPos.y = player.transform.position.y - dims.y / 2 + BUFFER;
+        }
+
+        transform.position = newPos;
 
         if(scrollCD > 0) {
             scrollCD -= Time.deltaTime;
