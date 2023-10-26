@@ -142,7 +142,7 @@ public class HelperCreature : MonoBehaviour
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>() , true);
         }
 
-        if (collision.gameObject.tag == "Wall")
+        if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Agent")
         {
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
         }

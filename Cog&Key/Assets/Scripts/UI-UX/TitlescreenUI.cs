@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 public class TitlescreenUI : MonoBehaviour
 {
@@ -110,7 +111,9 @@ public class TitlescreenUI : MonoBehaviour
                 SwitchScreen("Main Screen");
                 break;
             case "play":
-                SetScene("NEWLEVEL1");
+                if(SplashScreen.isFinished) { 
+                    SetScene("NEWLEVEL1");
+                }
                 break;
         }
     } 
