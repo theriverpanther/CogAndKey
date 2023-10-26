@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using System.Collections;
 
+
+#if UNITY_EDITOR
 [ExecuteInEditMode]
-public class NodePlacer : EditorWindow
+
+public class NodePlacer
+
+    : EditorWindow
 {
     [MenuItem ("Window/Nodes")]
     public static void ShowWindow()
@@ -32,3 +36,4 @@ public class NodePlacer : EditorWindow
         }
     }
 }
+#endif
