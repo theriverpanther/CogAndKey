@@ -245,7 +245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Size.x
-      value: 8.797253
+      value: 10.9636965
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Size.y
@@ -253,7 +253,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Offset.x
-      value: 0.43108177
+      value: 1.3501782
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Offset.y
@@ -453,7 +453,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Size.x
-      value: 16.117523
+      value: 17.003796
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Size.y
@@ -461,7 +461,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Offset.x
-      value: 6.0495586
+      value: 6.4926953
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Offset.y
@@ -580,7 +580,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1280155008580703216, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 2.01
       objectReference: {fileID: 0}
     - target: {fileID: 1280155008580703216, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -620,19 +620,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Size.x
-      value: 12.79921
+      value: 13.884062
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Size.y
-      value: 8.119851
+      value: 13.788208
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Offset.x
-      value: 0.5119934
+      value: 1.0544195
       objectReference: {fileID: 0}
     - target: {fileID: 4906355625934014140, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: m_Offset.y
-      value: 1.3187985
+      value: 4.152977
+      objectReference: {fileID: 0}
+    - target: {fileID: 4949345559072163322, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
+      propertyPath: textSpeed
+      value: 0.04
       objectReference: {fileID: 0}
     - target: {fileID: 4949345559072163322, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: textToShow
@@ -736,6 +740,10 @@ PrefabInstance:
       propertyPath: imgToShow
       value: 
       objectReference: {fileID: 2800000, guid: 323034971c145cf499dc7664c2810a21, type: 3}
+    - target: {fileID: 4949345559072163322, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
+      propertyPath: textSpeed
+      value: 0.02
+      objectReference: {fileID: 0}
     - target: {fileID: 4949345559072163322, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: textToShow
       value: 'Here to help! '
@@ -14970,6 +14978,10 @@ PrefabInstance:
       propertyPath: imgToShow
       value: 
       objectReference: {fileID: 2800000, guid: c51d11955b9cbb44da1b6347afceeb2c, type: 3}
+    - target: {fileID: 4949345559072163322, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
+      propertyPath: textSpeed
+      value: 0.06
+      objectReference: {fileID: 0}
     - target: {fileID: 4949345559072163322, guid: 234512f659b5aaa408cabde7c4d4130c, type: 3}
       propertyPath: textToShow
       value: 'Checkpoint hit! '
