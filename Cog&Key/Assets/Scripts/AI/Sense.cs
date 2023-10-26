@@ -72,8 +72,8 @@ public class Sense : MonoBehaviour
             {
                 RaycastHit2D results;
                 results = Physics2D.Raycast(transform.position, (player.transform.position - transform.position).normalized, 10f);
-                Debug.DrawLine(transform.position, results.point, Color.red, 2f);
-                DebugDisplay.Instance.PlaceDot("Raycast", results.point);
+                //Debug.DrawLine(transform.position, results.point, Color.red, 2f);
+                //DebugDisplay.Instance.PlaceDot("Raycast", results.point);
                 if (results.collider.gameObject.tag == "Player")
                 {
                     //Debug.Log($"Pos:{transform.position}, Collider: {player.transform.position}");
