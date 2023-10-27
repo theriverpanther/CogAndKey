@@ -165,7 +165,7 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
-        if(collision.gameObject.tag == "Wall") {
+        if(currentState == State.Attacking && collision.gameObject.tag == "Wall") {
             SetState(State.Returning);
         }
     }

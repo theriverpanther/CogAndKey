@@ -26,6 +26,8 @@ public class LevelData : MonoBehaviour
 
     // needs CameraScript Awake() to run first
     void Start() {
+        Physics2D.queriesHitTriggers = false; // prevent raycasts from hitting triggers
+
         checkpoints = new List<GameObject>(GameObject.FindGameObjectsWithTag("Checkpoint"));
         GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
 
