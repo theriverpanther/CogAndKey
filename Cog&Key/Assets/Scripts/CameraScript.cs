@@ -40,6 +40,29 @@ public class CameraScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        // do not let the player leave the camera's view
+        Vector3 playerPos = player.transform.position;
+        float BUFFER = 2.0f;
+        if(playerPos.x > LevelData.Instance.XMin + BUFFER && playerPos.x < LevelData.Instance.XMax - BUFFER && playerPos.y > LevelData.Instance.YMin + BUFFER) {
+            Vector2 dims = Dimensions;
+            Vector3 newPos = transform.position;
+            if(playerPos.x < transform.position.x - dims.x / 2 + BUFFER) {
+                newPos.x = playerPos.x + dims.x / 2 - BUFFER;
+            }
+            else if(playerPos.x > transform.position.x + dims.x / 2 - BUFFER) {
+                newPos.x = playerPos.x - dims.x / 2 + BUFFER;
+            }
+            if(playerPos.y < transform.position.y - dims.y / 2 + BUFFER) {
+                newPos.y = playerPos.y + dims.y / 2 - BUFFER;
+            }
+            else if(playerPos.y > transform.position.y + dims.y / 2 - BUFFER) {
+                newPos.y = playerPos.y - dims.y / 2 + BUFFER;
+            }
+
+            transform.position = newPos;
+        }
+
+        // smoothly move towards the player
         float shift = SPEED * Time.deltaTime;
         Vector3 target = FindTargetPosition();
         float distance = Vector3.Distance(transform.position, target);
@@ -48,25 +71,6 @@ public class CameraScript : MonoBehaviour
         } else {
             transform.position += shift * (target - transform.position).normalized;
         }
-
-        // do not let the player leave the camera's view
-        Vector2 dims = Dimensions;
-        Vector3 newPos = transform.position;
-        float BUFFER = 2.0f;
-        if(player.transform.position.x < transform.position.x - dims.x / 2 + BUFFER) {
-            newPos.x = player.transform.position.x + dims.x / 2 - BUFFER;
-        }
-        else if(player.transform.position.x > transform.position.x + dims.x / 2 - BUFFER) {
-            newPos.x = player.transform.position.x - dims.x / 2 + BUFFER;
-        }
-        if(player.transform.position.y < transform.position.y - dims.y / 2 + BUFFER) {
-            newPos.y = player.transform.position.y + dims.y / 2 - BUFFER;
-        }
-        else if(player.transform.position.y > transform.position.y + dims.y / 2 - BUFFER) {
-            newPos.y = player.transform.position.y - dims.y / 2 + BUFFER;
-        }
-
-        transform.position = newPos;
 
         if(scrollCD > 0) {
             scrollCD -= Time.deltaTime;
