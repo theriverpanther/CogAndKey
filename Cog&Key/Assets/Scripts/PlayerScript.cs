@@ -39,11 +39,6 @@ public class PlayerScript : MonoBehaviour
     public GameObject helper;
     private HelperCreature helperScript;
 
-    public Rect CollisionArea {  get {
-            Vector2 size = GetComponent<BoxCollider2D>().bounds.size;
-            return new Rect((Vector2)transform.position - size / 2, size);
-    } }
-
     void Start()
     {
         physicsBody = GetComponent<Rigidbody2D>();
@@ -93,7 +88,7 @@ public class PlayerScript : MonoBehaviour
             case State.Aerial:
                 if(Mathf.Abs(velocity.y) <= 0.05f) {
                     // check to make sure this isn't the player hitting a ceiling
-                    Rect collisionArea = CollisionArea;
+                    Rect collisionArea = Global.GetCollisionArea(gameObject);
                     RaycastHit2D leftRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMin - 0.1f, 0), Vector2.down);
                     RaycastHit2D rightRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMin - 0.1f, 0), Vector2.down);
 
@@ -270,7 +265,7 @@ public class PlayerScript : MonoBehaviour
 
     // checks if the player's left and right sides are against any surfaces. Returns Direction.None for no wall, and left or right if there is a wall
     private Direction GetAdjacentWallDireciton() {
-        Rect collisionArea = CollisionArea;
+        Rect collisionArea = Global.GetCollisionArea(gameObject);
 
         const float BUFFER = 0.05f;
 

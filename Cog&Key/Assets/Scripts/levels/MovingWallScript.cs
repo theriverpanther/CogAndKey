@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// path is defined by children with the waypoint tag
+// path is defined by objects with the waypoint tag
 public class MovingWallScript : MonoBehaviour, IKeyWindable
 {
     [SerializeField] private GameObject[] Path;
@@ -165,7 +165,8 @@ public class MovingWallScript : MonoBehaviour, IKeyWindable
     }
 
     public void InsertKey(KeyState key) {
-        if(currentKey != key && (currentKey == KeyState.Reverse || key == KeyState.Reverse)) {
+        if( (currentKey == KeyState.Reverse) != (key == KeyState.Reverse) ) {
+            // turning reversing key on or off
             forward = !forward;
             NextWaypoint();
         }
