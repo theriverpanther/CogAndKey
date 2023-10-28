@@ -16,6 +16,9 @@ public class KillOnTouch : MonoBehaviour
 
         if(collision.gameObject.tag == "Agent")
         {
+            Transform t = collision.transform.GetChild(collision.transform.childCount - 1);
+            t.parent = null;
+            t.GetComponent<KeyScript>().Detach();
             Destroy(collision.gameObject);
         }
     }
