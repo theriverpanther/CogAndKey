@@ -39,6 +39,8 @@ public class PlayerScript : MonoBehaviour
     public GameObject helper;
     private HelperCreature helperScript;
 
+    public PlayerInput Input {  get { return input; } }
+
     void Start()
     {
         physicsBody = GetComponent<Rigidbody2D>();
@@ -267,20 +269,20 @@ public class PlayerScript : MonoBehaviour
     private Direction GetAdjacentWallDireciton() {
         Rect collisionArea = Global.GetCollisionArea(gameObject);
 
-        const float BUFFER = 0.05f;
+        const float BUFFER = 0.2f;
+        
+        RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMax, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.center.y, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMin, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
 
-        RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.yMax, 0), Vector2.left);
-        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.center.y, 0), Vector2.left);
-        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.yMin, 0), Vector2.left);
+        RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMax, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.center.y, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMin, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
 
-        RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.yMax, 0), Vector2.right);
-        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.center.y, 0), Vector2.right);
-        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.yMin, 0), Vector2.right);
-
-        if(leftTop.collider != null && leftTop.distance < 2 * BUFFER || leftMid.collider != null && leftMid.distance < 2 * BUFFER || leftBot.collider != null && leftBot.distance < 2 * BUFFER) {
+        if(leftTop.collider != null && leftTop.distance < BUFFER || leftMid.collider != null && leftMid.distance < BUFFER || leftBot.collider != null && leftBot.distance < BUFFER) {
             return Direction.Left;
         }
-        if(rightTop.collider != null && rightTop.distance < 2 * BUFFER || rightMid.collider != null && rightMid.distance < 2 * BUFFER || rightBot.collider != null && rightBot.distance < 2 * BUFFER) {
+        if(rightTop.collider != null && rightTop.distance < BUFFER || rightMid.collider != null && rightMid.distance < BUFFER || rightBot.collider != null && rightBot.distance < BUFFER) {
             return Direction.Right;
         }
 
