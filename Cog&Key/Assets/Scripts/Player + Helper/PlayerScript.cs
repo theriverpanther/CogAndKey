@@ -39,6 +39,9 @@ public class PlayerScript : MonoBehaviour
     public GameObject helper;
     private HelperCreature helperScript;
 
+    [SerializeField]
+    private Animator playerAnimation;
+
     public PlayerInput Input {  get { return input; } }
 
     void Start()
@@ -88,7 +91,8 @@ public class PlayerScript : MonoBehaviour
         switch(currentState)
         {
             case State.Aerial:
-                if(Mathf.Abs(velocity.y) <= 0.05f) {
+                playerAnimation.SetBool("Running", false);
+                if (Mathf.Abs(velocity.y) <= 0.05f) {
                     // check to make sure this isn't the player hitting a ceiling
                     Rect collisionArea = Global.GetCollisionArea(gameObject);
                     RaycastHit2D leftRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMin - 0.1f, 0), Vector2.down);
@@ -97,6 +101,8 @@ public class PlayerScript : MonoBehaviour
                     // land on the ground
                     if(leftRaycast.collider != null && leftRaycast.distance < 0.2f || rightRaycast.collider != null && rightRaycast.distance < 0.2f) {
                         currentState = State.Grounded;
+                        playerAnimation.SetBool("Jumping", false);
+                        playerAnimation.SetBool("Falling", false);
                         break;
                     }
                 }
@@ -111,17 +117,25 @@ public class PlayerScript : MonoBehaviour
                 // determine gravity
                 if(jumpHeld) {
                     physicsBody.gravityScale = JUMP_GRAVITY;
-                    if(physicsBody.velocity.y > JUMP_VELOCITY) {
+                    playerAnimation.SetBool("Jumping", true);
+                    playerAnimation.SetBool("Falling", false);
+                    if (physicsBody.velocity.y > JUMP_VELOCITY) {
                         physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
                     }
                 } else {
                     physicsBody.gravityScale = FALL_GRAVITY;
+                    playerAnimation.SetBool("Jumping", false);
+                    playerAnimation.SetBool("Falling", true);
+                    playerAnimation.SetBool("Wallslide", false);
                 }
 
                 if(physicsBody.gravityScale != FALL_GRAVITY && 
                     (physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
                 ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
+                    playerAnimation.SetBool("Jumping", false);
+                    playerAnimation.SetBool("Falling", true);
+                    playerAnimation.SetBool("Wallslide", false);
                 }
                 
                 Direction adjWallDir = GetAdjacentWallDireciton();
@@ -131,6 +145,9 @@ public class PlayerScript : MonoBehaviour
                     (adjWallDir == Direction.Left && input.IsPressed(PlayerInput.Action.Left) || adjWallDir == Direction.Right && input.IsPressed(PlayerInput.Action.Right))
                 ) {
                     velocity.y = CLING_VELOCITY;
+                    playerAnimation.SetBool("Wallslide", true);
+                    playerAnimation.SetBool("Running", false);
+                    playerAnimation.SetBool("Falling", false);
                 }
 
                 // wall jump
@@ -140,6 +157,8 @@ public class PlayerScript : MonoBehaviour
                     velocity.x = jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
                     jumpHeld = true;
+                    playerAnimation.SetBool("Jumping", true);
+                    playerAnimation.SetBool("Wallslide", false);
                 }
 
                 // allow jump during coyote time
@@ -155,11 +174,18 @@ public class PlayerScript : MonoBehaviour
 
             case State.Grounded:
                 friction = 30f;
-                if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
+                playerAnimation.SetBool("Wallslide", false);
+                if (input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
+                    playerAnimation.SetBool("Running", false);
+                    playerAnimation.SetBool("Wallslide", false);
+                    playerAnimation.SetBool("Jumping", true);
                 }
                 else if(velocity.y < -0.01f) {
                     // fall off platform
+                    playerAnimation.SetBool("Running", false);
+                    playerAnimation.SetBool("Wallslide", false);
+                    playerAnimation.SetBool("Falling", true);
                     currentState = State.Aerial;
                     coyoteTime = 0.05f;
                 }
@@ -168,23 +194,32 @@ public class PlayerScript : MonoBehaviour
 
         // horizontal movement
         float walkAccel = WALK_ACCEL * Time.deltaTime;
-        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x < WALK_SPEED && moveLockedRight != true;
-        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && velocity.x > -WALK_SPEED && moveLockedRight != false;
+        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x <= WALK_SPEED + Mathf.Epsilon && moveLockedRight != true;
+        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && velocity.x >= -WALK_SPEED - Mathf.Epsilon && moveLockedRight != false;
         if(moveRight == moveLeft) { // both pressed is same as neither pressed
             // apply friction
-            if(velocity != Vector2.zero) {
+            //playerAnimation.SetBool("Running", false);
+            Debug.Log("AAAAAA");
+            if (velocity != Vector2.zero) {
                 float reduction = friction * Time.deltaTime;
-                if(Mathf.Abs(velocity.x) <= reduction) {
+                if (Mathf.Abs(velocity.x) <= reduction) {
                     // prevent passing 0
                     velocity.x = 0;
                 } else {
                     velocity.x += (velocity.x > 0 ? -1 : 1) * friction * Time.deltaTime;
                 }
+            } else
+            {
+                playerAnimation.SetBool("Running", false);
             }
         }
         else if(moveRight) {
             velocity.x += walkAccel;
-            if(velocity.x > WALK_SPEED) {
+            if (playerAnimation.GetBool("Wallslide") != true)
+            {
+                playerAnimation.SetBool("Running", true);
+            }
+            if (velocity.x > WALK_SPEED) {
                 velocity.x = WALK_SPEED;
             }
 
@@ -192,7 +227,12 @@ public class PlayerScript : MonoBehaviour
         }
         else if(moveLeft) {
             velocity.x -= walkAccel;
-            if(velocity.x < -WALK_SPEED) {
+            if(playerAnimation.GetBool("Wallslide") != true)
+            {
+                playerAnimation.SetBool("Running", true);
+            }
+            
+            if (velocity.x < -WALK_SPEED) {
                 velocity.x = -WALK_SPEED;
             }
                 
@@ -261,6 +301,9 @@ public class PlayerScript : MonoBehaviour
 
     private void Jump(ref Vector2 newVelocity) {
         newVelocity.y = JUMP_VELOCITY;
+        playerAnimation.SetBool("Running", false);
+        playerAnimation.SetBool("Jumping", true);
+        playerAnimation.SetBool("Wallslide", false);
         currentState = State.Aerial;
         jumpHeld = true;
     }
