@@ -185,10 +185,10 @@ public class Agent : MonoBehaviour, IKeyWindable
             player.Die();
         }
 
-        if (collision.gameObject.name == "Spikes")
-        {
-            Destroy(gameObject);
-        }
+        //if (collision.gameObject.name == "Spikes")
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 
     protected void OnCollisionExit2D(Collision2D collision)
