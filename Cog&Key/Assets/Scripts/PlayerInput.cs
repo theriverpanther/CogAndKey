@@ -43,6 +43,11 @@ public class PlayerInput
         NUM_ACTIONS = Enum.GetNames(typeof(Action)).Length;
         pressedLastFrame = new bool[NUM_ACTIONS];
         pressedThisFrame = new bool[NUM_ACTIONS];
+
+        keyBindings = new Dictionary<Action, List<ButtonControl>>();
+        for(int i = 0; i < NUM_ACTIONS; i++) {
+            keyBindings[(Action)i] = new List<ButtonControl>();
+        }
         ConstructKeyBindings();
     }
 
@@ -88,14 +93,13 @@ public class PlayerInput
 
         controllerName = Input.GetJoystickNames().Length > 0 ? Input.GetJoystickNames()[0] : null;
 
-        keyBindings = new Dictionary<Action, List<ButtonControl>>();
         for(int i = 0; i < NUM_ACTIONS; i++) {
-            keyBindings[(Action)i] = new List<ButtonControl>();
+            keyBindings[(Action)i].Clear();
         }
 
         // add gamepad bindings
         if(currentGP != null) {
-            keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentGP.aButton, currentGP.dpad.up });
+            keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentGP.aButton });
             keyBindings[Action.Right].AddRange(new List<ButtonControl>() { currentGP.leftStick.right, currentGP.dpad.right });
             keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentGP.leftStick.left, currentGP.dpad.left });
             keyBindings[Action.Up].AddRange(new List<ButtonControl>() { currentGP.leftStick.up, currentGP.dpad.up });

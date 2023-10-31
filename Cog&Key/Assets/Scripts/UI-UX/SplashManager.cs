@@ -18,7 +18,7 @@ public class SplashManager : MonoBehaviour
         while (!SplashScreen.isFinished)
         {
             SplashScreen.Draw();
-            if (Input.GetKey(KeyCode.Escape))
+            if (Input.anyKeyDown)
             {
                 Debug.Log("STOP");
                 SplashScreen.Stop(stopBehavior);

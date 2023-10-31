@@ -39,10 +39,7 @@ public class PlayerScript : MonoBehaviour
     public GameObject helper;
     private HelperCreature helperScript;
 
-    public Rect CollisionArea {  get {
-            Vector2 size = GetComponent<BoxCollider2D>().bounds.size;
-            return new Rect((Vector2)transform.position - size / 2, size);
-    } }
+    public PlayerInput Input {  get { return input; } }
 
     void Start()
     {
@@ -93,7 +90,7 @@ public class PlayerScript : MonoBehaviour
             case State.Aerial:
                 if(Mathf.Abs(velocity.y) <= 0.05f) {
                     // check to make sure this isn't the player hitting a ceiling
-                    Rect collisionArea = CollisionArea;
+                    Rect collisionArea = Global.GetCollisionArea(gameObject);
                     RaycastHit2D leftRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMin - 0.1f, 0), Vector2.down);
                     RaycastHit2D rightRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMin - 0.1f, 0), Vector2.down);
 
@@ -270,22 +267,22 @@ public class PlayerScript : MonoBehaviour
 
     // checks if the player's left and right sides are against any surfaces. Returns Direction.None for no wall, and left or right if there is a wall
     private Direction GetAdjacentWallDireciton() {
-        Rect collisionArea = CollisionArea;
+        Rect collisionArea = Global.GetCollisionArea(gameObject);
 
-        const float BUFFER = 0.05f;
+        const float BUFFER = 0.2f;
+        
+        RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMax, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.center.y, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMin, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
 
-        RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.yMax, 0), Vector2.left);
-        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.center.y, 0), Vector2.left);
-        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(collisionArea.xMin - BUFFER, collisionArea.yMin, 0), Vector2.left);
+        RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMax, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.center.y, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMin, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
 
-        RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.yMax, 0), Vector2.right);
-        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.center.y, 0), Vector2.right);
-        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(collisionArea.xMax + BUFFER, collisionArea.yMin, 0), Vector2.right);
-
-        if(leftTop.collider != null && leftTop.distance < 2 * BUFFER || leftMid.collider != null && leftMid.distance < 2 * BUFFER || leftBot.collider != null && leftBot.distance < 2 * BUFFER) {
+        if(leftTop.collider != null && leftTop.distance < BUFFER || leftMid.collider != null && leftMid.distance < BUFFER || leftBot.collider != null && leftBot.distance < BUFFER) {
             return Direction.Left;
         }
-        if(rightTop.collider != null && rightTop.distance < 2 * BUFFER || rightMid.collider != null && rightMid.distance < 2 * BUFFER || rightBot.collider != null && rightBot.distance < 2 * BUFFER) {
+        if(rightTop.collider != null && rightTop.distance < BUFFER || rightMid.collider != null && rightMid.distance < BUFFER || rightBot.collider != null && rightBot.distance < BUFFER) {
             return Direction.Right;
         }
 

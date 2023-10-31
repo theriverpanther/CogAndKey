@@ -12,6 +12,7 @@ public class Hunter : Agent
     [SerializeField] private bool wallDetected;
     [SerializeField] private Color idleColor;
     [SerializeField] private Color huntColor;
+    private GameObject player;
 
     [SerializeField] private float maxHuntTime = 5f;
     private float huntTimer = 0f;
@@ -23,6 +24,7 @@ public class Hunter : Agent
         base.Start();
         direction = new Vector2(-1, 0);
         wallDetected = false;
+        player = GameObject.Find("Player");
     }
 
     // Update is called once per frame
@@ -90,7 +92,12 @@ public class Hunter : Agent
         foreach(Sense s in senses)
         {
             if (s.collidedPlayer)
+            {
                 playerSensed = true;
+                playerPosition = player.transform.position;
+            }
+                
+                
         }
 
         if(sqrDist <= distThreshold * distThreshold && !playerSensed)

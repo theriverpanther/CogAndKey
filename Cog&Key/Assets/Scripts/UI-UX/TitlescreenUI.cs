@@ -93,7 +93,9 @@ public class TitlescreenUI : MonoBehaviour
     /// <param name="button">Button String Name</param>
     public void ButtonPress(string button)
     {
-        switch(button.Trim().ToLower()) {
+        if(SplashScreen.isFinished)
+        {
+            switch(button.Trim().ToLower()) {
             case "settings":
                 wallpaperUI.SetBool("MoveWallpaper", true);
                 SwitchScreen("Settings Screen");
@@ -111,11 +113,11 @@ public class TitlescreenUI : MonoBehaviour
                 SwitchScreen("Main Screen");
                 break;
             case "play":
-                if(SplashScreen.isFinished) { 
-                    SetScene("NEWLEVEL1");
-                }
+                SetScene("NEWLEVEL1");
                 break;
         }
+        }
+        
     } 
 
     /// <summary>

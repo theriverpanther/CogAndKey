@@ -85,7 +85,14 @@ public class Agent : MonoBehaviour, IKeyWindable
     {
         if(!keyInserted) state = KeyState.Normal;
         if(jumpState == JumpState.Aerial) IsGrounded();
-        if (transform.position.y + distToGround <= LevelData.Instance.YMin) Destroy(gameObject);
+        if (transform.position.y + distToGround <= LevelData.Instance.YMin)
+        {
+            Transform t = transform.GetChild(transform.childCount - 1);
+            t.parent = null;
+            t.GetComponent<KeyScript>().Detach();
+            Destroy(gameObject);
+        }
+
     }
 
     public void InsertKey(KeyState keyState)
