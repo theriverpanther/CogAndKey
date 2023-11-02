@@ -60,7 +60,7 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        Debug.Log(physicsBody.gravityScale);
+        GetComponent<SpriteRenderer>().color = Color.white;
         input.Update();
         Vector2 velocity = physicsBody.velocity;
         float friction = 0f; // per second^2
@@ -91,11 +91,6 @@ public class PlayerScript : MonoBehaviour
         switch(currentState)
         {
             case State.Aerial:
-                if(IsOnFloor()) {
-                    currentState = State.Grounded;
-                    physicsBody.gravityScale = 0f;
-                }
-
                 friction = 5f;
 
                 // extend jump height while jump is held
@@ -146,18 +141,40 @@ public class PlayerScript : MonoBehaviour
                         coyoteTime -= Time.deltaTime;
                     }
                 }
+
+                // land on the ground
+                Vector2 floorAngle;
+                if(IsOnFloor(out floorAngle)) {
+                    currentState = State.Grounded;
+                    physicsBody.gravityScale = FALL_GRAVITY;
+                }
                 break;
 
             case State.Grounded:
                 friction = 30f;
+
+                Vector2 floorNorm;
+                bool onFloor = IsOnFloor(out floorNorm);
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
                 }
-                else if(!IsOnFloor()) {
+                else if(!onFloor) {
                     // fall off platform
                     currentState = State.Aerial;
-                    coyoteTime = 0.1f;
+                    coyoteTime = 0.08f;
                     physicsBody.gravityScale = FALL_GRAVITY;
+                }
+                
+                if(floorNorm.y < 0.9f) {
+                    GetComponent<SpriteRenderer>().color = Color.red;
+                    // apply a force to stay still on slopes
+                    Vector2 downSlope = new Vector2(-floorNorm.y, floorNorm.x);
+                    if(downSlope.y > 0) {
+                        downSlope *= -1f;
+                    }
+                    
+                    Vector2 downSlopeGravity = Vector3.Project(Physics2D.gravity * physicsBody.gravityScale, downSlope);
+                    velocity += -downSlopeGravity * Time.deltaTime;
                 }
                 break;
         }
@@ -242,7 +259,7 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 activeKey.Attack(attackDirection);
-                keyCooldown = 0.5f;
+                keyCooldown = 0.1f;
             }
         }
         else {
@@ -262,12 +279,14 @@ public class PlayerScript : MonoBehaviour
     }
 
     // uses raycasts to determine if the player is standing on a surface
-    private bool IsOnFloor() {
+    private bool IsOnFloor(out Vector2 normal) {
         const float BUFFER = 0.2f;
         float halfRadius = colliderSize.x / 2f;
         RaycastHit2D left = Physics2D.Raycast(new Vector3(transform.position.x - colliderSize.x / 2f, transform.position.y - colliderSize.y / 2f + halfRadius, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
         RaycastHit2D mid = Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y - colliderSize.y / 2f, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
         RaycastHit2D right = Physics2D.Raycast(new Vector3(transform.position.x + colliderSize.x / 2f, transform.position.y - colliderSize.y / 2f + halfRadius, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
+
+        normal = (mid.collider == null ? Vector2.zero : mid.normal);
 
         return mid.collider != null && mid.distance < BUFFER || left.collider != null && left.distance < halfRadius + BUFFER || right.collider != null && right.distance < halfRadius + BUFFER;
     }
