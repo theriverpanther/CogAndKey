@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 #if UNITY_EDITOR
@@ -11,12 +13,10 @@ using UnityEditor.SceneManagement;
 
 [ExecuteInEditMode]
 
+//https://docs.unity3d.com/ScriptReference/MenuItem.html
 public class NodePlacer : MonoBehaviour
 {
     static string path = "AgentNode";
-
-    Vector3 mousePos = Vector3.zero;
-
     [MenuItem("GameObject/Nodes/AgentNode", false, 10)]
     static void CreateNodeObject(MenuCommand cmd)
     {
