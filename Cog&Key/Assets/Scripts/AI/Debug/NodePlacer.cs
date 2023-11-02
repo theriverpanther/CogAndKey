@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -14,6 +16,9 @@ using UnityEngine.UIElements;
 public class NodePlacer : MonoBehaviour
 {
     static string path = "AgentNode";
+
+    Vector3 mousePos = Vector3.zero;
+
     [MenuItem("GameObject/Nodes/AgentNode", false, 10)]
     static void CreateNodeObject(MenuCommand cmd)
     {
@@ -31,9 +36,20 @@ public class NodePlacer : MonoBehaviour
             Event current = field.GetValue(null) as Event;
             if(current != null)
             {
-                mousePos = Camera.main.ScreenToViewportPoint(new Vector3(current.mousePosition.x, current.mousePosition.y * -1, 0f));
-                //Vector3 offset = ;
-                //mousePos += offset;
+                mousePos = Camera.main.ScreenToWorldPoint(new Vector3(current.mousePosition.x, current.mousePosition.y * -1, 0f));
+                
+                
+                try
+                {
+                    SceneView.lastActiveSceneView.wantsMouseMove = true;
+                    Vector3 offset = (SceneView.lastActiveSceneView.pivot - Camera.main.transform.position) * SceneView.lastActiveSceneView.size / 2;
+                    offset.z = 0;
+                    mousePos += offset;
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
+                }
 
                 Debug.DrawLine(current.mousePosition, mousePos, Color.cyan, 2f);
                 //mousePos += (Vector3)SceneView.currentDrawingSceneView.position.center;
@@ -57,6 +73,11 @@ public class NodePlacer : MonoBehaviour
 
         // Mark Scene Dirty
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+    }
+
+    public void OnGUI()
+    {
+        string mouseOver = EditorWindow.mouseOverWindow ? EditorWindow.mouseOverWindow.ToString() : "Nada";
     }
     
     //[MenuItem ("Nodes/Click")]
