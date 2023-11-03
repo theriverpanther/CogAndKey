@@ -16,14 +16,9 @@ public class Rideable : MonoBehaviour
             if(player == null) {
                 continue;
             }
-
-            Rect riderArea = Global.GetCollisionArea(rider);
-            Rect platformArea = Global.GetCollisionArea(gameObject);
-
-            bool onSide = riderArea.yMin < platformArea.yMax && riderArea.yMax > riderArea.yMin;
             bool towardsMiddle = (rider.transform.position.x < transform.position.x && player.Input.IsPressed(PlayerInput.Action.Right)) 
                 || (rider.transform.position.x > transform.position.x && player.Input.IsPressed(PlayerInput.Action.Left));
-            if(onSide && !towardsMiddle) {
+            if(OnSide(rider) && !towardsMiddle) {
                 riders.RemoveAt(i);
                 OnRiderRemoved(rider);
             }
@@ -45,6 +40,12 @@ public class Rideable : MonoBehaviour
             riders.Remove(collision.gameObject);
             OnRiderRemoved(collision.gameObject);
         }
+    }
+
+    protected bool OnSide(GameObject rider) {
+        Rect riderArea = Global.GetCollisionArea(rider);
+        Rect platformArea = Global.GetCollisionArea(gameObject);
+        return riderArea.yMin < platformArea.yMax && riderArea.yMax > riderArea.yMin;
     }
 
     // pseudo events for sub classes

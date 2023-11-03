@@ -17,7 +17,7 @@ public class PlayerScript : MonoBehaviour
     public KeyScript LockKey { get; set; }
     public KeyScript ReverseKey { get; set; }
 
-    private const float FALL_GRAVITY = 5.0f;
+    public const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
     private const float JUMP_VELOCITY = 13.0f;
     private const float CLING_VELOCITY = -1.0f; // the maximum downward speed when pressed against a wall
@@ -60,7 +60,6 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        GetComponent<SpriteRenderer>().color = Color.white;
         input.Update();
         Vector2 velocity = physicsBody.velocity;
         float friction = 0f; // per second^2
@@ -166,12 +165,10 @@ public class PlayerScript : MonoBehaviour
                 }
                 
                 if(floorNorm.y < 0.9f) {
-                    GetComponent<SpriteRenderer>().color = Color.red;
                     // apply a force to stay still on slopes
                     Vector2 gravity = Physics2D.gravity * physicsBody.gravityScale;
                     Vector2 normalForce = -Vector3.Project(gravity, -floorNorm);
                     Vector2 downSlope = gravity + normalForce;
-                    //velocity += -downSlope * Time.deltaTime;
                     physicsBody.AddForce(-downSlope);
                 }
                 break;
