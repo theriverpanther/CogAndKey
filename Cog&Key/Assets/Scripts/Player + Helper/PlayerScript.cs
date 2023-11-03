@@ -168,13 +168,11 @@ public class PlayerScript : MonoBehaviour
                 if(floorNorm.y < 0.9f) {
                     GetComponent<SpriteRenderer>().color = Color.red;
                     // apply a force to stay still on slopes
-                    Vector2 downSlope = new Vector2(-floorNorm.y, floorNorm.x);
-                    if(downSlope.y > 0) {
-                        downSlope *= -1f;
-                    }
-                    
-                    Vector2 downSlopeGravity = Vector3.Project(Physics2D.gravity * physicsBody.gravityScale, downSlope);
-                    velocity += -downSlopeGravity * Time.deltaTime;
+                    Vector2 gravity = Physics2D.gravity * physicsBody.gravityScale;
+                    Vector2 normalForce = -Vector3.Project(gravity, -floorNorm);
+                    Vector2 downSlope = gravity + normalForce;
+                    //velocity += -downSlope * Time.deltaTime;
+                    physicsBody.AddForce(-downSlope);
                 }
                 break;
         }
