@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Build.Content;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.UIElements;
 
 
@@ -36,25 +38,27 @@ public class NodePlacer : MonoBehaviour
             Event current = field.GetValue(null) as Event;
             if(current != null)
             {
-                mousePos = Camera.main.ScreenToWorldPoint(new Vector3(current.mousePosition.x, current.mousePosition.y * -1, 0f));
-                
-                
+                //https://forum.unity.com/threads/how-to-get-mouseposition-in-scene-view.208911/
+                mousePos = Event.current.mousePosition;
                 try
                 {
-                    SceneView.lastActiveSceneView.wantsMouseMove = true;
-                    Vector3 offset = (SceneView.lastActiveSceneView.pivot - Camera.main.transform.position) * SceneView.lastActiveSceneView.size / 2;
-                    offset.z = 0;
-                    mousePos += offset;
+                    Camera sceneCam = lastView.camera;
+                    //mousePos.y += sceneCam.scaledPixelHeight / 2f;
+
+                    Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
+                    mousePos = ray.origin;
+                    
+                    //mousePos.y = sceneCam.scaledPixelHeight - mousePos.y;
+                    //mousePos = sceneCam.ScreenToWorldPoint(mousePos);
+                    mousePos.z = 0;
+                    // Magic value that has to do with the height of the default resolution scene window (7.5)
+                    mousePos.y += sceneCam.orthographicSize / 7.5f;
+                    //Debug.DrawLine(ray.origin, mousePos, Color.red, 2f);
                 }
                 catch (Exception e)
                 {
                     Debug.Log(e);
                 }
-
-                Debug.DrawLine(current.mousePosition, mousePos, Color.cyan, 2f);
-                //mousePos += (Vector3)SceneView.currentDrawingSceneView.position.center;
-                //mousePos = current.mousePosition;
-                //DebugDisplay.Instance.DrawDot(mousePos);
             }
         }
         if(mousePos != Vector3.negativeInfinity) obj.transform.position = mousePos;
