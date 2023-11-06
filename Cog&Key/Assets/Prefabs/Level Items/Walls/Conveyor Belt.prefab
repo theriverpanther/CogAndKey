@@ -145,6 +145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clockwise: 0
+  TickMarkPrefab: {fileID: 4209912492186254506, guid: 9c0edfb6dfb4b23439887b5dc9e3cd43, type: 3}
 --- !u!50 &124768176756244585
 Rigidbody2D:
   serializedVersion: 4
