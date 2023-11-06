@@ -5,7 +5,7 @@ using UnityEngine;
 public class ConveyorBeltScript : Rideable, IKeyWindable
 {
     [SerializeField] private bool clockwise;
-    private const float SHIFT_SPEED = 6.0f;
+    private const float SHIFT_SPEED = 5.0f;
     private KeyState insertedKey = KeyState.Normal;
     private float ShiftSpeed {  get { return SHIFT_SPEED * (insertedKey == KeyState.Fast ? 2f : 1f); } }
 
@@ -15,23 +15,25 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
         // shift riders
         foreach(GameObject rider in riders) {
             rider.transform.position += ShiftSpeed * Time.deltaTime * DetermineShiftDirection(rider);
+
+            // cancel out gravity when on the side
+            if(OnSide(rider)) {
+                Rigidbody2D physBod = rider.GetComponent<Rigidbody2D>();
+                physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
+            }
         }
     }
 
     protected override void OnRiderAdded(GameObject rider) {
-        if(rider.tag == "Player" && OnSide(rider)) {
-            rider.GetComponent<Rigidbody2D>().gravityScale = 0;
+        if(OnSide(rider)) {
+            rider.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         }
     }
 
     protected override void OnRiderRemoved(GameObject rider) {
-        if(rider.tag == "Player" && OnSide(rider)) {
-            rider.GetComponent<Rigidbody2D>().gravityScale = PlayerScript.FALL_GRAVITY;
-        }
-
         // keep rider momentum if moving fast
         if(insertedKey == KeyState.Fast) {
-            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (Vector2)DetermineShiftDirection(rider);
+            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * 0.7f * (Vector2)DetermineShiftDirection(rider);
         }
     }
 
