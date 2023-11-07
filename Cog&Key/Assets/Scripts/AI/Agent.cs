@@ -48,6 +48,8 @@ public class Agent : MonoBehaviour, IKeyWindable
 
     [SerializeField] protected List<GameObject> nodes = new List<GameObject>();
 
+    private CogIndicator cog;
+
     #endregion
 
     #region Properties
@@ -78,6 +80,8 @@ public class Agent : MonoBehaviour, IKeyWindable
         distToGround = GetComponent<BoxCollider2D>().bounds.extents.y;
 
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
+        // Get a non magic number way pls
+        cog = transform.GetChild(3).GetComponent<CogIndicator>();
     }
 
     // Update is called once per frame
@@ -92,7 +96,7 @@ public class Agent : MonoBehaviour, IKeyWindable
             t.GetComponent<KeyScript>().Detach();
             Destroy(gameObject);
         }
-
+        cog.fast = state != KeyState.Normal;
     }
 
     public void InsertKey(KeyState keyState)

@@ -73,6 +73,7 @@ public class LevelData : MonoBehaviour
                 XMax = Mathf.Max(XMax, boundScript.Area.xMax);
                 YMin = Mathf.Min(YMin, boundScript.Area.yMin);
                 bound.GetComponent<SpriteRenderer>().enabled = false;
+                bound.transform.SetParent(null, true);
                 DontDestroyOnLoad(bound);
             }
         }
