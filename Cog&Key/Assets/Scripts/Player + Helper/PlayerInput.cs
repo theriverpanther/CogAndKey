@@ -25,10 +25,12 @@ public class PlayerInput
     // contain a spot for each Action, index matches enum int value
     private bool[] pressedLastFrame;
     private bool[] pressedThisFrame;
+    private bool mouseClicked;
 
     // used to detect when a controller is plugged in or unplugged
     private Gamepad currentGP;
     private Keyboard currentKB;
+    private Mouse currentMouse;
 
     private string controllerName;
 
@@ -53,7 +55,7 @@ public class PlayerInput
 
     // should be called once per frame
     public void Update() {
-        if(Gamepad.current != currentGP || Keyboard.current != currentKB) {
+        if(Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse) {
             ConstructKeyBindings();
         }
 
@@ -67,6 +69,11 @@ public class PlayerInput
                     break;
                 }
             }
+        }
+
+        mouseClicked = false;
+        if(currentMouse != null && currentMouse.leftButton.isPressed) {
+            mouseClicked = true;
         }
 
         // manage jump buffer
@@ -90,6 +97,7 @@ public class PlayerInput
     private void ConstructKeyBindings() {
         currentGP = Gamepad.current;
         currentKB = Keyboard.current;
+        currentMouse = Mouse.current;
 
         controllerName = Input.GetJoystickNames().Length > 0 ? Input.GetJoystickNames()[0] : null;
 
@@ -111,7 +119,7 @@ public class PlayerInput
 
         // add keyboard bindings
         if(currentKB != null) {
-            keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentKB.upArrowKey, currentKB.wKey, currentKB.spaceKey });
+            keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentKB.spaceKey, currentKB.upArrowKey });
             keyBindings[Action.Right].AddRange(new List<ButtonControl>() { currentKB.rightArrowKey, currentKB.dKey });
             keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentKB.leftArrowKey, currentKB.aKey });
             keyBindings[Action.Up].AddRange(new List<ButtonControl>() { currentKB.upArrowKey, currentKB.wKey });
@@ -120,5 +128,19 @@ public class PlayerInput
             keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentKB.digit2Key, currentKB.numpad2Key, currentKB.xKey });
             keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentKB.digit3Key, currentKB.numpad3Key, currentKB.cKey });
         }
+
+        // add mouse input
+        if(currentMouse != null) {
+            keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentMouse.leftButton });
+        }
+    }
+
+    public bool MouseClicked() {
+        return mouseClicked;
+    }
+
+    // should not be called if there is no mouse
+    public Vector3 GetMouseWorldPosition() {
+        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 }
