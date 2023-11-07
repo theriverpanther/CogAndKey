@@ -232,6 +232,28 @@ public class PlayerScript : MonoBehaviour
 
                 // determine attack direction
                 Vector2 attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
+                if(input.MouseClicked()) {
+                    Debug.Log("hello i have clicked mouse");
+                    // use mouse position to determine the direction
+                    Vector3 mouseDir = input.GetMouseWorldPosition() - transform.position;
+                    if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
+                        mouseDir.y = 0;
+                    } else {
+                        mouseDir.x = 0;
+                    }
+                    attackDirection = mouseDir.normalized;
+                    Debug.Log(input.GetMouseWorldPosition());
+                }
+                else if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
+                    if(input.IsPressed(PlayerInput.Action.Up)) {
+                        attackDirection = Vector2.up;
+                    }
+                    if(input.IsPressed(PlayerInput.Action.Down)) {
+                        attackDirection = Vector2.down;
+                    }
+                }
+
+                
                 if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
                     if(input.IsPressed(PlayerInput.Action.Up)) {
                         attackDirection = Vector2.up;
