@@ -17,5 +17,7 @@ public class CogIndicator : MonoBehaviour
     void Update()
     {
         transform.Rotate(new Vector3(0, 0, (-1 * Mathf.Rad2Deg * (!fast ? spinSpeed : fastSpinSpeed) * Time.deltaTime)));
+        //transform.GetChild(0).rotation = Quaternion.identity;
+        //transform.GetChild(1).rotation = Quaternion.identity;
     }
 }
