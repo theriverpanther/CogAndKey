@@ -199,7 +199,6 @@ public class PlayerScript : MonoBehaviour
         if(moveRight == moveLeft) { // both pressed is same as neither pressed
             // apply friction
             //playerAnimation.SetBool("Running", false);
-            Debug.Log("AAAAAA");
             if (velocity != Vector2.zero) {
                 float reduction = friction * Time.deltaTime;
                 if (Mathf.Abs(velocity.x) <= reduction) {
