@@ -104,7 +104,7 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     protected override void OnRiderRemoved(GameObject rider) {
         // keep rider momentum if moving fast
         if(insertedKey == KeyState.Fast) {
-            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * 0.7f * (Vector2)DetermineShiftDirection(rider);
+            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * 0.8f * (Vector2)DetermineShiftDirection(rider);
         }
     }
 

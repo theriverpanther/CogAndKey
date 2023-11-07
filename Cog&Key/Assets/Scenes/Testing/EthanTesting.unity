@@ -6090,10 +6090,6 @@ PrefabInstance:
       value: Grid
       objectReference: {fileID: 0}
     - target: {fileID: 2992781899106988793, guid: cde2be8b7b3c5f04eb1c53a73a4ebba4, type: 3}
-      propertyPath: m_BodyType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2992781899106988793, guid: cde2be8b7b3c5f04eb1c53a73a4ebba4, type: 3}
       propertyPath: m_CollisionDetection
       value: 0
       objectReference: {fileID: 0}
@@ -10424,10 +10420,6 @@ PrefabInstance:
     - target: {fileID: 5329774152867935978, guid: cde2be8b7b3c5f04eb1c53a73a4ebba4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6924158844427304595, guid: cde2be8b7b3c5f04eb1c53a73a4ebba4, type: 3}
-      propertyPath: m_Layer
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
