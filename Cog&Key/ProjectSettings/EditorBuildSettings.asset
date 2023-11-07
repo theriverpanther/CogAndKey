@@ -9,10 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/TItlescreen.unity
     guid: 3af3dcf683480e0438c31447e9dd2e77
   - enabled: 1
-    path: Assets/Scenes/Level_1.unity
+    path: Assets/Scenes/LVL1.unity
     guid: 22f3102da6acd8849a798074bf49bb3b
   - enabled: 1
-    path: Assets/Scenes/Level_2.unity
+    path: Assets/Scenes/LVL2.unity
     guid: e2faf89dc4a7bcf49b5f9f79e47f022d
   - enabled: 1
     path: Assets/Scenes/Old Levels/Onboarding2.unity
