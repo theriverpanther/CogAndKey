@@ -33,7 +33,11 @@ public class HelperUI : MonoBehaviour
 
     IEnumerator ShowText()
     {
-        gameObject.GetComponent<Animator>().SetBool("Fade", true);
+        if(fullText.Length <= 1)
+        {
+            gameObject.GetComponent<Animator>().SetBool("Fade", true);
+        }
+
 
         for (int i = 0; i < fullText.Length; i++)
         {
@@ -42,7 +46,10 @@ public class HelperUI : MonoBehaviour
             yield return new WaitForSeconds(textSpeed);
         }
 
-        gameObject.GetComponent<Animator>().SetBool("Fade", true);
+        if (fullText.Length <= 1)
+        {
+            gameObject.GetComponent<Animator>().SetBool("Fade", true);
+        }
         //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
         yield return null;
     }
