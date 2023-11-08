@@ -12,14 +12,23 @@ public class HelperUI : MonoBehaviour
 
     [SerializeField]
     Image imgToShow;
+
+    [SerializeField]
+    bool forceFade;
     private float textSpeed = 0.1f;
     public string fullText;
     private string currentTxt = "";
     private bool showImage = false;
 
+    [SerializeField]
+    private Animator imageAnimator;
+
     void Start()
     {
+        forceFade = true;
         GetComponent<Canvas>().worldCamera = Camera.main;
+
+        imageAnimator.SetInteger("animationPlayerIndex", -1);
     }
 
     IEnumerator ShowText()
@@ -44,11 +53,23 @@ public class HelperUI : MonoBehaviour
         StartCoroutine(ShowText());
     }
 
-    public void ShowImage(Texture2D img, float size)
+    public void ShowImage(Texture2D img, float size, int index, bool forceFader)
     {
+        forceFade = forceFader;
+        if (index != -1)
+        {
+            imageAnimator.enabled = true;
+            imageAnimator.SetInteger("animationPlayerIndex", index);
+        }
+        else
+        {
+            imageAnimator.enabled = false;
+        }
+
         imgToShow.sprite = Sprite.Create(img, new Rect(0.0f, 0.0f, img.width, img.height), new Vector2(0.5f, 0.5f), 100.0f);
         imgToShow.rectTransform.sizeDelta = new Vector2(size, size);
         showImage = true;
+
     }
 
     public void EnableDisableImage()
@@ -58,7 +79,11 @@ public class HelperUI : MonoBehaviour
 
     public void HideHelper()
     {
-        gameObject.GetComponent<Animator>().SetBool("Fade", false);
+        if(forceFade)
+        {
+            gameObject.GetComponent<Animator>().SetBool("Fade", false);
+        }
+
         //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", false);
         Debug.Log("Hiding Helper...");
     }

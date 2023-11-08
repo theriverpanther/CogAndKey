@@ -21,7 +21,13 @@ public class TutorialBox : MonoBehaviour
     float textSpeed = 0.1f;
 
     [SerializeField]
+    bool forceFade = true;
+
+    [SerializeField]
     float size = 6f;
+
+    [SerializeField]
+    public int animationIndex = -1;
 
 
     void Start()
@@ -42,13 +48,13 @@ public class TutorialBox : MonoBehaviour
     {
         if(collision.tag == "Player")
         {
-
             if (imgToShow != null)
             {
-                helperUI.ShowImage(imgToShow , size);
+                helperUI.ShowImage(imgToShow , size, animationIndex, forceFade);
             }
 
             helperUI.SetTextSpeed(textSpeed);
+          
             helperUI.ShowHelper();
 
             if (attachToCenterPoint)
@@ -71,9 +77,7 @@ public class TutorialBox : MonoBehaviour
         if (collision.tag == "Player")
         {
             helperUI.HideHelper();
-            helperScript.followPlayer = true;
-
-            Debug.Log("Following player.");
+            
         }
     }
 }

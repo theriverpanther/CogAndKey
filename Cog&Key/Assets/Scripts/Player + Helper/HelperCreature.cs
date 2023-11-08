@@ -19,7 +19,9 @@ public class HelperCreature : MonoBehaviour
     private Vector3 goPoint;
     string dir = "left";
 
+    [SerializeField]
     public bool followPlayer;
+    [SerializeField]
     private GameObject playerSprite;
 
     void Start()
@@ -28,7 +30,6 @@ public class HelperCreature : MonoBehaviour
         moveSpeed = 2f;
         Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
         followPlayer = true;
-        playerSprite = gameObject.transform.GetChild(0).gameObject;
 
         if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue)
         {
@@ -121,11 +122,11 @@ public class HelperCreature : MonoBehaviour
         //Debug.Log(transform.right);debug
         if(directionToplayer.x > 0 && dir == "right")
         {
-            playerSprite.transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            playerSprite.transform.localScale = new Vector3(-Mathf.Abs(playerSprite.transform.localScale.x), playerSprite.transform.localScale.y, playerSprite.transform.localScale.z);
             dir = "left";
         } else if (dir == "left" && directionToplayer.x < 0)
         {
-            playerSprite.transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            playerSprite.transform.localScale = new Vector3(Mathf.Abs(playerSprite.transform.localScale.x), playerSprite.transform.localScale.y, playerSprite.transform.localScale.z);
             dir = "right";
         }
     }
@@ -135,34 +136,34 @@ public class HelperCreature : MonoBehaviour
         goPoint = position;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(!followPlayer)
-        {
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>() , true);
-        }
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if(!followPlayer)
+    //    {
+    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>() , true);
+    //    }
 
-        if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Agent")
-        {
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
-        }
-    }
+    //    if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Agent")
+    //    {
+    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
+    //    }
+    //}
 
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Wall")
-        {
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
-        }
-    }
+    //private void OnCollisionStay2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.tag == "Wall")
+    //    {
+    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
+    //    }
+    //}
 
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (!followPlayer)
-        {
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), false);
-        }
-    }
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    if (!followPlayer)
+    //    {
+    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), false);
+    //    }
+    //}
 
 
 
