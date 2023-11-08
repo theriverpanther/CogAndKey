@@ -28,7 +28,7 @@ public class HelperCreature : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         moveSpeed = 2f;
-        Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+        //Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
         followPlayer = true;
 
         if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue)
