@@ -15,9 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/LVL2.unity
     guid: e2faf89dc4a7bcf49b5f9f79e47f022d
   - enabled: 1
-    path: Assets/Scenes/Old Levels/Onboarding2.unity
-    guid: b1140aa5ae0474a45a5ed8af3a40fd16
+    path: Assets/Scenes/LVL3.unity
+    guid: 31eb106a0c7db8f44b8efce9c726026e
   - enabled: 1
-    path: Assets/Scenes/Old Levels/Onboarding3.unity
-    guid: 030a878b51e836c4f89cc62d2dfee935
+    path: Assets/Scenes/LVL4.unity
+    guid: 94b655e2e858d304180878c1933c98fe
   m_configObjects: {}
