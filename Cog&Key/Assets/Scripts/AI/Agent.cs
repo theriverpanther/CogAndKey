@@ -241,7 +241,7 @@ public class Agent : MonoBehaviour, IKeyWindable
                     foreach(GameObject node in nodes)
                     {
                         if(Mathf.Sign((node.transform.position - transform.position).x) == Mathf.Sign(direction.x) &&
-                            Vector2.Distance(node.transform.position, transform.position) > 0.25f && 
+                            Vector2.Distance(node.transform.position, transform.position) <= 0.25f && 
                             Physics2D.Raycast(transform.position, node.transform.position, 0.6f))
                         {
                             Debug.DrawLine(node.transform.position, transform.position, Color.red, 2f);
