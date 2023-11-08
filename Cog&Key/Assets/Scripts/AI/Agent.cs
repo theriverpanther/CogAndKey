@@ -236,7 +236,7 @@ public class Agent : MonoBehaviour, IKeyWindable
             else
             {
                 // If the agent is stuck at a wall, search for a node to move towards
-                if(detectWalls && Mathf.Abs(rb.velocity.x) <= Mathf.Epsilon && !processingTurn)
+                if(detectWalls && !processingTurn)
                 {
                     foreach(GameObject node in nodes)
                     {
@@ -252,7 +252,7 @@ public class Agent : MonoBehaviour, IKeyWindable
                     }
                 }
                 // If the collision is against a node, that means that the agent is at a ledge, so turn around
-                else if(detectFloorEdges && obj.tag == "Node" && !processingTurn)
+                if(detectFloorEdges && obj.tag == "Node" && !processingTurn)
                 {
                     returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
                 }
