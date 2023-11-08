@@ -113,7 +113,7 @@ public class TitlescreenUI : MonoBehaviour
                 SwitchScreen("Main Screen");
                 break;
             case "play":
-                SetScene("Level_1");
+                SetScene("LVL1");
                 break;
         }
         }
