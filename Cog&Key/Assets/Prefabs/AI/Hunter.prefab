@@ -486,8 +486,8 @@ MonoBehaviour:
   nodes: []
   distThreshold: 0.2
   wallDetected: 0
-  idleColor: {r: 0.5529412, g: 1, b: 0.5921569, a: 1}
-  huntColor: {r: 1, g: 0.047058824, b: 0, a: 1}
+  idleColor: {r: 0, g: 0.3019608, b: 0.2509804, a: 1}
+  huntColor: {r: 0.84705883, g: 0.105882354, b: 0.3764706, a: 1}
   maxHuntTime: 5
 --- !u!61 &2698930125854928055
 BoxCollider2D:
