@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class Agent : MonoBehaviour, IKeyWindable
 {
@@ -158,6 +155,7 @@ public class Agent : MonoBehaviour, IKeyWindable
             processingTurn = true;
             // Change direction
             direction.x = -direction.x;
+            Vector2 tempVelocity = rb.velocity;
             rb.velocity = new Vector2(0, rb.velocity.y);
             // Idle anim
             yield return new WaitForSeconds(turnDelay);
@@ -165,7 +163,7 @@ public class Agent : MonoBehaviour, IKeyWindable
 
             transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
             // Set values back to how they used to be for a frame to prevent stunlocking
-            rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
+            rb.velocity = tempVelocity;
             // Wait until the agent is moving
             yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
             processingTurn = false;
