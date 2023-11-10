@@ -7,6 +7,7 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     [SerializeField] private bool clockwise;
     [SerializeField] private GameObject TickMarkPrefab;
     private const float SHIFT_SPEED = 5.0f;
+    private const float LAUNCH_FORCE = 100.0f;
     private KeyState insertedKey = KeyState.Normal;
     private float ShiftSpeed {  get { return SHIFT_SPEED * (insertedKey == KeyState.Fast ? 2f : 1f); } }
 
@@ -53,12 +54,21 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
 
         // shift riders
         foreach(GameObject rider in riders) {
-            rider.transform.position += ShiftSpeed * Time.deltaTime * DetermineShiftDirection(rider);
+            if(insertedKey == KeyState.Fast) {
+                Vector3 shiftDirection = DetermineShiftDirection(rider);
+                Rigidbody2D riderPhys = rider.GetComponent<Rigidbody2D>();
+                riderPhys.AddForce(LAUNCH_FORCE * (shiftDirection.x > 0.1f ? 0.5f : 1f) * shiftDirection);
+                if(Vector3.Dot(riderPhys.velocity, shiftDirection) < SHIFT_SPEED) {
+                    riderPhys.velocity = SHIFT_SPEED * shiftDirection + Vector3.Project(riderPhys.velocity, Vector2.Perpendicular(shiftDirection));
+                }
+            } else {
+                rider.transform.position += ShiftSpeed * Time.deltaTime * DetermineShiftDirection(rider);
 
-            // cancel out gravity when on the side
-            if(OnSide(rider)) {
-                Rigidbody2D physBod = rider.GetComponent<Rigidbody2D>();
-                physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
+                // cancel out gravity when on the side
+                if(OnSide(rider)) {
+                    Rigidbody2D physBod = rider.GetComponent<Rigidbody2D>();
+                    physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
+                }
             }
         }
 
@@ -104,7 +114,7 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     protected override void OnRiderRemoved(GameObject rider) {
         // keep rider momentum if moving fast
         if(insertedKey == KeyState.Fast) {
-            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * 0.8f * (Vector2)DetermineShiftDirection(rider);
+            //rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * 0.8f * (Vector2)DetermineShiftDirection(rider);
         }
     }
 

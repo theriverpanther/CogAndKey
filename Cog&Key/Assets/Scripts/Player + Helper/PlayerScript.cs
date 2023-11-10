@@ -144,8 +144,8 @@ public class PlayerScript : MonoBehaviour
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
                     int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
-                    velocity.y = 11.0f;
-                    velocity.x = jumpDirection * 6.0f;
+                    velocity.y += 11.0f;
+                    velocity.x += jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
                     jumpHeld = true;
                     playerAnimation.SetBool("Falling", false);
@@ -287,7 +287,6 @@ public class PlayerScript : MonoBehaviour
                 // determine attack direction
                 Vector2 attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
                 if(input.MouseClicked()) {
-                    Debug.Log("hello i have clicked mouse");
                     // use mouse position to determine the direction
                     Vector3 mouseDir = input.GetMouseWorldPosition() - transform.position;
                     if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
@@ -296,7 +295,6 @@ public class PlayerScript : MonoBehaviour
                         mouseDir.x = 0;
                     }
                     attackDirection = mouseDir.normalized;
-                    Debug.Log(input.GetMouseWorldPosition());
                 }
                 else if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
                     if(input.IsPressed(PlayerInput.Action.Up)) {
@@ -352,6 +350,14 @@ public class PlayerScript : MonoBehaviour
         jumpHeld = true;
     }
 
+    private void OnCollisionEnter2D(Collision2D collision) {
+        Vector2 floorNormal;
+        if(collision.gameObject.tag == "Wall" && IsOnFloor(out floorNormal) && floorNormal != Vector2.up) {
+            //physicsBody.velocity *= 0.5f; // prevent sliding down slopes
+            //Debug.Log("uh oh");
+        }
+    }
+
     // uses raycasts to determine if the player is standing on a surface
     private bool IsOnFloor(out Vector2 normal) {
         const float BUFFER = 0.2f;
@@ -369,9 +375,9 @@ public class PlayerScript : MonoBehaviour
     private Direction GetAdjacentWallDireciton() {
         float left = transform.position.x - colliderSize.x / 2f;
         float right = transform.position.x + colliderSize.x / 2f;
-        float top = transform.position.y + colliderSize.y / 2f;
+        float top = transform.position.y + colliderSize.y / 2f - colliderSize.x / 2f;
         float mid = transform.position.y;
-        float bottom = transform.position.y - colliderSize.y / 2f;
+        float bottom = transform.position.y - colliderSize.y / 2f + colliderSize.x / 2f;
 
         const float BUFFER = 0.2f;
 
