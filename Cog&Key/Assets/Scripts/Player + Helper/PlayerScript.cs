@@ -89,8 +89,10 @@ public class PlayerScript : MonoBehaviour
         }
 
         // vertical movement
-        switch(currentState)
-        {
+        Vector2 floorNorm;
+        bool onFloor = IsOnFloor(out floorNorm);
+
+        switch(currentState) {
             case State.Aerial:
                 friction = 5f;
 
@@ -141,8 +143,7 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // land on the ground
-                Vector2 floorAngle;
-                if(IsOnFloor(out floorAngle)) {
+                if(onFloor) {
                     currentState = State.Grounded;
                     physicsBody.gravityScale = FALL_GRAVITY;
                     SetAnimation(null);
@@ -152,8 +153,6 @@ public class PlayerScript : MonoBehaviour
             case State.Grounded:
                 friction = 30f;
 
-                Vector2 floorNorm;
-                bool onFloor = IsOnFloor(out floorNorm);
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
                 }
@@ -176,9 +175,14 @@ public class PlayerScript : MonoBehaviour
         }
 
         // horizontal movement
-        float walkAccel = WALK_ACCEL * Time.deltaTime;
-        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x <= WALK_SPEED + Mathf.Epsilon && moveLockedRight != true;
-        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && velocity.x >= -WALK_SPEED - Mathf.Epsilon && moveLockedRight != false;
+        Vector2 slopeLeft = Vector2.left;
+        if(onFloor) {
+            slopeLeft = Vector2.Perpendicular(floorNorm);
+        }
+        Vector2 slopeRight = -slopeLeft;
+
+        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
+        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
         if(moveRight == moveLeft) { // both pressed is same as neither pressed
             if(currentState == State.Grounded) {
                 SetAnimation(null);
@@ -195,29 +199,30 @@ public class PlayerScript : MonoBehaviour
                 }
             }
         }
-        else if(moveRight) {
+        else if(moveRight || moveLeft) {
             if(currentState == State.Grounded) {
                 SetAnimation("Running");
             }
 
-            velocity.x += walkAccel;
-            if(velocity.x > WALK_SPEED) {
-                velocity.x = WALK_SPEED;
+            transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+
+            if (moveRight)
+            {
+                velocity.x += WALK_ACCEL * Time.deltaTime;
+                if (velocity.x > WALK_SPEED)
+                {
+                    velocity.x = WALK_SPEED;
+                }
+            } else
+            {
+                velocity.x -= WALK_ACCEL * Time.deltaTime;
+                if (velocity.x < -WALK_SPEED)
+                {
+                    velocity.x = -WALK_SPEED;
+                }
             }
 
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        }
-        else if(moveLeft) {
-            if(currentState == State.Grounded) {
-                SetAnimation("Running");
-            }
-
-            velocity.x -= walkAccel;
-            if(velocity.x < -WALK_SPEED) {
-                velocity.x = -WALK_SPEED;
-            }
-                
-            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            
         }
 
         physicsBody.velocity = velocity;
