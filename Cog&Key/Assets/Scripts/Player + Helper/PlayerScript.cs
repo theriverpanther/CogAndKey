@@ -189,14 +189,21 @@ public class PlayerScript : MonoBehaviour
             }
 
             // apply friction
-            if(velocity != Vector2.zero) {
-                float reduction = friction * Time.deltaTime;
-                if (Mathf.Abs(velocity.x) <= reduction) {
-                    // prevent passing 0
-                    velocity.x = 0;
-                } else {
-                    velocity.x += (velocity.x > 0 ? -1 : 1) * friction * Time.deltaTime;
+            
+            Vector2 prevVel = velocity;
+
+            Vector2 fricDir = velocity.x > 0 ? slopeLeft : slopeRight;
+            if(velocity.x != 0 && Vector3.Project(velocity, fricDir) != Vector3.zero) {
+                velocity += friction * Time.deltaTime * fricDir;
+                if(Vector2.Dot(velocity, fricDir) > 0) {
+                    // passed 0
+                    velocity = Vector3.Project(velocity, floorNorm);
                 }
+            }
+
+            if (input.JustPressed(PlayerInput.Action.Jump))
+            {
+                Debug.Log($"before:{prevVel}, after: {velocity}");
             }
         }
         else if(moveRight || moveLeft) {
@@ -206,23 +213,11 @@ public class PlayerScript : MonoBehaviour
 
             transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
 
-            if (moveRight)
-            {
-                velocity.x += WALK_ACCEL * Time.deltaTime;
-                if (velocity.x > WALK_SPEED)
-                {
-                    velocity.x = WALK_SPEED;
-                }
-            } else
-            {
-                velocity.x -= WALK_ACCEL * Time.deltaTime;
-                if (velocity.x < -WALK_SPEED)
-                {
-                    velocity.x = -WALK_SPEED;
-                }
+            Vector2 moveDir = (moveRight ? slopeRight : slopeLeft);
+            velocity += WALK_ACCEL * Time.deltaTime * moveDir;
+            if(Vector3.Project(velocity, moveDir).sqrMagnitude > WALK_SPEED * WALK_SPEED) {
+                velocity = (Vector2)Vector3.Project(velocity, (onFloor ? floorNorm : Vector2.up)) + WALK_SPEED * moveDir;
             }
-
-            
         }
 
         physicsBody.velocity = velocity;
