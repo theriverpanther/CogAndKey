@@ -8,13 +8,13 @@ using UnityEngine.Timeline;
 
 public class Hunter : Agent
 {
-    [SerializeField] private float distThreshold = 0.2f;
-    [SerializeField] private bool wallDetected;
+    private float distThreshold = 0.2f;
+    private bool wallDetected;
     [SerializeField] private Color idleColor;
     [SerializeField] private Color huntColor;
     private GameObject player;
 
-    [SerializeField] private float maxHuntTime = 5f;
+    private float maxHuntTime = 2f;
     private float huntTimer = 0f;
 
     // Start is called before the first frame update

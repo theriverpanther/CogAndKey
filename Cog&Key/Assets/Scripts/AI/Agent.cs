@@ -17,7 +17,7 @@ public class Agent : MonoBehaviour, IKeyWindable
     [Header("Agent Statistics")]
     [SerializeField] protected float movementSpeed = 2f;
     [SerializeField] protected float jumpSpeed = 2f;
-    [SerializeField] protected float attackSpeed;
+    protected float attackSpeed;
     [SerializeField] protected float fastScalar = 3f;
 
     protected Rigidbody2D rb;
@@ -33,15 +33,15 @@ public class Agent : MonoBehaviour, IKeyWindable
     protected Vector3 scaleVal = Vector3.zero;
 
     [Header("Runtime Logic")]
-    [SerializeField] protected bool keyInserted = false;
+    protected bool keyInserted = false;
     [SerializeField] protected List<GameObject> collidingObjs;
-    [SerializeField] protected Vector2 direction = Vector2.zero;
+    protected Vector2 direction = Vector2.zero;
 
     protected Vector3 playerPosition = Vector3.zero;
-    protected float distToGround;
+    [SerializeField] protected float distToGround;
 
-    [SerializeField] protected float turnDelay = 0.5f;
-    [SerializeField] protected bool processingTurn = false;
+    protected float turnDelay = 0.5f;
+    protected bool processingTurn = false;
 
     [SerializeField] protected List<GameObject> nodes = new List<GameObject>();
 
@@ -69,10 +69,8 @@ public class Agent : MonoBehaviour, IKeyWindable
         rb = GetComponent<Rigidbody2D>();
         scaleVal = transform.localScale;
         senses = new List<Sense>();
-        for(int i = 0; i < senseCount; i++) 
-        {
-            senses.Add(transform.GetChild(i+1).GetComponent<Sense>());
-        }
+        senses.Add(transform.GetChild(5).GetComponent<Sense>());
+        senses.Add(transform.GetChild(6).GetComponent<Sense>());
         IsGrounded();
         distToGround = GetComponent<BoxCollider2D>().bounds.extents.y;
 
@@ -89,9 +87,12 @@ public class Agent : MonoBehaviour, IKeyWindable
         if (transform.position.y + distToGround <= LevelData.Instance.YMin)
         {
             Transform t = transform.GetChild(transform.childCount - 1);
-            t.parent = null;
-            t.GetComponent<KeyScript>().Detach();
-            Destroy(gameObject);
+            if (t != null && t.name == "Key")
+            {
+                t.parent = null;
+                t.GetComponent<KeyScript>().Detach();
+                Destroy(gameObject);
+            }
         }
         cog.fast = state != KeyState.Normal;
     }
