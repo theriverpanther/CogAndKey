@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3214941980963592793}
   - component: {fileID: 5150754332047624026}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Tooth (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7613832747920673394}
   - component: {fileID: 6865377952654885309}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Tooth (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4705427865940001767}
   - component: {fileID: 3264098148771516237}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Tooth (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5903095721993648064}
   - component: {fileID: 6428192610881225870}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Tooth (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -346,7 +346,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5252272089378772507}
   - component: {fileID: 4164205966920242905}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Tooth (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -431,7 +431,7 @@ GameObject:
   - component: {fileID: 6966479903630681708}
   - component: {fileID: 399772970465554283}
   - component: {fileID: 2854482435423603044}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -538,7 +538,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3269705415687880667}
   - component: {fileID: 7170134894146830112}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Tooth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -622,7 +622,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8162878812843610798}
   - component: {fileID: 269666579417741879}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Tooth (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -706,7 +706,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5286271358049545945}
   - component: {fileID: 7247310573917832132}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Tooth (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
