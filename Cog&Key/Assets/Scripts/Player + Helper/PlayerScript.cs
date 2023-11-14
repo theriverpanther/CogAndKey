@@ -189,21 +189,26 @@ public class PlayerScript : MonoBehaviour
             }
 
             // apply friction
-            
-            Vector2 prevVel = velocity;
-
+            Vector2 vertical = (onFloor ? floorNorm : Vector2.up);
             Vector2 fricDir = velocity.x > 0 ? slopeLeft : slopeRight;
-            if(velocity.x != 0 && Vector3.Project(velocity, fricDir) != Vector3.zero) {
-                velocity += friction * Time.deltaTime * fricDir;
-                if(Vector2.Dot(velocity, fricDir) > 0) {
-                    // passed 0
-                    velocity = Vector3.Project(velocity, floorNorm);
-                }
-            }
+            if(Mathf.Abs(velocity.x) >= 0.1f && Vector3.Project(velocity, fricDir) != Vector3.zero) {
 
-            if (input.JustPressed(PlayerInput.Action.Jump))
-            {
-                Debug.Log($"before:{prevVel}, after: {velocity}");
+                if (input.JustPressed(PlayerInput.Action.Jump))
+                {
+                    Debug.Log($"before: {velocity}");
+                }
+
+                velocity += friction * Time.deltaTime * fricDir;
+
+                if (input.JustPressed(PlayerInput.Action.Jump))
+                {
+                    Debug.Log($"after: {velocity}");
+                }
+
+                if (Vector2.Dot(velocity, fricDir) > 0) {
+                    // passed 0
+                    velocity = Vector3.Project(velocity, vertical);
+                }
             }
         }
         else if(moveRight || moveLeft) {
