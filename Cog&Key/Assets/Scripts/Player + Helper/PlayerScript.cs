@@ -19,6 +19,7 @@ public class PlayerScript : MonoBehaviour
 
     public const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
+    private const float GROUND_GRAVITY = 10.0f; // a higher gravity makes the player move smoothly over the tops of slopes
     private const float JUMP_VELOCITY = 13.0f;
     private const float CLING_VELOCITY = -1.0f; // the maximum downward speed when pressed against a wall
 
@@ -49,7 +50,7 @@ public class PlayerScript : MonoBehaviour
         physicsBody = GetComponent<Rigidbody2D>();
         colliderSize = GetComponent<CapsuleCollider2D>().size;
         physicsBody.gravityScale = FALL_GRAVITY;
-        currentState = State.Grounded;
+        currentState = State.Aerial;
         input = new PlayerInput();
 
         if(LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
@@ -145,7 +146,7 @@ public class PlayerScript : MonoBehaviour
                 // land on the ground
                 if(onFloor) {
                     currentState = State.Grounded;
-                    physicsBody.gravityScale = FALL_GRAVITY;
+                    physicsBody.gravityScale = GROUND_GRAVITY;
                     SetAnimation(null);
                 }
                 break;
@@ -191,24 +192,16 @@ public class PlayerScript : MonoBehaviour
             // apply friction
             Vector2 vertical = (onFloor ? floorNorm : Vector2.up);
             Vector2 fricDir = velocity.x > 0 ? slopeLeft : slopeRight;
-            if(Mathf.Abs(velocity.x) >= 0.1f && Vector3.Project(velocity, fricDir) != Vector3.zero) {
-
-                if (input.JustPressed(PlayerInput.Action.Jump))
-                {
-                    Debug.Log($"before: {velocity}");
-                }
-
+            if(Mathf.Abs(velocity.x) >= 0.1f) {
                 velocity += friction * Time.deltaTime * fricDir;
+            }
 
-                if (input.JustPressed(PlayerInput.Action.Jump))
-                {
-                    Debug.Log($"after: {velocity}");
-                }
-
-                if (Vector2.Dot(velocity, fricDir) > 0) {
-                    // passed 0
-                    velocity = Vector3.Project(velocity, vertical);
-                }
+            // check if slowed to a stop
+            if(onFloor && velocity.sqrMagnitude < 0.1f) {
+                velocity = Vector2.zero;
+            }
+            else if(!onFloor && Vector2.Dot(velocity, fricDir) > 0) {
+                velocity.x = 0;
             }
         }
         else if(moveRight || moveLeft) {
@@ -314,9 +307,8 @@ public class PlayerScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision) {
         Vector2 floorNormal;
-        if(collision.gameObject.tag == "Wall" && IsOnFloor(out floorNormal) && floorNormal != Vector2.up) {
-            //physicsBody.velocity *= 0.5f; // prevent sliding down slopes
-            //Debug.Log("uh oh");
+        if(collision.gameObject.tag == "Wall" && physicsBody.velocity.y < 0 && IsOnFloor(out floorNormal) && floorNormal != Vector2.zero && floorNormal != Vector2.up) {
+            physicsBody.velocity *= 0.5f; // prevent sliding down slopes
         }
     }
 
