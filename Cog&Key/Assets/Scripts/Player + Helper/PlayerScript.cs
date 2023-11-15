@@ -19,6 +19,7 @@ public class PlayerScript : MonoBehaviour
 
     public const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
+    private const float GROUND_GRAVITY = 10.0f; // a higher gravity makes the player move smoothly over the tops of slopes
     private const float JUMP_VELOCITY = 13.0f;
     private const float CLING_VELOCITY = -1.0f; // the maximum downward speed when pressed against a wall
 
@@ -31,7 +32,6 @@ public class PlayerScript : MonoBehaviour
     private PlayerInput input;
     private KeyScript activeKey;
 
-    private bool jumpHeld;
     private float coyoteTime;
     private float keyCooldown;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
@@ -50,7 +50,7 @@ public class PlayerScript : MonoBehaviour
         physicsBody = GetComponent<Rigidbody2D>();
         colliderSize = GetComponent<CapsuleCollider2D>().size;
         physicsBody.gravityScale = FALL_GRAVITY;
-        currentState = State.Grounded;
+        currentState = State.Aerial;
         input = new PlayerInput();
 
         if(LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
@@ -90,78 +90,55 @@ public class PlayerScript : MonoBehaviour
         }
 
         // vertical movement
-        switch(currentState)
-        {
+        Vector2 floorNorm;
+        bool onFloor = IsOnFloor(out floorNorm);
+
+        switch(currentState) {
             case State.Aerial:
                 friction = 5f;
-                playerAnimation.SetBool("Running", false);
+
+                if (physicsBody.velocity.y > JUMP_VELOCITY) {
+                    // decrease the benefit from holding jump when launched upward
+                    physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
+                }
+
                 // extend jump height while jump is held
-                if(physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump)) {
-                    jumpHeld = false;
-                }
-
-                // determine gravity
-                if(jumpHeld) {
-                    physicsBody.gravityScale = JUMP_GRAVITY;
-                    playerAnimation.SetBool("Running", false);
-                    playerAnimation.SetBool("Falling", false);
-                    playerAnimation.SetBool("Jumping", true);
-
-                    if (physicsBody.velocity.y > JUMP_VELOCITY) {
-                        physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
-                    }
-                } else {
-                    physicsBody.gravityScale = FALL_GRAVITY;
-                    playerAnimation.SetBool("Jumping", false);
-                    playerAnimation.SetBool("Falling", true);
-                    playerAnimation.SetBool("Running", false);
-                    playerAnimation.SetBool("Wallslide", false);
-                }
-
                 if(physicsBody.gravityScale != FALL_GRAVITY && 
                     (physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
                 ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
-                    playerAnimation.SetBool("Jumping", false);
-                    playerAnimation.SetBool("Running", false);
-                    playerAnimation.SetBool("Falling", true);
-                    playerAnimation.SetBool("Wallslide", false);
                 }
                 
                 Direction adjWallDir = GetAdjacentWallDireciton();
+                if(adjWallDir != Direction.None) {
+                    SetAnimation("Wallslide");
+                }
+                else if(velocity.y < 0) {
+                    SetAnimation("Falling");
+                }
 
                 // cling to walls
                 if(velocity.y < CLING_VELOCITY && 
                     (adjWallDir == Direction.Left && input.IsPressed(PlayerInput.Action.Left) || adjWallDir == Direction.Right && input.IsPressed(PlayerInput.Action.Right))
                 ) {
                     velocity.y = CLING_VELOCITY;
-                    playerAnimation.SetBool("Wallslide", true);
-                    playerAnimation.SetBool("Running", false);
-                    playerAnimation.SetBool("Jumping", false);
-                    playerAnimation.SetBool("Falling", false);
                 }
 
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
+                    physicsBody.gravityScale = JUMP_GRAVITY;
                     int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
-                    velocity.y = 11.0f;
-                    velocity.x = jumpDirection * 6.0f;
+                    velocity.y += 11.0f;
+                    velocity.x += jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
-                    jumpHeld = true;
-                    playerAnimation.SetBool("Falling", false);
-                    playerAnimation.SetBool("Running", false);
-                    playerAnimation.SetBool("Jumping", true);
-                    playerAnimation.SetBool("Wallslide", false);
+                    SetAnimation("Jumping");
                 }
 
                 // allow jump during coyote time
                 if(coyoteTime > 0) {
                     if(input.JustPressed(PlayerInput.Action.Jump)) {
                         Jump(ref velocity);
-                        playerAnimation.SetBool("Falling", false);
-                        playerAnimation.SetBool("Running", false);
-                        playerAnimation.SetBool("Wallslide", false);
-                        playerAnimation.SetBool("Jumping", true);
+                        SetAnimation("Jumping");
                         coyoteTime = 0;
                     } else {
                         coyoteTime -= Time.deltaTime;
@@ -169,33 +146,22 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // land on the ground
-                Vector2 floorAngle;
-                if(IsOnFloor(out floorAngle)) {
+                if(onFloor) {
                     currentState = State.Grounded;
-                    physicsBody.gravityScale = FALL_GRAVITY;
-                    playerAnimation.SetBool("Jumping", false);
-                    playerAnimation.SetBool("Falling", false);
-                    playerAnimation.SetBool("Running", false);
+                    physicsBody.gravityScale = GROUND_GRAVITY;
+                    SetAnimation(null);
                 }
                 break;
 
             case State.Grounded:
                 friction = 30f;
-                playerAnimation.SetBool("Wallslide", false);
-                playerAnimation.SetBool("Running", false);
-                Vector2 floorNorm;
-                bool onFloor = IsOnFloor(out floorNorm);
+
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
-                    playerAnimation.SetBool("Running", false);
-                    playerAnimation.SetBool("Wallslide", false);
-                    playerAnimation.SetBool("Jumping", true);
                 }
                 else if(!onFloor) {
                     // fall off platform
-                    playerAnimation.SetBool("Running", false);
-                    playerAnimation.SetBool("Wallslide", false);
-                    playerAnimation.SetBool("Falling", true);
+                    SetAnimation("Falling");
                     currentState = State.Aerial;
                     coyoteTime = 0.08f;
                     physicsBody.gravityScale = FALL_GRAVITY;
@@ -207,58 +173,51 @@ public class PlayerScript : MonoBehaviour
                     Vector2 normalForce = -Vector3.Project(gravity, -floorNorm);
                     Vector2 downSlope = gravity + normalForce;
                     physicsBody.AddForce(-downSlope);
-
-                    playerAnimation.SetBool("Running", false);
-                    playerAnimation.SetBool("Wallslide", false);
-                    playerAnimation.SetBool("Falling", false);
-                    playerAnimation.SetBool("Wallslide", false);
                 }
                 break;
         }
 
         // horizontal movement
-        float walkAccel = WALK_ACCEL * Time.deltaTime;
-        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x <= WALK_SPEED + Mathf.Epsilon && moveLockedRight != true;
-        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && velocity.x >= -WALK_SPEED - Mathf.Epsilon && moveLockedRight != false;
-        if(moveRight == moveLeft) { // both pressed is same as neither pressed
-            // apply friction
-            if (velocity != Vector2.zero) {
-                float reduction = friction * Time.deltaTime;
-                if (Mathf.Abs(velocity.x) <= reduction) {
-                    // prevent passing 0
-                    velocity.x = 0;
-                } else {
-                    velocity.x += (velocity.x > 0 ? -1 : 1) * friction * Time.deltaTime;
-                }
-            } else
-            {
-                playerAnimation.SetBool("Running", false);
-            }
+        Vector2 slopeLeft = Vector2.left;
+        if(onFloor) {
+            slopeLeft = Vector2.Perpendicular(floorNorm);
         }
-        else if(moveRight) {
-            velocity.x += walkAccel;
-            if (playerAnimation.GetBool("Wallslide") != true && (playerAnimation.GetBool("Falling") != true))
-            {
-                playerAnimation.SetBool("Running", true);
-            }
-            if (velocity.x > WALK_SPEED) {
-                velocity.x = WALK_SPEED;
+        Vector2 slopeRight = -slopeLeft;
+
+        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
+        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
+        if(moveRight == moveLeft) { // both pressed is same as neither pressed
+            if(currentState == State.Grounded) {
+                SetAnimation(null);
             }
 
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            // apply friction
+            Vector2 vertical = (onFloor ? floorNorm : Vector2.up);
+            Vector2 fricDir = velocity.x > 0 ? slopeLeft : slopeRight;
+            if(Mathf.Abs(velocity.x) >= 0.1f) {
+                velocity += friction * Time.deltaTime * fricDir;
+            }
+
+            // check if slowed to a stop
+            if(onFloor && velocity.sqrMagnitude < 0.1f) {
+                velocity = Vector2.zero;
+            }
+            else if(!onFloor && Vector2.Dot(velocity, fricDir) > 0) {
+                velocity.x = 0;
+            }
         }
-        else if(moveLeft) {
-            velocity.x -= walkAccel;
-            if(playerAnimation.GetBool("Wallslide") != true && (playerAnimation.GetBool("Falling") != true))
-            {
-                playerAnimation.SetBool("Running", true);
+        else if(moveRight || moveLeft) {
+            if(currentState == State.Grounded) {
+                SetAnimation("Running");
             }
-            
-            if (velocity.x < -WALK_SPEED) {
-                velocity.x = -WALK_SPEED;
+
+            transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+
+            Vector2 moveDir = (moveRight ? slopeRight : slopeLeft);
+            velocity += WALK_ACCEL * Time.deltaTime * moveDir;
+            if(Vector3.Project(velocity, moveDir).sqrMagnitude > WALK_SPEED * WALK_SPEED) {
+                velocity = (Vector2)Vector3.Project(velocity, (onFloor ? floorNorm : Vector2.up)) + WALK_SPEED * moveDir;
             }
-                
-            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
 
         physicsBody.velocity = velocity;
@@ -287,7 +246,6 @@ public class PlayerScript : MonoBehaviour
                 // determine attack direction
                 Vector2 attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
                 if(input.MouseClicked()) {
-                    Debug.Log("hello i have clicked mouse");
                     // use mouse position to determine the direction
                     Vector3 mouseDir = input.GetMouseWorldPosition() - transform.position;
                     if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
@@ -296,7 +254,6 @@ public class PlayerScript : MonoBehaviour
                         mouseDir.x = 0;
                     }
                     attackDirection = mouseDir.normalized;
-                    Debug.Log(input.GetMouseWorldPosition());
                 }
                 else if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
                     if(input.IsPressed(PlayerInput.Action.Up)) {
@@ -345,11 +302,28 @@ public class PlayerScript : MonoBehaviour
 
     private void Jump(ref Vector2 newVelocity) {
         newVelocity.y = JUMP_VELOCITY;
-        playerAnimation.SetBool("Running", false);
-        playerAnimation.SetBool("Jumping", true);
-        playerAnimation.SetBool("Wallslide", false);
+        physicsBody.gravityScale = JUMP_GRAVITY;
+        SetAnimation("Jumping");
         currentState = State.Aerial;
-        jumpHeld = true;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision) {
+        Vector2 floorNormal;
+        if(collision.gameObject.tag == "Wall" && physicsBody.velocity.y < 0 && IsOnFloor(out floorNormal) && floorNormal != Vector2.zero && floorNormal != Vector2.up) {
+            physicsBody.velocity *= 0.5f; // prevent sliding down slopes
+        }
+    }
+
+    // null sets no animation
+    private void SetAnimation(String animationState) {
+        playerAnimation.SetBool("Falling", false);
+        playerAnimation.SetBool("Running", false);
+        playerAnimation.SetBool("Jumping", false);
+        playerAnimation.SetBool("Wallslide", false);
+
+        if(animationState != null) {
+            playerAnimation.SetBool(animationState, true);
+        }
     }
 
     // uses raycasts to determine if the player is standing on a surface
@@ -369,9 +343,9 @@ public class PlayerScript : MonoBehaviour
     private Direction GetAdjacentWallDireciton() {
         float left = transform.position.x - colliderSize.x / 2f;
         float right = transform.position.x + colliderSize.x / 2f;
-        float top = transform.position.y + colliderSize.y / 2f;
+        float top = transform.position.y + colliderSize.y / 2f - colliderSize.x / 2f;
         float mid = transform.position.y;
-        float bottom = transform.position.y - colliderSize.y / 2f;
+        float bottom = transform.position.y - colliderSize.y / 2f + colliderSize.x / 2f;
 
         const float BUFFER = 0.2f;
 
