@@ -7,9 +7,8 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     [SerializeField] private bool clockwise;
     [SerializeField] private GameObject TickMarkPrefab;
     private const float SHIFT_SPEED = 5.0f;
-    private const float LAUNCH_FORCE = 100.0f;
     private KeyState insertedKey = KeyState.Normal;
-    private float ShiftSpeed {  get { return SHIFT_SPEED * (insertedKey == KeyState.Fast ? 2f : 1f); } }
+    private float ShiftSpeed {  get { return SHIFT_SPEED * (insertedKey == KeyState.Fast ? 2f : 1f) * (insertedKey == KeyState.Lock ? 0f : 1f); } }
 
     // temp visual spin
     private List<GameObject> topTicks = new List<GameObject>();
@@ -54,27 +53,24 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
 
         // shift riders
         foreach(GameObject rider in riders) {
-            if(insertedKey == KeyState.Fast) {
-                Vector3 shiftDirection = DetermineShiftDirection(rider);
-                Rigidbody2D riderPhys = rider.GetComponent<Rigidbody2D>();
-                riderPhys.AddForce(LAUNCH_FORCE * (shiftDirection.x > 0.1f ? 0.5f : 1f) * shiftDirection);
-                if(Vector3.Dot(riderPhys.velocity, shiftDirection) < SHIFT_SPEED) {
-                    riderPhys.velocity = SHIFT_SPEED * shiftDirection + Vector3.Project(riderPhys.velocity, Vector2.Perpendicular(shiftDirection));
-                }
-            } else {
-                rider.transform.position += ShiftSpeed * Time.deltaTime * DetermineShiftDirection(rider);
+            Vector3 shiftDir = DetermineShiftDirection(rider);
+            rider.transform.position += ShiftSpeed * Time.deltaTime * shiftDir;
 
-                // cancel out gravity when on the side
-                if(OnSide(rider)) {
-                    Rigidbody2D physBod = rider.GetComponent<Rigidbody2D>();
+            // cancel out gravity when on the side
+            if(shiftDir == Vector3.up && OnSide(rider)) {
+                Rigidbody2D physBod = rider.GetComponent<Rigidbody2D>();
+                physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
+
+                if(insertedKey == KeyState.Fast) {
                     physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
+                    //rider.transform.position += SHIFT_SPEED * Time.deltaTime * shiftDir; // shift faster upward with fast key
                 }
             }
         }
-
+        
         // update temp visuals
         float lastTime = visualTimer;
-        visualTimer += ShiftSpeed * 0.7f * Time.deltaTime * (clockwise ? 1 : -1);
+        visualTimer += ShiftSpeed * 0.5f * Time.deltaTime * (clockwise ? 1 : -1);
         if(visualTimer >= 0.5f || visualTimer <= -0.5f) {
             visualTimer = 0;
         }
@@ -114,7 +110,8 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     protected override void OnRiderRemoved(GameObject rider) {
         // keep rider momentum if moving fast
         if(insertedKey == KeyState.Fast) {
-            //rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * 0.8f * (Vector2)DetermineShiftDirection(rider);
+            Vector2 launchDir = DetermineShiftDirection(rider);
+            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (launchDir == Vector2.up ? 1.0f : 0.8f) * launchDir;
         }
     }
 

@@ -36,8 +36,13 @@ public abstract class Rideable : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision) {
         Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
         if(rb != null && !riders.Contains(collision.gameObject)) {
-            riders.Add(collision.gameObject);
-            OnRiderAdded(collision.gameObject);
+            if(OnSide(collision.gameObject) && !PressedTowardsMiddle(collision.gameObject)) {
+                // don't attached riders on the side that aren't pressed against it
+                attachedNonRiders.Add(collision.gameObject);
+            } else {
+                riders.Add(collision.gameObject);
+                OnRiderAdded(collision.gameObject);
+            }
         }
     }
 

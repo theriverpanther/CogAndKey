@@ -184,15 +184,14 @@ public class PlayerScript : MonoBehaviour
         }
         Vector2 slopeRight = -slopeLeft;
 
-        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
-        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
+        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && (Vector2.Dot(velocity, slopeRight) <= 0 || Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
+        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && (Vector2.Dot(velocity, slopeLeft) <= 0 || Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
         if(moveRight == moveLeft) { // both pressed is same as neither pressed
             if(currentState == State.Grounded) {
                 SetAnimation(null);
             }
 
             // apply friction
-            Vector2 vertical = (onFloor ? floorNorm : Vector2.up);
             Vector2 fricDir = velocity.x > 0 ? slopeLeft : slopeRight;
             if(Mathf.Abs(velocity.x) >= 0.1f) {
                 velocity += friction * Time.deltaTime * fricDir;
@@ -207,15 +206,17 @@ public class PlayerScript : MonoBehaviour
             }
         }
         else if(moveRight || moveLeft) {
+            // walk (or midair strafe)
+            transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             if(currentState == State.Grounded) {
                 SetAnimation("Running");
             }
 
-            transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-
             Vector2 moveDir = (moveRight ? slopeRight : slopeLeft);
             velocity += WALK_ACCEL * Time.deltaTime * moveDir;
-            if(Vector3.Project(velocity, moveDir).sqrMagnitude > WALK_SPEED * WALK_SPEED) {
+
+            // cap walk speed
+            if(Vector2.Dot(velocity, moveDir) > 0 && Vector3.Project(velocity, moveDir).sqrMagnitude > WALK_SPEED * WALK_SPEED) {
                 velocity = (Vector2)Vector3.Project(velocity, (onFloor ? floorNorm : Vector2.up)) + WALK_SPEED * moveDir;
             }
         }
