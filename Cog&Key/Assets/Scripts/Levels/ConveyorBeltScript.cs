@@ -103,9 +103,10 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     }
 
     protected override void OnRiderAdded(GameObject rider) {
-        shiftDirections.Add(DetermineShiftDirection(rider));
+        Vector3 shiftDir = DetermineShiftDirection(rider);
+        shiftDirections.Add(shiftDir);
 
-        if(OnSide(rider)) {
+        if(shiftDir == Vector3.up || shiftDir == Vector3.down) { // if on the side
             rider.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         }
     }
