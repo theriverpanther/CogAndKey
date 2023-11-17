@@ -102,7 +102,7 @@ public class MovingWallScript : Rideable, IKeyWindable
         rider.transform.SetParent(transform, true);
     }
 
-    protected override void OnRiderRemoved(GameObject rider) {
+    protected override void OnRiderRemoved(GameObject rider, int index) {
         rider.transform.SetParent(null);
 
         // keep rider momentum if moving fast

@@ -17,7 +17,7 @@ public abstract class Rideable : MonoBehaviour
             if(OnSide(rider) && !PressedTowardsMiddle(rider)) {
                 riders.RemoveAt(i);
                 attachedNonRiders.Add(rider);
-                OnRiderRemoved(rider);
+                OnRiderRemoved(rider, i);
             }
         }
 
@@ -49,8 +49,9 @@ public abstract class Rideable : MonoBehaviour
     // remove riders when they are not connected
     private void OnCollisionExit2D(Collision2D collision) {
         if(riders.Contains(collision.gameObject)) {
-            riders.Remove(collision.gameObject);
-            OnRiderRemoved(collision.gameObject);
+            int index = riders.IndexOf(collision.gameObject);
+            riders.RemoveAt(index);
+            OnRiderRemoved(collision.gameObject, index);
         }
         else if(attachedNonRiders.Contains(collision.gameObject)) {
             attachedNonRiders.Remove(collision.gameObject);
@@ -76,5 +77,5 @@ public abstract class Rideable : MonoBehaviour
 
     // pseudo events for sub classes
     protected virtual void OnRiderAdded(GameObject rider) { }
-    protected virtual void OnRiderRemoved(GameObject rider) { }
+    protected virtual void OnRiderRemoved(GameObject rider, int removedIndex) { }
 }

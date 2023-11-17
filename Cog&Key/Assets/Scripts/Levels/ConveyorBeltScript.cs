@@ -10,6 +10,8 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     private KeyState insertedKey = KeyState.Normal;
     private float ShiftSpeed {  get { return SHIFT_SPEED * (insertedKey == KeyState.Fast ? 2f : 1f) * (insertedKey == KeyState.Lock ? 0f : 1f); } }
 
+    private List<Vector3> shiftDirections = new List<Vector3>(); // index matches the list of riders. This allows the code to calculate the shift direction once when first touching
+
     // temp visual spin
     private List<GameObject> topTicks = new List<GameObject>();
     private List<GameObject> bottomTicks = new List<GameObject>();
@@ -52,18 +54,17 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
         CheckSideRiders();
 
         // shift riders
-        foreach(GameObject rider in riders) {
-            Vector3 shiftDir = DetermineShiftDirection(rider);
-            rider.transform.position += ShiftSpeed * Time.deltaTime * shiftDir;
+        for(int i = 0; i < riders.Count; i++) {
+            Vector3 shiftDir = shiftDirections[i];
+            riders[i].transform.position += ShiftSpeed * Time.deltaTime * shiftDir;
 
             // cancel out gravity when on the side
-            if(shiftDir == Vector3.up && OnSide(rider)) {
-                Rigidbody2D physBod = rider.GetComponent<Rigidbody2D>();
+            if(shiftDir == Vector3.up) {
+                Rigidbody2D physBod = riders[i].GetComponent<Rigidbody2D>();
                 physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
 
                 if(insertedKey == KeyState.Fast) {
-                    physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
-                    //rider.transform.position += SHIFT_SPEED * Time.deltaTime * shiftDir; // shift faster upward with fast key
+                    physBod.AddForce(-Physics2D.gravity * physBod.gravityScale); // shift more with upward fast key
                 }
             }
         }
@@ -102,17 +103,21 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     }
 
     protected override void OnRiderAdded(GameObject rider) {
+        shiftDirections.Add(DetermineShiftDirection(rider));
+
         if(OnSide(rider)) {
             rider.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         }
     }
 
-    protected override void OnRiderRemoved(GameObject rider) {
+    protected override void OnRiderRemoved(GameObject rider, int index) {
         // keep rider momentum if moving fast
         if(insertedKey == KeyState.Fast) {
-            Vector2 launchDir = DetermineShiftDirection(rider);
-            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (launchDir == Vector2.up ? 1.0f : 0.8f) * launchDir;
+            Vector2 launchDir = shiftDirections[index];
+            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (launchDir == Vector2.up ? 0.8f : 0.8f) * launchDir;
         }
+
+        shiftDirections.RemoveAt(index);
     }
 
     public void InsertKey(KeyState key) {
@@ -124,6 +129,7 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
         insertedKey = key;
     }
 
+    // only works for objects touching the collider
     private Vector3 DetermineShiftDirection(GameObject rider) {
         if(OnSide(rider)) {
             // left or right
