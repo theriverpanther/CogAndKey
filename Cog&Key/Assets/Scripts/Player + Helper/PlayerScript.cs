@@ -129,6 +129,9 @@ public class PlayerScript : MonoBehaviour
                     physicsBody.gravityScale = JUMP_GRAVITY;
                     int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
                     velocity.y += 11.0f;
+                    if(Mathf.Sign(velocity.x) != jumpDirection) {
+                        velocity.x = 0;
+                    }
                     velocity.x += jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
                     SetAnimation("Jumping");
