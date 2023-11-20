@@ -73,7 +73,7 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
             riders[i].transform.position += ShiftSpeed * Time.deltaTime * shiftDir;
 
             // cancel out gravity when on the side
-            if(shiftDir == Vector3.up) {
+            if(shiftDir == Vector3.up && insertedKey != KeyState.Lock) {
                 Rigidbody2D physBod = riders[i].GetComponent<Rigidbody2D>();
                 physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
 
@@ -132,7 +132,7 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
         }
         allBeltRiders[rider].Add(shiftDir);
 
-        if(shiftDir == Vector3.up || shiftDir == Vector3.down) { // if on the side
+        if(insertedKey != KeyState.Lock && (shiftDir == Vector3.up || shiftDir == Vector3.down)) { // if on the side
             rider.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         }
     }
