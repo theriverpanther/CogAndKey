@@ -11,6 +11,9 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     private float ShiftSpeed {  get { return SHIFT_SPEED * (insertedKey == KeyState.Fast ? 2f : 1f) * (insertedKey == KeyState.Lock ? 0f : 1f); } }
 
     private List<Vector3> shiftDirections = new List<Vector3>(); // index matches the list of riders. This allows the code to calculate the shift direction once when first touching
+    private List<GameObject> attachedDuplicateRiders = new List<GameObject>(); // stores riders that are already being pushed in the same direction by an adjacent belt
+
+    private static Dictionary<GameObject, List<Vector3>> allBeltRiders; // prevents multiple belts affecting things at the seams
 
     // temp visual spin
     private List<GameObject> topTicks = new List<GameObject>();
@@ -21,6 +24,7 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
 
     void Start()
     {
+        allBeltRiders = new Dictionary<GameObject, List<Vector3>>();
         Rect area = Global.GetCollisionArea(gameObject);
 
         float tickHalfWidth = TickMarkPrefab.transform.localScale.y / 2;
@@ -52,6 +56,16 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
 
     void FixedUpdate() {
         CheckSideRiders();
+
+        // check for an adjacent belt passing something onto this
+        for(int i = attachedDuplicateRiders.Count - 1; i >= 0; i--) {
+            Vector3 shiftDir = DetermineShiftDirection(attachedDuplicateRiders[i]);
+            if(!allBeltRiders[attachedDuplicateRiders[i]].Contains(shiftDir)) {
+                riders.Add(attachedDuplicateRiders[i]);
+                OnRiderAdded(attachedDuplicateRiders[i]);
+                attachedDuplicateRiders.RemoveAt(i);
+            }
+        }
 
         // shift riders
         for(int i = 0; i < riders.Count; i++) {
@@ -104,7 +118,19 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
 
     protected override void OnRiderAdded(GameObject rider) {
         Vector3 shiftDir = DetermineShiftDirection(rider);
+
+        if(allBeltRiders.ContainsKey(rider) && allBeltRiders[rider].Contains(shiftDir)) {
+            // prevent multiple belts from shifting something in the same direction
+            riders.Remove(rider);
+            attachedDuplicateRiders.Add(rider);
+            return;
+        }
+
         shiftDirections.Add(shiftDir);
+        if(!allBeltRiders.ContainsKey(rider)) {
+            allBeltRiders[rider] = new List<Vector3>();
+        }
+        allBeltRiders[rider].Add(shiftDir);
 
         if(shiftDir == Vector3.up || shiftDir == Vector3.down) { // if on the side
             rider.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
@@ -118,7 +144,15 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
             rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (launchDir == Vector2.up ? 0.8f : 0.8f) * launchDir;
         }
 
+        allBeltRiders[rider].Remove(shiftDirections[index]);
         shiftDirections.RemoveAt(index);
+    }
+
+    // on collision exit 2D for sub class
+    protected override void SubCollisionExit(Collision2D collision) {
+        if(attachedDuplicateRiders.Contains(collision.gameObject)) {
+            attachedDuplicateRiders.Remove(collision.gameObject);
+        }
     }
 
     public void InsertKey(KeyState key) {

@@ -56,7 +56,10 @@ public abstract class Rideable : MonoBehaviour
         else if(attachedNonRiders.Contains(collision.gameObject)) {
             attachedNonRiders.Remove(collision.gameObject);
         }
+        SubCollisionExit(collision);
     }
+
+    protected virtual void SubCollisionExit(Collision2D collision) { }
 
     protected bool OnSide(GameObject rider) {
         Rect riderArea = Global.GetCollisionArea(rider);
