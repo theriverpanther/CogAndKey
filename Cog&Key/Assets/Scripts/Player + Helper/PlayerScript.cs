@@ -229,17 +229,32 @@ public class PlayerScript : MonoBehaviour
         // manage key ability
         if(keyCooldown <= 0) {
             KeyState usedKey = KeyState.Normal;
-            if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
-                usedKey = KeyState.Fast;
+            usedKey = KeyState.Fast;
+            //if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
+            //    usedKey = KeyState.Fast;
+            //}
+            //else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
+            //    usedKey = KeyState.Lock;
+            //}
+            //else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
+            //    usedKey = KeyState.Reverse;
+            //}
+
+            Vector2 keyDirection = Vector2.zero;
+            if(input.JustPressed(PlayerInput.Action.ThrowUp)) {
+                keyDirection = Vector2.up;
             }
-            else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
-                usedKey = KeyState.Lock;
+            else if(input.JustPressed(PlayerInput.Action.ThrowDown)) {
+                keyDirection = Vector2.down;
             }
-            else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
-                usedKey = KeyState.Reverse;
+            else if(input.JustPressed(PlayerInput.Action.ThrowLeft)) {
+                keyDirection = Vector2.left;
+            }
+            else if(input.JustPressed(PlayerInput.Action.ThrowRight)) {
+                keyDirection = Vector2.right;
             }
 
-            if(usedKey != KeyState.Normal) {
+            if(keyDirection != Vector2.zero) {
                 // send key attack
                 if(activeKey != null && usedKey == activeKey.Type) {
                     // remove active key
@@ -248,7 +263,7 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // determine attack direction
-                Vector2 attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
+                //Vector2 attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
                 if(input.MouseClicked()) {
                     // use mouse position to determine the direction
                     Vector3 mouseDir = input.GetMouseWorldPosition() - transform.position;
@@ -257,26 +272,26 @@ public class PlayerScript : MonoBehaviour
                     } else {
                         mouseDir.x = 0;
                     }
-                    attackDirection = mouseDir.normalized;
+                    keyDirection = mouseDir.normalized;
                 }
-                else if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
-                    if(input.IsPressed(PlayerInput.Action.Up)) {
-                        attackDirection = Vector2.up;
-                    }
-                    if(input.IsPressed(PlayerInput.Action.Down)) {
-                        attackDirection = Vector2.down;
-                    }
-                }
+                //else if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
+                //    if(input.IsPressed(PlayerInput.Action.Up)) {
+                //        attackDirection = Vector2.up;
+                //    }
+                //    if(input.IsPressed(PlayerInput.Action.Down)) {
+                //        attackDirection = Vector2.down;
+                //    }
+                //}
 
                 
-                if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
-                    if(input.IsPressed(PlayerInput.Action.Up)) {
-                        attackDirection = Vector2.up;
-                    }
-                    if(input.IsPressed(PlayerInput.Action.Down)) {
-                        attackDirection = Vector2.down;
-                    }
-                }
+                //if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
+                //    if(input.IsPressed(PlayerInput.Action.Up)) {
+                //        attackDirection = Vector2.up;
+                //    }
+                //    if(input.IsPressed(PlayerInput.Action.Down)) {
+                //        attackDirection = Vector2.down;
+                //    }
+                //}
 
                 switch(usedKey) {
                     case KeyState.Fast:
@@ -290,7 +305,7 @@ public class PlayerScript : MonoBehaviour
                         break;
                 }
 
-                activeKey.Attack(attackDirection);
+                activeKey.Attack(keyDirection);
                 keyCooldown = 0.1f;
             }
         }
