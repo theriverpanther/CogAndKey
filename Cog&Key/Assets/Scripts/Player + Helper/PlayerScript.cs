@@ -65,7 +65,6 @@ public class PlayerScript : MonoBehaviour
     {
         input.Update();
         Vector2 velocity = physicsBody.velocity;
-        float friction = 0f; // per second^2
 
         if(physicsBody.velocity.y <= 1.5f) {
             moveLockedRight = null;
@@ -95,9 +94,7 @@ public class PlayerScript : MonoBehaviour
 
         switch(currentState) {
             case State.Aerial:
-                friction = 5f;
-
-                if (physicsBody.velocity.y > JUMP_VELOCITY) {
+                if(physicsBody.velocity.y > JUMP_VELOCITY) {
                     // decrease the benefit from holding jump when launched upward
                     physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
                 }
@@ -157,8 +154,6 @@ public class PlayerScript : MonoBehaviour
                 break;
 
             case State.Grounded:
-                friction = 30f;
-
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
                 }
@@ -166,7 +161,7 @@ public class PlayerScript : MonoBehaviour
                     // fall off platform
                     SetAnimation("Falling");
                     currentState = State.Aerial;
-                    coyoteTime = 0.08f;
+                    //coyoteTime = 0.08f;
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
                 
@@ -181,6 +176,7 @@ public class PlayerScript : MonoBehaviour
         }
 
         // horizontal movement
+        float friction = (currentState == State.Grounded ? 30f : 5f);
         Vector2 slopeLeft = Vector2.left;
         if(onFloor) {
             slopeLeft = Vector2.Perpendicular(floorNorm);

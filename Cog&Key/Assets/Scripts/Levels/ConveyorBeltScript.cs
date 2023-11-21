@@ -12,6 +12,8 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
 
     private List<Vector3> shiftDirections = new List<Vector3>(); // index matches the list of riders. This allows the code to calculate the shift direction once when first touching
     private List<GameObject> attachedDuplicateRiders = new List<GameObject>(); // stores riders that are already being pushed in the same direction by an adjacent belt
+    private GameObject stopVelocityNextFrame; // used because the player can jump the same frame it makes contact and get a super boost otherwise
+    private int frameCount;
 
     private static Dictionary<GameObject, List<Vector3>> allBeltRiders; // prevents multiple belts affecting things at the seams
 
@@ -55,6 +57,14 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
     }
 
     void FixedUpdate() {
+        if(stopVelocityNextFrame != null) {
+            frameCount--;
+            if(frameCount <= 0) {
+                stopVelocityNextFrame.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                stopVelocityNextFrame = null;
+            }
+        }
+
         CheckSideRiders();
 
         // check for an adjacent belt passing something onto this
@@ -133,7 +143,8 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
         allBeltRiders[rider].Add(shiftDir);
 
         if(insertedKey != KeyState.Lock && (shiftDir == Vector3.up || shiftDir == Vector3.down)) { // if on the side
-            rider.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            stopVelocityNextFrame = rider;
+            frameCount = 2;
         }
     }
 
@@ -141,7 +152,7 @@ public class ConveyorBeltScript : Rideable, IKeyWindable
         // keep rider momentum if moving fast
         if(insertedKey == KeyState.Fast) {
             Vector2 launchDir = shiftDirections[index];
-            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (launchDir == Vector2.up ? 0.8f : 0.8f) * launchDir;
+            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (launchDir == Vector2.up ? 0.5f : 0.8f) * launchDir;
         }
 
         allBeltRiders[rider].Remove(shiftDirections[index]);
