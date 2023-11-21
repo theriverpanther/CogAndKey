@@ -17,8 +17,9 @@ public class PlayerScript : MonoBehaviour
     public KeyScript LockKey { get; set; }
     public KeyScript ReverseKey { get; set; }
 
-    private const float FALL_GRAVITY = 5.0f;
+    public const float FALL_GRAVITY = 5.0f;
     private const float JUMP_GRAVITY = 2.4f;
+    private const float GROUND_GRAVITY = 10.0f; // a higher gravity makes the player move smoothly over the tops of slopes
     private const float JUMP_VELOCITY = 13.0f;
     private const float CLING_VELOCITY = -1.0f; // the maximum downward speed when pressed against a wall
 
@@ -26,11 +27,11 @@ public class PlayerScript : MonoBehaviour
     private const float WALK_ACCEL = 100.0f; // per second^2
 
     private Rigidbody2D physicsBody;
+    private Vector2 colliderSize;
     private State currentState;
     private PlayerInput input;
     private KeyScript activeKey;
 
-    private bool jumpHeld;
     private float coyoteTime;
     private float keyCooldown;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
@@ -39,11 +40,15 @@ public class PlayerScript : MonoBehaviour
     public GameObject helper;
     private HelperCreature helperScript;
 
+    [SerializeField]
+    private Animator playerAnimation;
+
     public PlayerInput Input {  get { return input; } }
 
     void Start()
     {
         physicsBody = GetComponent<Rigidbody2D>();
+        colliderSize = GetComponent<CapsuleCollider2D>().size;
         physicsBody.gravityScale = FALL_GRAVITY;
         currentState = State.Aerial;
         input = new PlayerInput();
@@ -85,39 +90,19 @@ public class PlayerScript : MonoBehaviour
         }
 
         // vertical movement
-        switch(currentState)
-        {
+        Vector2 floorNorm;
+        bool onFloor = IsOnFloor(out floorNorm);
+
+        switch(currentState) {
             case State.Aerial:
-                if(Mathf.Abs(velocity.y) <= 0.05f) {
-                    // check to make sure this isn't the player hitting a ceiling
-                    Rect collisionArea = Global.GetCollisionArea(gameObject);
-                    RaycastHit2D leftRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMin - 0.1f, 0), Vector2.down);
-                    RaycastHit2D rightRaycast = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMin - 0.1f, 0), Vector2.down);
-
-                    // land on the ground
-                    if(leftRaycast.collider != null && leftRaycast.distance < 0.2f || rightRaycast.collider != null && rightRaycast.distance < 0.2f) {
-                        currentState = State.Grounded;
-                        break;
-                    }
-                }
-
                 friction = 5f;
 
+                if (physicsBody.velocity.y > JUMP_VELOCITY) {
+                    // decrease the benefit from holding jump when launched upward
+                    physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
+                }
+
                 // extend jump height while jump is held
-                if(physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump)) {
-                    jumpHeld = false;
-                }
-
-                // determine gravity
-                if(jumpHeld) {
-                    physicsBody.gravityScale = JUMP_GRAVITY;
-                    if(physicsBody.velocity.y > JUMP_VELOCITY) {
-                        physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
-                    }
-                } else {
-                    physicsBody.gravityScale = FALL_GRAVITY;
-                }
-
                 if(physicsBody.gravityScale != FALL_GRAVITY && 
                     (physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
                 ) {
@@ -125,6 +110,12 @@ public class PlayerScript : MonoBehaviour
                 }
                 
                 Direction adjWallDir = GetAdjacentWallDireciton();
+                if(adjWallDir != Direction.None) {
+                    SetAnimation("Wallslide");
+                }
+                else if(velocity.y < 0) {
+                    SetAnimation("Falling");
+                }
 
                 // cling to walls
                 if(velocity.y < CLING_VELOCITY && 
@@ -135,68 +126,98 @@ public class PlayerScript : MonoBehaviour
 
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
+                    physicsBody.gravityScale = JUMP_GRAVITY;
                     int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
-                    velocity.y = 11.0f;
-                    velocity.x = jumpDirection * 6.0f;
+                    velocity.y += 11.0f;
+                    velocity.x += jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
-                    jumpHeld = true;
+                    SetAnimation("Jumping");
                 }
 
                 // allow jump during coyote time
                 if(coyoteTime > 0) {
                     if(input.JustPressed(PlayerInput.Action.Jump)) {
                         Jump(ref velocity);
+                        SetAnimation("Jumping");
                         coyoteTime = 0;
                     } else {
                         coyoteTime -= Time.deltaTime;
                     }
                 }
+
+                // land on the ground
+                if(onFloor) {
+                    currentState = State.Grounded;
+                    physicsBody.gravityScale = GROUND_GRAVITY;
+                    SetAnimation(null);
+                }
                 break;
 
             case State.Grounded:
                 friction = 30f;
+
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
                 }
-                else if(velocity.y < -0.01f) {
+                else if(!onFloor) {
                     // fall off platform
+                    SetAnimation("Falling");
                     currentState = State.Aerial;
-                    coyoteTime = 0.05f;
+                    coyoteTime = 0.08f;
+                    physicsBody.gravityScale = FALL_GRAVITY;
+                }
+                
+                if(floorNorm.y < 0.9f) {
+                    // apply a force to stay still on slopes
+                    Vector2 gravity = Physics2D.gravity * physicsBody.gravityScale;
+                    Vector2 normalForce = -Vector3.Project(gravity, -floorNorm);
+                    Vector2 downSlope = gravity + normalForce;
+                    physicsBody.AddForce(-downSlope);
                 }
                 break;
         }
 
         // horizontal movement
-        float walkAccel = WALK_ACCEL * Time.deltaTime;
-        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && velocity.x < WALK_SPEED && moveLockedRight != true;
-        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && velocity.x > -WALK_SPEED && moveLockedRight != false;
-        if(moveRight == moveLeft) { // both pressed is same as neither pressed
-            // apply friction
-            if(velocity != Vector2.zero) {
-                float reduction = friction * Time.deltaTime;
-                if(Mathf.Abs(velocity.x) <= reduction) {
-                    // prevent passing 0
-                    velocity.x = 0;
-                } else {
-                    velocity.x += (velocity.x > 0 ? -1 : 1) * friction * Time.deltaTime;
-                }
-            }
+        Vector2 slopeLeft = Vector2.left;
+        if(onFloor) {
+            slopeLeft = Vector2.Perpendicular(floorNorm);
         }
-        else if(moveRight) {
-            velocity.x += walkAccel;
-            if(velocity.x > WALK_SPEED) {
-                velocity.x = WALK_SPEED;
+        Vector2 slopeRight = -slopeLeft;
+
+        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
+        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
+        if(moveRight == moveLeft) { // both pressed is same as neither pressed
+            if(currentState == State.Grounded) {
+                SetAnimation(null);
             }
 
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        }
-        else if(moveLeft) {
-            velocity.x -= walkAccel;
-            if(velocity.x < -WALK_SPEED) {
-                velocity.x = -WALK_SPEED;
+            // apply friction
+            Vector2 vertical = (onFloor ? floorNorm : Vector2.up);
+            Vector2 fricDir = velocity.x > 0 ? slopeLeft : slopeRight;
+            if(Mathf.Abs(velocity.x) >= 0.1f) {
+                velocity += friction * Time.deltaTime * fricDir;
             }
-                
-            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+
+            // check if slowed to a stop
+            if(onFloor && velocity.sqrMagnitude < 0.1f) {
+                velocity = Vector2.zero;
+            }
+            else if(!onFloor && Vector2.Dot(velocity, fricDir) > 0) {
+                velocity.x = 0;
+            }
+        }
+        else if(moveRight || moveLeft) {
+            if(currentState == State.Grounded) {
+                SetAnimation("Running");
+            }
+
+            transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+
+            Vector2 moveDir = (moveRight ? slopeRight : slopeLeft);
+            velocity += WALK_ACCEL * Time.deltaTime * moveDir;
+            if(Vector3.Project(velocity, moveDir).sqrMagnitude > WALK_SPEED * WALK_SPEED) {
+                velocity = (Vector2)Vector3.Project(velocity, (onFloor ? floorNorm : Vector2.up)) + WALK_SPEED * moveDir;
+            }
         }
 
         physicsBody.velocity = velocity;
@@ -224,6 +245,26 @@ public class PlayerScript : MonoBehaviour
 
                 // determine attack direction
                 Vector2 attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
+                if(input.MouseClicked()) {
+                    // use mouse position to determine the direction
+                    Vector3 mouseDir = input.GetMouseWorldPosition() - transform.position;
+                    if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
+                        mouseDir.y = 0;
+                    } else {
+                        mouseDir.x = 0;
+                    }
+                    attackDirection = mouseDir.normalized;
+                }
+                else if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
+                    if(input.IsPressed(PlayerInput.Action.Up)) {
+                        attackDirection = Vector2.up;
+                    }
+                    if(input.IsPressed(PlayerInput.Action.Down)) {
+                        attackDirection = Vector2.down;
+                    }
+                }
+
+                
                 if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
                     if(input.IsPressed(PlayerInput.Action.Up)) {
                         attackDirection = Vector2.up;
@@ -246,7 +287,7 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 activeKey.Attack(attackDirection);
-                keyCooldown = 0.5f;
+                keyCooldown = 0.1f;
             }
         }
         else {
@@ -261,23 +302,60 @@ public class PlayerScript : MonoBehaviour
 
     private void Jump(ref Vector2 newVelocity) {
         newVelocity.y = JUMP_VELOCITY;
+        physicsBody.gravityScale = JUMP_GRAVITY;
+        SetAnimation("Jumping");
         currentState = State.Aerial;
-        jumpHeld = true;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision) {
+        Vector2 floorNormal;
+        if(collision.gameObject.tag == "Wall" && physicsBody.velocity.y < 0 && IsOnFloor(out floorNormal) && floorNormal != Vector2.zero && floorNormal != Vector2.up) {
+            physicsBody.velocity *= 0.5f; // prevent sliding down slopes
+        }
+    }
+
+    // null sets no animation
+    private void SetAnimation(String animationState) {
+        playerAnimation.SetBool("Falling", false);
+        playerAnimation.SetBool("Running", false);
+        playerAnimation.SetBool("Jumping", false);
+        playerAnimation.SetBool("Wallslide", false);
+
+        if(animationState != null) {
+            playerAnimation.SetBool(animationState, true);
+        }
+    }
+
+    // uses raycasts to determine if the player is standing on a surface
+    private bool IsOnFloor(out Vector2 normal) {
+        const float BUFFER = 0.2f;
+        float halfRadius = colliderSize.x / 2f;
+        RaycastHit2D left = Physics2D.Raycast(new Vector3(transform.position.x - colliderSize.x / 2f, transform.position.y - colliderSize.y / 2f + halfRadius, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D mid = Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y - colliderSize.y / 2f, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D right = Physics2D.Raycast(new Vector3(transform.position.x + colliderSize.x / 2f, transform.position.y - colliderSize.y / 2f + halfRadius, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
+
+        normal = (mid.collider == null ? Vector2.zero : mid.normal);
+
+        return mid.collider != null && mid.distance < BUFFER || left.collider != null && left.distance < halfRadius + BUFFER || right.collider != null && right.distance < halfRadius + BUFFER;
     }
 
     // checks if the player's left and right sides are against any surfaces. Returns Direction.None for no wall, and left or right if there is a wall
     private Direction GetAdjacentWallDireciton() {
-        Rect collisionArea = Global.GetCollisionArea(gameObject);
+        float left = transform.position.x - colliderSize.x / 2f;
+        float right = transform.position.x + colliderSize.x / 2f;
+        float top = transform.position.y + colliderSize.y / 2f - colliderSize.x / 2f;
+        float mid = transform.position.y;
+        float bottom = transform.position.y - colliderSize.y / 2f + colliderSize.x / 2f;
 
         const float BUFFER = 0.2f;
-        
-        RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMax, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.center.y, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(collisionArea.xMin, collisionArea.yMin, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
 
-        RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMax, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.center.y, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(collisionArea.xMax, collisionArea.yMin, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(left, top, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(left, mid, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(left, bottom, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
+
+        RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(right, top, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(right, mid, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(right, bottom, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
 
         if(leftTop.collider != null && leftTop.distance < BUFFER || leftMid.collider != null && leftMid.distance < BUFFER || leftBot.collider != null && leftBot.distance < BUFFER) {
             return Direction.Left;

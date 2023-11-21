@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2316437343508244461}
   - component: {fileID: 325939892992193243}
   - component: {fileID: 4010212204900633515}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: AgentNode
   m_TagString: Node
   m_Icon: {fileID: 0}

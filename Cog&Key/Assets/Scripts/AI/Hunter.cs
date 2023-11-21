@@ -8,13 +8,13 @@ using UnityEngine.Timeline;
 
 public class Hunter : Agent
 {
-    [SerializeField] private float distThreshold = 0.2f;
-    [SerializeField] private bool wallDetected;
+    private float distThreshold = 0.2f;
+    private bool wallDetected;
     [SerializeField] private Color idleColor;
     [SerializeField] private Color huntColor;
     private GameObject player;
 
-    [SerializeField] private float maxHuntTime = 5f;
+    private float maxHuntTime = 2f;
     private float huntTimer = 0f;
 
     // Start is called before the first frame update
@@ -86,8 +86,6 @@ public class Hunter : Agent
 
     protected override void BehaviorTree(float walkSpeed, bool fast)
     {
-        float sqrDist = Mathf.Pow(playerPosition.x - direction.x, 2) + Mathf.Pow(playerPosition.y - direction.y, 2);
-
         bool playerSensed = false;
         foreach(Sense s in senses)
         {
@@ -95,12 +93,11 @@ public class Hunter : Agent
             {
                 playerSensed = true;
                 playerPosition = player.transform.position;
-            }
-                
-                
+            }  
         }
+        float sqrDist = Mathf.Pow(playerPosition.x - direction.x, 2) + Mathf.Pow(playerPosition.y - direction.y, 2);
 
-        if(sqrDist <= distThreshold * distThreshold && !playerSensed)
+        if (sqrDist <= distThreshold * distThreshold && !playerSensed)
         {
             PlayerPosition = Vector3.zero;
         }
@@ -129,9 +126,9 @@ public class Hunter : Agent
             {
                 Jump();
             }
-            if(playerSensed && playerPosition.y > transform.position.y)
+            if(playerPosition.y > transform.position.y)
             {
-                Jump();
+                if(playerSensed || wallDetected) Jump();
             }
             //List<Vector2> jumps = new List<Vector2>();
             //jumps = ValidJumps();
@@ -191,5 +188,11 @@ public class Hunter : Agent
         }
 
         base.BehaviorTree(walkSpeed, fast);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(playerPosition, 1);
     }
 }

@@ -12,6 +12,8 @@ using UnityEngine.UIElements;
 
 
 #if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+
 [ExecuteInEditMode]
 
 //https://docs.unity3d.com/ScriptReference/MenuItem.html
@@ -36,7 +38,7 @@ public class NodePlacer : MonoBehaviour
         if (field != null)
         {
             Event current = field.GetValue(null) as Event;
-            if(current != null)
+            if (current != null)
             {
                 //https://forum.unity.com/threads/how-to-get-mouseposition-in-scene-view.208911/
                 mousePos = Event.current.mousePosition;
@@ -71,6 +73,7 @@ public class NodePlacer : MonoBehaviour
         // Reparent if context clicked
         GameObjectUtility.SetParentAndAlign(obj, cmd.context as GameObject);
         
+
         // Register in the undo system
         Undo.RegisterCreatedObjectUndo(obj, "Create " + obj.name);
         Selection.activeGameObject = obj;
@@ -88,6 +91,11 @@ public class NodePlacer : MonoBehaviour
     //public static void Clicked()
     //{
         
+
+    //[MenuItem ("Nodes/Click")]
+    //public static void Clicked()
+    //{
+
     //}
 
     //[MenuItem("Nodes/Selected Transform Name")]

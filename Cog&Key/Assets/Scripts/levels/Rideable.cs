@@ -4,28 +4,30 @@ using UnityEngine;
 
 // generic class for an obstacle that affects entities attached to it
 [RequireComponent(typeof(BoxCollider2D))]
-public class Rideable : MonoBehaviour
+public abstract class Rideable : MonoBehaviour
 {
     protected List<GameObject> riders = new List<GameObject>();
+    private List<GameObject> attachedNonRiders = new List<GameObject>(); // colliding objects which are not attached
 
-    // should be called in subclass Update(), removes riders on the side if they are not pressed towards this object
+    // should be called in subclass Update(), checks objects on the side to determine if they are riding
     protected void CheckSideRiders() {
+        // check for side riders not pressed towards the middle
         for(int i = riders.Count - 1; i >= 0; i--) {
             GameObject rider = riders[i];
-            PlayerScript player = rider.GetComponent<PlayerScript>();
-            if(player == null) {
-                continue;
-            }
-
-            Rect riderArea = Global.GetCollisionArea(rider);
-            Rect platformArea = Global.GetCollisionArea(gameObject);
-
-            bool onSide = riderArea.yMin < platformArea.yMax && riderArea.yMax > riderArea.yMin;
-            bool towardsMiddle = (rider.transform.position.x < transform.position.x && player.Input.IsPressed(PlayerInput.Action.Right)) 
-                || (rider.transform.position.x > transform.position.x && player.Input.IsPressed(PlayerInput.Action.Left));
-            if(onSide && !towardsMiddle) {
+            if(OnSide(rider) && !PressedTowardsMiddle(rider)) {
                 riders.RemoveAt(i);
+                attachedNonRiders.Add(rider);
                 OnRiderRemoved(rider);
+            }
+        }
+
+        // check for objects on the side becoming pressed towards the middle again
+        for(int i = attachedNonRiders.Count - 1; i >= 0; i--) {
+            GameObject possibleRider = attachedNonRiders[i];
+            if(OnSide(possibleRider) && PressedTowardsMiddle(possibleRider)) {
+                attachedNonRiders.RemoveAt(i);
+                riders.Add(possibleRider);
+                OnRiderAdded(possibleRider);
             }
         }
     }
@@ -45,6 +47,26 @@ public class Rideable : MonoBehaviour
             riders.Remove(collision.gameObject);
             OnRiderRemoved(collision.gameObject);
         }
+        else if(attachedNonRiders.Contains(collision.gameObject)) {
+            attachedNonRiders.Remove(collision.gameObject);
+        }
+    }
+
+    protected bool OnSide(GameObject rider) {
+        Rect riderArea = Global.GetCollisionArea(rider);
+        Rect platformArea = Global.GetCollisionArea(gameObject);
+        return riderArea.yMin < platformArea.yMax && riderArea.yMax > riderArea.yMin;
+    }
+
+    // returns true if the input game object is attempting to move towards the middle of this rideable
+    private bool PressedTowardsMiddle(GameObject rider) {
+        PlayerScript player = rider.GetComponent<PlayerScript>();
+        if(player != null) {
+            return (rider.transform.position.x < transform.position.x && player.Input.IsPressed(PlayerInput.Action.Right))
+                || (rider.transform.position.x > transform.position.x && player.Input.IsPressed(PlayerInput.Action.Left));
+        }
+
+        return true;
     }
 
     // pseudo events for sub classes
