@@ -12,6 +12,7 @@ TagManager:
   - Helper
   - Node
   - Agent
+  - Path
   layers:
   - Default
   - TransparentFX

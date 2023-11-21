@@ -19,11 +19,11 @@ using UnityEditor.SceneManagement;
 //https://docs.unity3d.com/ScriptReference/MenuItem.html
 public class NodePlacer : MonoBehaviour
 {
-    static string path = "AgentNode";
+    static string path = "BoundNode";
 
     Vector3 mousePos = Vector3.zero;
 
-    [MenuItem("GameObject/Nodes/AgentNode", false, 10)]
+    [MenuItem("GameObject/Nodes/BoundNode", false, 10)]
     static void CreateNodeObject(MenuCommand cmd)
     {
         // Find location

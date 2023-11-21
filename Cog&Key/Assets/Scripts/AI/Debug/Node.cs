@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Node : MonoBehaviour
 {
+    [SerializeField] protected Color gizmoColor = Color.yellow;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,9 +33,9 @@ public class Node : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    protected void OnDrawGizmos()
     {
-        Gizmos.color = Color.yellow;
+        Gizmos.color = gizmoColor;
         Gizmos.DrawSphere(transform.position, 0.25f);
     }
 }
