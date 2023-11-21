@@ -7,6 +7,8 @@ Shader "Skybox/VertBlendedSkybox"
         _Rotation("Rotation", Range(0, 360)) = 0
 
         _Blend("Blend", Range(0.0,1.0)) = 0.5
+        _VOffset("V Offset", Range(-1, 1)) = 0
+        _VScale("V Scale", Range(-4, 4)) = 1
 
         [NoScaleOffset] _FrontTex("Front [+Z]   (HDR)", 2D) = "grey" {}
         [NoScaleOffset] _BackTex("Back [-Z]   (HDR)", 2D) = "grey" {}
