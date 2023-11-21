@@ -58,10 +58,14 @@ public class MovingWallScript : Rideable, IKeyWindable
 
             // apply shift momentum to riders when changing direction
             Vector2 newDirection = pathPoints[nextPointIndex] - (Vector2)transform.position;
-            Vector2 momentum = currentSpeed * (transform.position - startPosition).normalized;
+            Vector2 momentum = 1.5f * currentSpeed * (transform.position - startPosition).normalized;
             if(currentKey == KeyState.Fast && riders.Count > 0 && newDirection.y < 0 && momentum.y > 0) {
                 for(int i = 0; i < riders.Count; i++) {
                     riders[i].GetComponent<Rigidbody2D>().velocity += momentum;
+                    if(riders[i].name == "Player") {
+                        // switch player to fall gravity because the grounded gravity is a lot stronger and it cancells the momentum
+                        riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.FALL_GRAVITY;
+                    }
                 }
             }
         } else {
