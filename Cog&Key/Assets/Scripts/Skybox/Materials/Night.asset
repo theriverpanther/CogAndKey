@@ -25,6 +25,6 @@ MonoBehaviour:
     FogColor: {r: 0, g: 0, b: 0, a: 0}
   SunPreset:
     SunIntensity: 1
-    SunColor: {r: 0.4521182, g: 0.51630574, b: 0.754717, a: 0}
+    SunColor: {r: 0.26664296, g: 0.32441187, b: 0.5283019, a: 0}
   LightningIntensityMultiplier: 2.5
   ReflectionsIntensityMultiplier: 1
