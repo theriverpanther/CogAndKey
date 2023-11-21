@@ -40,9 +40,11 @@ public class Agent : KeyWindable
 
     protected float turnDelay = 0.5f;
     protected bool processingTurn = false;
+    [SerializeField] protected float stopDelay = 0.5f;
+    protected bool processingStop = false;
 
     [SerializeField] protected List<GameObject> nodes = new List<GameObject>();
-
+    public PathNode pathTarget;
     private CogIndicator cog;
 
     #endregion
@@ -69,6 +71,23 @@ public class Agent : KeyWindable
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
         // Get a non magic number way pls
         cog = transform.GetChild(7).GetComponent<CogIndicator>();
+
+        // Get the collection of path nodes in the scene
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("Path");
+        GameObject obj = objs[0];
+        float dist = Vector3.Distance(transform.position, obj.transform.position);
+        float tempDist = 0;
+        foreach (GameObject node in objs)
+        {
+            tempDist = Vector3.Distance(transform.position, node.transform.position);
+            if (Vector3.Distance(transform.position, node.transform.position) < dist)
+            {
+                obj = node;
+                dist = tempDist;
+            }
+        }
+
+        pathTarget = obj.GetComponent<PathNode>();
     }
 
     // Update is called once per frame
@@ -90,7 +109,7 @@ public class Agent : KeyWindable
 
     protected virtual void BehaviorTree(float walkSpeed, bool fast)
     {
-        if(!processingTurn)
+        if(!processingTurn && !processingStop)
         {
             rb.velocity = new Vector2(walkSpeed * direction.x, rb.velocity.y);
         }
@@ -136,7 +155,7 @@ public class Agent : KeyWindable
     }
 
     protected IEnumerator TurnDelay()
-    {   if(!processingTurn)
+    {   if(!processingTurn && !processingStop)
         {
             processingTurn = true;
             // Change direction
@@ -160,6 +179,27 @@ public class Agent : KeyWindable
         }
         
         yield return null;
+    }
+
+    protected IEnumerator MoveDelay()
+    {
+        if(!processingStop && !processingTurn)
+        {
+            processingStop = true;
+            Vector2 tempVelocity = rb.velocity;
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            yield return new WaitForSeconds(stopDelay);
+            tempVelocity.y = rb.velocity.y;
+            rb.velocity = tempVelocity;
+            yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
+            processingStop = false;
+        }
+        yield return null;
+    }
+    
+    public void Stop()
+    {
+        StartCoroutine(MoveDelay());
     }
 
     #region Edge Detection

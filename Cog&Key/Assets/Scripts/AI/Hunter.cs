@@ -100,7 +100,9 @@ public class Hunter : Agent
         {
             // patrol
             // for now just deal with edge detection
-            EdgeDetectMovement(!fast, true);
+            //EdgeDetectMovement(!fast, true);
+            Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
+            if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x)) StartCoroutine(TurnDelay());
             gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().color = idleColor;
         }
         else if (sqrDist > distThreshold * distThreshold)
