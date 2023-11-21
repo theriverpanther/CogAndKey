@@ -22,6 +22,7 @@ public class KeyScript : MonoBehaviour
     private IKeyWindable insertTarget;
     private KeyShowcaser uiKeys;
     private Rigidbody2D physicsBody;
+    private GameObject player;
 
     [SerializeField] private KeyState type;
     public KeyState Type { get { return type; } }
@@ -31,6 +32,7 @@ public class KeyScript : MonoBehaviour
         currentState = State.Pickup;
         uiKeys = GameObject.Find("OverlayMain")?.GetComponent<KeyShowcaser>();
         physicsBody = GetComponent<Rigidbody2D>();
+        player = GameObject.Find("Player");
     }
 
     void Update()
@@ -56,6 +58,11 @@ public class KeyScript : MonoBehaviour
             if(Vector2.Distance(playerPos, transform.position) <= 0.5f) {
                 // use distance check instead of collision trigger so that the key gets more to the center of the player
                 SetState(State.PlayerHeld);
+            }
+        }
+        else if(currentState == State.Attached) {
+            if(Vector3.Distance(transform.position, player.transform.position) > 12f) {
+                Detach();
             }
         }
     }
