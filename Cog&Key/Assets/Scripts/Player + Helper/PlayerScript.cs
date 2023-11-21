@@ -66,7 +66,7 @@ public class PlayerScript : MonoBehaviour
         input.Update();
         Vector2 velocity = physicsBody.velocity;
 
-        if(physicsBody.velocity.y <= 1.5f) {
+        if(physicsBody.velocity.y <= 1.0f) {
             moveLockedRight = null;
         }
 
@@ -124,8 +124,12 @@ public class PlayerScript : MonoBehaviour
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
                     physicsBody.gravityScale = JUMP_GRAVITY;
-                    int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
+                    if(velocity.y < 0) {
+                        velocity.y = 0;
+                    }
                     velocity.y += 11.0f;
+
+                    int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
                     if(Mathf.Sign(velocity.x) != jumpDirection) {
                         velocity.x = 0;
                     }
@@ -161,7 +165,7 @@ public class PlayerScript : MonoBehaviour
                     // fall off platform
                     SetAnimation("Falling");
                     currentState = State.Aerial;
-                    //coyoteTime = 0.08f;
+                    coyoteTime = 0.08f;
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
                 
