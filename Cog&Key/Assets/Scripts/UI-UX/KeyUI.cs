@@ -13,12 +13,28 @@ public class KeyUI : MonoBehaviour
     [SerializeField]
     List<Sprite> statusSprites;
 
-    void Start()
+    void Awake()
     {
        data = GameObject.FindObjectOfType<LevelData>();
-       keys = new List<GameObject>();
 
-       for (int i = 0; i < transform.childCount; i++)
+        UpdateDictionary();
+
+        ShowCollectedKeys();
+    }
+
+    public void ShowCollectedKeys()
+    {
+
+        foreach(KeyState state in data.StartingKeys) {
+            keyDictionary[state].SetActive(true);
+        }
+    }
+
+    public void UpdateDictionary()
+    {
+        keys = new List<GameObject>();
+
+        for (int i = 0; i < transform.childCount; i++)
         {
             keys.Add(transform.GetChild(i).gameObject);
             keys[i].SetActive(false);
@@ -26,15 +42,6 @@ public class KeyUI : MonoBehaviour
         keyDictionary.Add(KeyState.Fast, keys[0]);
         keyDictionary.Add(KeyState.Lock, keys[1]);
         keyDictionary.Add(KeyState.Reverse, keys[2]);
-
-        ShowCollectedKeys();
-    }
-
-    void ShowCollectedKeys()
-    {
-        foreach(KeyState state in data.StartingKeys) {
-            keyDictionary[state].SetActive(true);
-        }
     }
 
     public void UpdateKeyUI(KeyState key)

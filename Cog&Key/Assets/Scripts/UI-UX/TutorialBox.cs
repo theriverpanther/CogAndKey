@@ -64,17 +64,6 @@ public class TutorialBox : MonoBehaviour
 
                 helperUI.ShowHelper();
 
-                if (attachToCenterPoint)
-                {
-                    helperScript.followPlayer = false;
-                    helperScript.SetGoPoint(transform.position);
-                    Debug.Log("Not following player.");
-                }
-                else
-                {
-                    helperScript.followPlayer = true;
-                }
-
                 helperUI.StartText(textToShow);
             } else
             {
@@ -86,6 +75,17 @@ public class TutorialBox : MonoBehaviour
                     helperUI.IndicatorImage(imgToShow);
                 }
 
+            }
+
+            if (attachToCenterPoint)
+            {
+                helperScript.followPlayer = false;
+                helperScript.SetGoPoint(transform.position);
+                Debug.Log("Not following player.");
+            }
+            else
+            {
+                helperScript.followPlayer = true;
             }
 
         }

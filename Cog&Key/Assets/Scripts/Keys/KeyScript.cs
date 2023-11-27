@@ -143,8 +143,6 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
-        uiKeys?.MainKeyStatusUpdate(false, Type);
-
         insertTarget.InsertKey(KeyState.Normal);
         insertTarget = null;
         SetState(State.Returning);
