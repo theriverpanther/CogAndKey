@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9111085995593525918}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -49.99, y: -40.74, z: -0.025636172}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &4906355625934014140
 BoxCollider2D:
@@ -90,8 +90,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 492b8dbe1aeab464eb7dc07ba833d127, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  overlapping: 0
+  topRightCorner: 1
   textToShow: Test Text!
   imgToShow: {fileID: 2800000, guid: 3719e5d35c66d4747be0d44c2d6b25df, type: 3}
   attachToCenterPoint: 1
   textSpeed: 0.1
+  forceFade: 1
   size: 6
+  animationIndex: -1
