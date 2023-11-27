@@ -12,6 +12,12 @@ public class TutorialBox : MonoBehaviour
     private HelperCreature helperScript;
 
     [SerializeField]
+    public bool overlapping;
+
+    [SerializeField]
+    bool topRightCorner;
+
+    [SerializeField]
     string textToShow;
     [SerializeField]
     Texture2D imgToShow;
@@ -28,7 +34,6 @@ public class TutorialBox : MonoBehaviour
 
     [SerializeField]
     public int animationIndex = -1;
-
 
     void Start()
     {
@@ -48,36 +53,53 @@ public class TutorialBox : MonoBehaviour
     {
         if(collision.tag == "Player")
         {
-            if (imgToShow != null)
+            if(!topRightCorner)
             {
-                helperUI.ShowImage(imgToShow , size, animationIndex, forceFade);
-            }
+                if (imgToShow != null)
+                {
+                    helperUI.ShowImage(imgToShow, size, animationIndex, forceFade);
+                }
 
-            helperUI.SetTextSpeed(textSpeed);
-          
-            helperUI.ShowHelper();
+                helperUI.SetTextSpeed(textSpeed);
 
-            if (attachToCenterPoint)
-            {
-                helperScript.followPlayer = false;
-                helperScript.SetGoPoint(transform.position);
-                Debug.Log("Not following player.");
+                helperUI.ShowHelper();
+
+                if (attachToCenterPoint)
+                {
+                    helperScript.followPlayer = false;
+                    helperScript.SetGoPoint(transform.position);
+                    Debug.Log("Not following player.");
+                }
+                else
+                {
+                    helperScript.followPlayer = true;
+                }
+
+                helperUI.StartText(textToShow);
             } else
             {
-                helperScript.followPlayer = true;
+                helperUI.AlertMessage(true);
+                helperUI.SetTextSpeed(textSpeed);
+                helperUI.StartText(textToShow, true);
+                helperUI.IndicatorImage(imgToShow);
             }
 
-            helperUI.StartText(textToShow);
         }
 
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.tag == "Player" && !overlapping)
         {
-            helperUI.HideHelper();
-            
+            if (!topRightCorner)
+            {
+                helperUI.HideHelper();
+            } else
+            {
+                helperUI.AlertMessage(false);
+                helperUI.IndicatorImage();
+            }
         }
     }
 }

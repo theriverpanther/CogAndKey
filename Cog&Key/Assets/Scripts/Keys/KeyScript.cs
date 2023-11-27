@@ -24,6 +24,7 @@ public class KeyScript : MonoBehaviour
     private Rigidbody2D physicsBody;
 
     [SerializeField] private KeyState type;
+    private KeyUI keyUI;
     public KeyState Type { get { return type; } }
 
     void Awake()
@@ -31,6 +32,7 @@ public class KeyScript : MonoBehaviour
         currentState = State.Pickup;
         uiKeys = GameObject.Find("OverlayMain")?.GetComponent<KeyShowcaser>();
         physicsBody = GetComponent<Rigidbody2D>();
+        keyUI = GameObject.Find("KeyBG").GetComponent<KeyUI>();
     }
 
     void Update()
@@ -70,20 +72,16 @@ public class KeyScript : MonoBehaviour
                 break;
             case State.PlayerHeld:
                 gameObject.SetActive(false);
-                uiKeys?.MainKeyStatusUpdate(true, Type);
-                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
             case State.Attacking:
                 gameObject.SetActive(true);
-                uiKeys?.MainKeyStatusUpdate(false, Type);
-                uiKeys?.SmallKeyStatusUpdate(false, Type);
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
                 break;
             case State.Attached:
-                uiKeys?.MainKeyStatusUpdate(false, Type);
-                uiKeys?.SmallKeyStatusUpdate(false, Type);
                 break;
         }
+
+        keyUI.KeyUpdate(currentState, Type);
     }
 
     // gives the player possession of a key pickup, turning it into an ability
@@ -91,21 +89,24 @@ public class KeyScript : MonoBehaviour
     {
         SetState(State.PlayerHeld);
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        switch(Type) {
+
+        switch (Type) {
             case KeyState.Fast:
                 player.FastKey = this;
-                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
 
             case KeyState.Lock:
                 player.LockKey = this;
-                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
 
             case KeyState.Reverse:
                 player.ReverseKey = this;
-                uiKeys?.SmallKeyStatusUpdate(true, Type);
                 break;
+        }
+
+        if (keyUI != null)
+        {
+            keyUI.UpdateKeyUI(Type);
         }
 
     }
