@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2963366802960152099}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23,6 +23,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 111424024549690199}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.086, y: -0.322, z: 0}
   m_LocalScale: {x: 0.32856956, y: 0.32856956, z: 0.32856956}
@@ -36,7 +37,6 @@ Transform:
   - {fileID: 6987821115297077677}
   - {fileID: 7829462320071463706}
   m_Father: {fileID: 6145047718219482363}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &814950795572652204
 GameObject:
@@ -48,7 +48,7 @@ GameObject:
   m_Component:
   - component: {fileID: 680115527918068471}
   - component: {fileID: 7943677226309225466}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,13 +62,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 814950795572652204}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 3.737, y: 1.0419999, z: 0}
   m_LocalScale: {x: 0.9616144, y: 2.0791664, z: 1.2475}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2963366802960152099}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!212 &7943677226309225466
 SpriteRenderer:
@@ -132,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6987821115297077677}
   - component: {fileID: 7558172268295592962}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,13 +146,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1450152712284140865}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.6689997, y: 2.51, z: 0}
   m_LocalScale: {x: 0.9006333, y: 0.9006333, z: 0.54038}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2963366802960152099}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7558172268295592962
 SpriteRenderer:
@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 6145047718219482363}
   - component: {fileID: 2262845593173028102}
   - component: {fileID: 3734985423715847258}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Key
   m_TagString: Key
   m_Icon: {fileID: 0}
@@ -231,6 +231,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1646875374468621335}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 1}
@@ -238,7 +239,6 @@ Transform:
   m_Children:
   - {fileID: 2963366802960152099}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2262845593173028102
 MonoBehaviour:
@@ -308,7 +308,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5177334528412944583}
   - component: {fileID: 7574373207277278366}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -322,13 +322,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1678434841732829545}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.6689997, y: 2.5100002, z: 0}
   m_LocalScale: {x: 1.6666664, y: 1.6666664, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2963366802960152099}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7574373207277278366
 SpriteRenderer:
@@ -392,7 +392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5310067582553882569}
   - component: {fileID: 4539225582494275976}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -406,13 +406,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5439322998829834150}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.6689997, y: -0.3699999, z: 0}
   m_LocalScale: {x: 1.6666664, y: 1.6666664, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2963366802960152099}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4539225582494275976
 SpriteRenderer:
@@ -476,7 +476,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7829462320071463706}
   - component: {fileID: 452806409589753645}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -490,13 +490,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7729279368143428942}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.6689997, y: -0.37, z: 0}
   m_LocalScale: {x: 0.9006333, y: 0.9006333, z: 0.54038}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2963366802960152099}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &452806409589753645
 SpriteRenderer:
@@ -560,7 +560,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7757772700369335592}
   - component: {fileID: 6052540975701876892}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -574,13 +574,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8579415118280718111}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 2.712908, y: 1.1399999, z: 0}
   m_LocalScale: {x: 0.7708332, y: 1.599479, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2963366802960152099}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6052540975701876892
 SpriteRenderer:
@@ -644,7 +644,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7249104681769431612}
   - component: {fileID: 5399876601599044751}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Square (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -658,13 +658,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8852138424137731293}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 4.7249994, y: 1.0419999, z: 0}
   m_LocalScale: {x: 0.5876329, y: 1.2705579, z: 0.76233476}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2963366802960152099}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!212 &5399876601599044751
 SpriteRenderer:

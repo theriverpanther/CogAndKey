@@ -195,7 +195,7 @@ public class PlayerScript : MonoBehaviour
 
         bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && (Vector2.Dot(velocity, slopeRight) <= 0 || Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
         bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && (Vector2.Dot(velocity, slopeLeft) <= 0 || Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
-        if(moveRight == moveLeft) { // both pressed is same as neither pressed
+        if(moveRight == moveLeft && velocity.x != 0) { // both pressed is same as neither pressed
             if(currentState == State.Grounded) {
                 SetAnimation(null);
             }
