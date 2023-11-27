@@ -94,14 +94,14 @@ public class PlayerScript : MonoBehaviour
 
         switch(currentState) {
             case State.Aerial:
-                if(physicsBody.velocity.y > JUMP_VELOCITY) {
+                if(velocity.y > JUMP_VELOCITY) {
                     // decrease the benefit from holding jump when launched upward
-                    physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
+                    //physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
                 }
 
                 // extend jump height while jump is held
                 if(physicsBody.gravityScale != FALL_GRAVITY && 
-                    (physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
+                    (velocity.y < 0 || velocity.y > JUMP_VELOCITY || !input.IsPressed(PlayerInput.Action.Jump))
                 ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
@@ -127,13 +127,19 @@ public class PlayerScript : MonoBehaviour
                     if(velocity.y < 0) {
                         velocity.y = 0;
                     }
-                    velocity.y += 11.0f;
+                    const float WALL_JUMP_SPEED = 11f;
+                    if(velocity.y > WALL_JUMP_SPEED / 2f) {
+                        // less boost if there is already upward momentum
+                        velocity.y += WALL_JUMP_SPEED / 2f;
+                    } else {
+                        velocity.y += WALL_JUMP_SPEED;
+                    }
 
                     int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
                     if(Mathf.Sign(velocity.x) != jumpDirection) {
                         velocity.x = 0;
                     }
-                    velocity.x += jumpDirection * 6.0f;
+                    velocity.x += jumpDirection * (velocity.y > WALL_JUMP_SPEED ? 10f : 6.0f); // bigger sideways force when moving up fast
                     moveLockedRight = (jumpDirection == -1);
                     SetAnimation("Jumping");
                 }
