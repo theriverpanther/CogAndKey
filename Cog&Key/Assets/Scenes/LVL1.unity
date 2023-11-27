@@ -2084,7 +2084,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2227545923227124827, guid: c025d1d86b0844849acb2e5719b88bce, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 2227545923227124827, guid: c025d1d86b0844849acb2e5719b88bce, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -37170,8 +37170,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusSprites:
   - {fileID: 21300000, guid: 2d6a556162e7de3419e4cfcac42f436e, type: 3}
-  - {fileID: 21300000, guid: 740c67a496d30f449ad832ae3fd7ca5a, type: 3}
   - {fileID: 21300000, guid: 89c166c554ea4aa4e89c0b713764b089, type: 3}
+  - {fileID: 21300000, guid: 740c67a496d30f449ad832ae3fd7ca5a, type: 3}
   - {fileID: 21300000, guid: 316dbd05f3b205246a3502647bcd86c1, type: 3}
 --- !u!1 &1583392490
 GameObject:
