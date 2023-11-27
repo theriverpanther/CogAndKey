@@ -53,7 +53,7 @@ public class TutorialBox : MonoBehaviour
     {
         if(collision.tag == "Player")
         {
-            if(!topRightCorner)
+            if(!topRightCorner && textToShow != "TRIGGER") 
             {
                 if (imgToShow != null)
                 {
@@ -78,10 +78,14 @@ public class TutorialBox : MonoBehaviour
                 helperUI.StartText(textToShow);
             } else
             {
-                helperUI.AlertMessage(true);
-                helperUI.SetTextSpeed(textSpeed);
-                helperUI.StartText(textToShow, true);
-                helperUI.IndicatorImage(imgToShow);
+                if(textToShow != "TRIGGER")
+                {
+                    helperUI.AlertMessage(true);
+                    helperUI.SetTextSpeed(textSpeed);
+                    helperUI.StartText(textToShow, true);
+                    helperUI.IndicatorImage(imgToShow);
+                }
+
             }
 
         }

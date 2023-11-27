@@ -40,7 +40,7 @@ public class HelperUI : MonoBehaviour
         forceFade = true;
         GetComponent<Canvas>().worldCamera = Camera.main;
         textToModUpper = upperText.transform.Find("HelperText").GetComponent<TextMeshProUGUI>();
-
+        AlertMessage(false);
         imageAnimator.SetInteger("animationPlayerIndex", -1);
         emptySprite = Sprite.Create(empty, new Rect(0.0f, 0.0f, empty.width, empty.height), new Vector2(0.5f, 0.5f), 100.0f);
     }
