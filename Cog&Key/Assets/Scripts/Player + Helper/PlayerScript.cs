@@ -31,6 +31,7 @@ public class PlayerScript : MonoBehaviour
     private State currentState;
     private PlayerInput input;
     private KeyScript activeKey;
+    private KeyState selectedKey = KeyState.Fast;
 
     private float coyoteTime;
     private float keyCooldown;
@@ -233,19 +234,29 @@ public class PlayerScript : MonoBehaviour
         physicsBody.velocity = velocity;
 
         // manage key ability
-        if(keyCooldown <= 0) {
-            KeyState usedKey = KeyState.Normal;
-            usedKey = KeyState.Fast;
-            //if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
-            //    usedKey = KeyState.Fast;
-            //}
-            //else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
-            //    usedKey = KeyState.Lock;
-            //}
-            //else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
-            //    usedKey = KeyState.Reverse;
-            //}
+        if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
+            selectedKey = KeyState.Fast;
+            if(activeKey == FastKey) {
+                activeKey.Detach();
+                activeKey = null;
+            }
+        }
+        else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
+            selectedKey = KeyState.Lock;
+            if(activeKey == LockKey) {
+                activeKey.Detach();
+                activeKey = null;
+            }
+        }
+        else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
+            selectedKey = KeyState.Reverse;
+            if(activeKey == ReverseKey) {
+                activeKey.Detach();
+                activeKey = null;
+            }
+        }
 
+        if(keyCooldown <= 0) {
             Vector2 keyDirection = Vector2.zero;
             if(input.JustPressed(PlayerInput.Action.ThrowUp)) {
                 keyDirection = Vector2.up;
@@ -260,14 +271,8 @@ public class PlayerScript : MonoBehaviour
                 keyDirection = Vector2.right;
             }
 
+            // send key attack
             if(keyDirection != Vector2.zero) {
-                // send key attack
-                if(activeKey != null && usedKey == activeKey.Type) {
-                    // remove active key
-                    activeKey.Detach();
-                    activeKey = null;
-                }
-
                 // determine attack direction
                 if(input.MouseClicked()) {
                     // use mouse position to determine the direction
@@ -280,7 +285,7 @@ public class PlayerScript : MonoBehaviour
                     keyDirection = mouseDir.normalized;
                 }
 
-                switch(usedKey) {
+                switch(selectedKey) {
                     case KeyState.Fast:
                         activeKey = FastKey;
                         break;
