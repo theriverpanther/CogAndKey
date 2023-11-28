@@ -9,6 +9,7 @@ public class DoorScript : MonoBehaviour
     private float height;
 
     private const float MOVE_SPEED = 10f;
+    public bool Locked { get; set; }
 
     void Start() {
         startY = transform.position.y;
@@ -16,6 +17,10 @@ public class DoorScript : MonoBehaviour
     }
 
     void Update() {
+        if(Locked) {
+            return;
+        }
+
         if(open && transform.position.y < startY + height) {
             float newY = transform.position.y + MOVE_SPEED * Time.deltaTime;
             if(newY > startY + height) {
