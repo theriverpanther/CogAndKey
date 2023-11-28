@@ -128,11 +128,15 @@ public class PlayerScript : MonoBehaviour
                     if(velocity.y < 0) {
                         velocity.y = 0;
                     }
+
+                    bool boosted = false;
                     const float WALL_JUMP_SPEED = 11f;
-                    if(velocity.y > WALL_JUMP_SPEED / 2f) {
+                    if(velocity.y > WALL_JUMP_SPEED) {
                         // less boost if there is already upward momentum
-                        velocity.y += WALL_JUMP_SPEED / 2f;
-                    } else {
+                        velocity.y += WALL_JUMP_SPEED / 4f;
+                        boosted = true;
+                    }
+                    else {
                         velocity.y += WALL_JUMP_SPEED;
                     }
 
@@ -140,7 +144,7 @@ public class PlayerScript : MonoBehaviour
                     if(Mathf.Sign(velocity.x) != jumpDirection) {
                         velocity.x = 0;
                     }
-                    velocity.x += jumpDirection * (velocity.y > WALL_JUMP_SPEED ? 10f : 6.0f); // bigger sideways force when moving up fast
+                    velocity.x += jumpDirection * (boosted ? 10f : 6.0f);
                     moveLockedRight = (jumpDirection == -1);
                     SetAnimation("Jumping");
                 }
