@@ -204,7 +204,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 7.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 13.89, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4602655585615254953
@@ -1125,10 +1125,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4772e30c7a193f3428faa23f444f29fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  rb: {fileID: 0}
   followPlayer: 1
-  playerSprite: {fileID: 4080598892407759324}
+  helperVisual: {fileID: 4080598892407759324}
 --- !u!50 &6308914787493416355
 Rigidbody2D:
   serializedVersion: 4
@@ -1167,7 +1165,7 @@ GameObject:
   - component: {fileID: 8262064572658974220}
   - component: {fileID: 8881943230563647936}
   m_Layer: 2
-  m_Name: PlayerStuff
+  m_Name: HelperVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

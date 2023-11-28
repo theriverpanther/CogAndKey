@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,9 +11,8 @@ public class HelperCreature : MonoBehaviour
 
     private Vector2 directionToplayer;
     private float moveSpeed;
-    [SerializeField]
-    public GameObject player;
-    public Rigidbody2D rb;
+    private GameObject player;
+    private Rigidbody2D rb;
     private float dis = 0f;
     //public AnimationCurve myCurve;
     float distanceAwayAllowed = 2f;
@@ -22,11 +22,12 @@ public class HelperCreature : MonoBehaviour
     [SerializeField]
     public bool followPlayer;
     [SerializeField]
-    private GameObject playerSprite;
+    private GameObject helperVisual;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        player = GameObject.FindGameObjectWithTag("Player");
         moveSpeed = 2f;
         //Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
         followPlayer = true;
@@ -122,11 +123,11 @@ public class HelperCreature : MonoBehaviour
         //Debug.Log(transform.right);debug
         if(directionToplayer.x > 0 && dir == "right")
         {
-            playerSprite.transform.localScale = new Vector3(-Mathf.Abs(playerSprite.transform.localScale.x), playerSprite.transform.localScale.y, playerSprite.transform.localScale.z);
+            helperVisual.transform.localScale = new Vector3(-Mathf.Abs(helperVisual.transform.localScale.x), helperVisual.transform.localScale.y, helperVisual.transform.localScale.z);
             dir = "left";
         } else if (dir == "left" && directionToplayer.x < 0)
         {
-            playerSprite.transform.localScale = new Vector3(Mathf.Abs(playerSprite.transform.localScale.x), playerSprite.transform.localScale.y, playerSprite.transform.localScale.z);
+            helperVisual.transform.localScale = new Vector3(Mathf.Abs(helperVisual.transform.localScale.x), helperVisual.transform.localScale.y, helperVisual.transform.localScale.z);
             dir = "right";
         }
     }

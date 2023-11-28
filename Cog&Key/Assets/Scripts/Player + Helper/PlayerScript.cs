@@ -31,13 +31,13 @@ public class PlayerScript : MonoBehaviour
     private State currentState;
     private PlayerInput input;
     private KeyScript activeKey;
+    private KeyState selectedKey = KeyState.Fast;
 
     private float coyoteTime;
     private float keyCooldown;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
 
-    [SerializeField]
-    public GameObject helper;
+    private GameObject helper;
     private HelperCreature helperScript;
 
     [SerializeField]
@@ -53,7 +53,9 @@ public class PlayerScript : MonoBehaviour
         currentState = State.Aerial;
         input = new PlayerInput();
 
-        if(LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
+        helper = GameObject.FindGameObjectWithTag("Helper");
+
+        if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
             CameraScript.Instance.SetInitialPosition();
         }
@@ -65,9 +67,8 @@ public class PlayerScript : MonoBehaviour
     {
         input.Update();
         Vector2 velocity = physicsBody.velocity;
-        float friction = 0f; // per second^2
 
-        if(physicsBody.velocity.y <= 1.5f) {
+        if(physicsBody.velocity.y <= 1.0f) {
             moveLockedRight = null;
         }
 
@@ -95,16 +96,14 @@ public class PlayerScript : MonoBehaviour
 
         switch(currentState) {
             case State.Aerial:
-                friction = 5f;
-
-                if (physicsBody.velocity.y > JUMP_VELOCITY) {
+                if(velocity.y > JUMP_VELOCITY) {
                     // decrease the benefit from holding jump when launched upward
-                    physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
+                    //physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
                 }
 
                 // extend jump height while jump is held
                 if(physicsBody.gravityScale != FALL_GRAVITY && 
-                    (physicsBody.velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
+                    (velocity.y < 0 || velocity.y > JUMP_VELOCITY || !input.IsPressed(PlayerInput.Action.Jump))
                 ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
@@ -127,9 +126,26 @@ public class PlayerScript : MonoBehaviour
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
                     physicsBody.gravityScale = JUMP_GRAVITY;
+                    if(velocity.y < 0) {
+                        velocity.y = 0;
+                    }
+
+                    bool boosted = false;
+                    const float WALL_JUMP_SPEED = 11f;
+                    if(velocity.y > WALL_JUMP_SPEED) {
+                        // less boost if there is already upward momentum
+                        velocity.y += WALL_JUMP_SPEED / 4f;
+                        boosted = true;
+                    }
+                    else {
+                        velocity.y += WALL_JUMP_SPEED;
+                    }
+
                     int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
-                    velocity.y += 11.0f;
-                    velocity.x += jumpDirection * 6.0f;
+                    if(Mathf.Sign(velocity.x) != jumpDirection) {
+                        velocity.x = 0;
+                    }
+                    velocity.x += jumpDirection * (boosted ? 10f : 6.0f);
                     moveLockedRight = (jumpDirection == -1);
                     SetAnimation("Jumping");
                 }
@@ -154,8 +170,6 @@ public class PlayerScript : MonoBehaviour
                 break;
 
             case State.Grounded:
-                friction = 30f;
-
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity);
                 }
@@ -178,21 +192,21 @@ public class PlayerScript : MonoBehaviour
         }
 
         // horizontal movement
+        float friction = (currentState == State.Grounded ? 30f : 5f);
         Vector2 slopeLeft = Vector2.left;
         if(onFloor) {
             slopeLeft = Vector2.Perpendicular(floorNorm);
         }
         Vector2 slopeRight = -slopeLeft;
 
-        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
-        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon;
-        if(moveRight == moveLeft) { // both pressed is same as neither pressed
+        bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && (Vector2.Dot(velocity, slopeRight) <= 0 || Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
+        bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && (Vector2.Dot(velocity, slopeLeft) <= 0 || Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
+        if(moveRight == moveLeft && velocity.x != 0) { // both pressed is same as neither pressed
             if(currentState == State.Grounded) {
                 SetAnimation(null);
             }
 
             // apply friction
-            Vector2 vertical = (onFloor ? floorNorm : Vector2.up);
             Vector2 fricDir = velocity.x > 0 ? slopeLeft : slopeRight;
             if(Mathf.Abs(velocity.x) >= 0.1f) {
                 velocity += friction * Time.deltaTime * fricDir;
@@ -207,15 +221,17 @@ public class PlayerScript : MonoBehaviour
             }
         }
         else if(moveRight || moveLeft) {
+            // walk (or midair strafe)
+            transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             if(currentState == State.Grounded) {
                 SetAnimation("Running");
             }
 
-            transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-
             Vector2 moveDir = (moveRight ? slopeRight : slopeLeft);
             velocity += WALK_ACCEL * Time.deltaTime * moveDir;
-            if(Vector3.Project(velocity, moveDir).sqrMagnitude > WALK_SPEED * WALK_SPEED) {
+
+            // cap walk speed
+            if(Vector2.Dot(velocity, moveDir) > 0 && Vector3.Project(velocity, moveDir).sqrMagnitude > WALK_SPEED * WALK_SPEED) {
                 velocity = (Vector2)Vector3.Project(velocity, (onFloor ? floorNorm : Vector2.up)) + WALK_SPEED * moveDir;
             }
         }
@@ -223,28 +239,46 @@ public class PlayerScript : MonoBehaviour
         physicsBody.velocity = velocity;
 
         // manage key ability
+        if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
+            selectedKey = KeyState.Fast;
+            if(activeKey == FastKey) {
+                activeKey.Detach();
+                activeKey = null;
+            }
+        }
+        else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
+            selectedKey = KeyState.Lock;
+            if(activeKey == LockKey) {
+                activeKey.Detach();
+                activeKey = null;
+            }
+        }
+        else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
+            selectedKey = KeyState.Reverse;
+            if(activeKey == ReverseKey) {
+                activeKey.Detach();
+                activeKey = null;
+            }
+        }
+
         if(keyCooldown <= 0) {
-            KeyState usedKey = KeyState.Normal;
-            if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
-                usedKey = KeyState.Fast;
+            Vector2 keyDirection = Vector2.zero;
+            if(input.JustPressed(PlayerInput.Action.ThrowUp)) {
+                keyDirection = Vector2.up;
             }
-            else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
-                usedKey = KeyState.Lock;
+            else if(input.JustPressed(PlayerInput.Action.ThrowDown)) {
+                keyDirection = Vector2.down;
             }
-            else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
-                usedKey = KeyState.Reverse;
+            else if(input.JustPressed(PlayerInput.Action.ThrowLeft)) {
+                keyDirection = Vector2.left;
+            }
+            else if(input.JustPressed(PlayerInput.Action.ThrowRight)) {
+                keyDirection = Vector2.right;
             }
 
-            if(usedKey != KeyState.Normal) {
-                // send key attack
-                if(activeKey != null && usedKey == activeKey.Type) {
-                    // remove active key
-                    activeKey.Detach();
-                    activeKey = null;
-                }
-
+            // send key attack
+            if(keyDirection != Vector2.zero) {
                 // determine attack direction
-                Vector2 attackDirection = (transform.localScale.x > 0 ? Vector2.right : Vector2.left);
                 if(input.MouseClicked()) {
                     // use mouse position to determine the direction
                     Vector3 mouseDir = input.GetMouseWorldPosition() - transform.position;
@@ -253,28 +287,10 @@ public class PlayerScript : MonoBehaviour
                     } else {
                         mouseDir.x = 0;
                     }
-                    attackDirection = mouseDir.normalized;
-                }
-                else if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
-                    if(input.IsPressed(PlayerInput.Action.Up)) {
-                        attackDirection = Vector2.up;
-                    }
-                    if(input.IsPressed(PlayerInput.Action.Down)) {
-                        attackDirection = Vector2.down;
-                    }
+                    keyDirection = mouseDir.normalized;
                 }
 
-                
-                if(!input.IsPressed(PlayerInput.Action.Right) && !input.IsPressed(PlayerInput.Action.Left)) {
-                    if(input.IsPressed(PlayerInput.Action.Up)) {
-                        attackDirection = Vector2.up;
-                    }
-                    if(input.IsPressed(PlayerInput.Action.Down)) {
-                        attackDirection = Vector2.down;
-                    }
-                }
-
-                switch(usedKey) {
+                switch(selectedKey) {
                     case KeyState.Fast:
                         activeKey = FastKey;
                         break;
@@ -286,8 +302,10 @@ public class PlayerScript : MonoBehaviour
                         break;
                 }
 
-                activeKey.Attack(attackDirection);
-                keyCooldown = 0.1f;
+                if(activeKey != null) {
+                    activeKey.Attack(keyDirection);
+                    keyCooldown = 0.1f;
+                }
             }
         }
         else {
