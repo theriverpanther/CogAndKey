@@ -36,8 +36,7 @@ public class PlayerScript : MonoBehaviour
     private float keyCooldown;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
 
-    [SerializeField]
-    public GameObject helper;
+    private GameObject helper;
     private HelperCreature helperScript;
 
     [SerializeField]
@@ -53,7 +52,9 @@ public class PlayerScript : MonoBehaviour
         currentState = State.Aerial;
         input = new PlayerInput();
 
-        if(LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
+        helper = GameObject.FindGameObjectWithTag("Helper");
+
+        if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
             CameraScript.Instance.SetInitialPosition();
         }
