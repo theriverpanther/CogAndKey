@@ -450,7 +450,7 @@ GameObject:
   - component: {fileID: 7428127636093406881}
   - component: {fileID: 6007542648832684860}
   m_Layer: 5
-  m_Name: HelperGroup
+  m_Name: HelperUIUpperGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
