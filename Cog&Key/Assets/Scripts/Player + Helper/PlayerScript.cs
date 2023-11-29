@@ -60,7 +60,7 @@ public class PlayerScript : MonoBehaviour
             CameraScript.Instance.SetInitialPosition();
         }
 
-        helperScript = helper.GetComponent<HelperCreature>();
+        helperScript = helper?.GetComponent<HelperCreature>();
     }
 
     void FixedUpdate()
@@ -96,14 +96,14 @@ public class PlayerScript : MonoBehaviour
 
         switch(currentState) {
             case State.Aerial:
-                if(velocity.y > JUMP_VELOCITY) {
-                    // decrease the benefit from holding jump when launched upward
-                    //physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2;
+                // reduce jump boost when there is a lot of upward momentum
+                if(velocity.y > 1.5f * JUMP_VELOCITY) {
+                    physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2f;
                 }
 
                 // extend jump height while jump is held
                 if(physicsBody.gravityScale != FALL_GRAVITY && 
-                    (velocity.y < 0 || velocity.y > JUMP_VELOCITY || !input.IsPressed(PlayerInput.Action.Jump))
+                    (velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
                 ) {
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
@@ -134,7 +134,7 @@ public class PlayerScript : MonoBehaviour
                     const float WALL_JUMP_SPEED = 11f;
                     if(velocity.y > WALL_JUMP_SPEED) {
                         // less boost if there is already upward momentum
-                        velocity.y += WALL_JUMP_SPEED / 4f;
+                        //velocity.y += WALL_JUMP_SPEED / 4f;
                         boosted = true;
                     }
                     else {

@@ -110,8 +110,9 @@ public class MovingWallScript : Rideable, IKeyWindable
         rider.transform.SetParent(null);
 
         // keep rider momentum if moving fast
-        if (currentKey == KeyState.Fast) {
-            rider.GetComponent<Rigidbody2D>().velocity += 1.2f * Momentum;
+        if(currentKey == KeyState.Fast) {
+            Vector2 momentum = Momentum;
+            rider.GetComponent<Rigidbody2D>().velocity += (momentum.x == 0 ? 0.5f : 1f) * Momentum; // less boost when upward
         }
     }
 

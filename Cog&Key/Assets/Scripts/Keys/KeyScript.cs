@@ -14,7 +14,6 @@ public class KeyScript : MonoBehaviour
     }
 
     private const float SPEED = 20f;
-    private const float RANGE = 4f;
     private const float ACCEL = 40.0f;
 
     private State currentState;
@@ -33,7 +32,7 @@ public class KeyScript : MonoBehaviour
         currentState = State.Pickup;
         uiKeys = GameObject.Find("OverlayMain")?.GetComponent<KeyShowcaser>();
         physicsBody = GetComponent<Rigidbody2D>();
-        keyUI = GameObject.Find("KeyBG").GetComponent<KeyUI>();
+        keyUI = GameObject.Find("KeyBG")?.GetComponent<KeyUI>();
         player = GameObject.Find("Player");
     }
 
@@ -88,7 +87,7 @@ public class KeyScript : MonoBehaviour
                 break;
         }
 
-        keyUI.KeyUpdate(currentState, Type);
+        keyUI?.KeyUpdate(currentState, Type);
     }
 
     // gives the player possession of a key pickup, turning it into an ability
