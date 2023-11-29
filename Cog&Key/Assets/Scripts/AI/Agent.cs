@@ -76,7 +76,7 @@ public class Agent : MonoBehaviour, IKeyWindable
 
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
         // Get a non magic number way pls
-        cog = transform.GetChild(3).GetComponent<CogIndicator>();
+        cog = transform.GetChild(7).GetComponent<CogIndicator>();
     }
 
     // Update is called once per frame
