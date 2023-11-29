@@ -49,7 +49,7 @@ public class KeyScript : MonoBehaviour
             }
         }
         else if(currentState == State.Returning) {
-            Vector3 playerPos = GameObject.FindGameObjectWithTag("Player").transform.position;
+            Vector3 playerPos = player.transform.position;
             Vector3 towardsPlayer = (playerPos - transform.position).normalized;
             float newSpeed = velocity.magnitude + Time.deltaTime * 2 * ACCEL;
 
@@ -62,7 +62,7 @@ public class KeyScript : MonoBehaviour
             }
         }
         else if(currentState == State.Attached) {
-            if(Vector3.Distance(transform.position, player.transform.position) > 12f) {
+            if(Mathf.Abs(player.transform.position.y - transform.position.y) > 12f || Mathf.Abs(player.transform.position.x - transform.position.x) > 12f) {
                 Detach();
             }
         }
@@ -118,14 +118,20 @@ public class KeyScript : MonoBehaviour
     }
 
     // called when the player shoots the key out to try and insert it
-    public void Attack(Vector2 direction) {
+    public void Attack(Vector2 direction, Vector2 playerSpeed) {
         if(currentState != State.PlayerHeld) {
             return;
         }
 
+        if(Mathf.Abs(direction.x) > Mathf.Abs(direction.y)) {
+            playerSpeed.y = 0;
+        } else {
+            playerSpeed.x = 0;
+        }
+
         direction = direction.normalized;
         SetState(State.Attacking);
-        velocity = SPEED * direction;
+        velocity = SPEED * direction + 0.5f * playerSpeed;
 
         // rotate the visual
         transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);

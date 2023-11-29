@@ -296,7 +296,7 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 if(activeKey != null) {
-                    activeKey.Attack(keyDirection);
+                    activeKey.Attack(keyDirection, velocity);
                     keyCooldown = 0.1f;
                 }
             }
