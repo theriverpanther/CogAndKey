@@ -44,6 +44,7 @@ public class PlayerScript : MonoBehaviour
     private Animator playerAnimation;
 
     public PlayerInput Input {  get { return input; } }
+    public Vector2 CoyoteMomentum { get; set; } // for momentum buffering with moving platforms
 
     void Start()
     {
@@ -144,13 +145,12 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // allow jump during coyote time
-                if(coyoteTime > 0) {
-                    if(input.JustPressed(PlayerInput.Action.Jump)) {
-                        Jump(ref velocity);
-                        SetAnimation("Jumping");
-                        coyoteTime = 0;
-                    } else {
-                        coyoteTime -= Time.deltaTime;
+                if(coyoteTime > 0 && input.JustPressed(PlayerInput.Action.Jump)) {
+                    Jump(ref velocity);
+                    SetAnimation("Jumping");
+                    coyoteTime = 0;
+                    if(CoyoteMomentum != Vector2.zero) {
+                        velocity.y = JUMP_VELOCITY + CoyoteMomentum.y;
                     }
                 }
 
@@ -170,7 +170,7 @@ public class PlayerScript : MonoBehaviour
                     // fall off platform
                     SetAnimation("Falling");
                     currentState = State.Aerial;
-                    coyoteTime = 0.08f;
+                    coyoteTime = 0.1f;
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
                 
@@ -303,6 +303,13 @@ public class PlayerScript : MonoBehaviour
         }
         else {
             keyCooldown -= Time.deltaTime;
+        }
+
+        if(coyoteTime > 0) {
+            coyoteTime -= Time.deltaTime;
+            if(coyoteTime <= 0) {
+                CoyoteMomentum = Vector2.zero;
+            }
         }
     }
 

@@ -60,16 +60,20 @@ public class MovingWallScript : Rideable, IKeyWindable
             momentumBufferTime = 0.2f;
             NextWaypoint();
 
-            // apply shift momentum to riders when changing direction
+            // apply vertical bump when changing from upward to down and going fast
             Vector2 newDirection = pathPoints[nextPointIndex] - (Vector2)transform.position;
             Vector2 momentum = 1.5f * currentSpeed * (transform.position - startPosition).normalized;
             if(currentKey == KeyState.Fast && riders.Count > 0 && newDirection.y < -0.9f && momentum.y > 0.9f) {
+                momentumBufferTime = 0f; // no buffered momentum in this case
                 for(int i = 0; i < riders.Count; i++) {
                     riders[i].GetComponent<Rigidbody2D>().velocity += momentum;
 
-                    if(riders[i].name == "Player") {
+                    if(riders[i].tag == "Player") {
                         // switch player to fall gravity because the grounded gravity is a lot stronger and it cancells the momentum
                         riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.FALL_GRAVITY;
+
+                        // give the player the boost momentum during their coyote time
+                        riders[i].GetComponent<PlayerScript>().CoyoteMomentum = 0.3f * momentum;
                     }
                 }
             }
