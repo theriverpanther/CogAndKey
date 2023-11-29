@@ -15,6 +15,8 @@ public class MovingWallScript : Rideable, IKeyWindable
     private int nextPointIndex;
     private bool forward; // false: moving backwards through the path
     private KeyState currentKey;
+    private Vector2 bufferedMomentum;
+    private float momentumBufferTime;
     private float CurrentSpeed { get { return MOVE_SPEED * (currentKey == KeyState.Fast ? 2 : 1); } }
     private Vector2 Momentum { get { return CurrentSpeed * (pathPoints[nextPointIndex] - (Vector2)transform.position).normalized; } }
 
@@ -54,14 +56,17 @@ public class MovingWallScript : Rideable, IKeyWindable
         if(Vector2.Distance(target, transform.position) <= shift) {
             // reached target point
             transform.position = target;
+            bufferedMomentum = CurrentSpeed * (pathPoints[nextPointIndex] - (Vector2)startPosition).normalized;
+            momentumBufferTime = 0.2f;
             NextWaypoint();
 
             // apply shift momentum to riders when changing direction
             Vector2 newDirection = pathPoints[nextPointIndex] - (Vector2)transform.position;
             Vector2 momentum = 1.5f * currentSpeed * (transform.position - startPosition).normalized;
-            if(currentKey == KeyState.Fast && riders.Count > 0 && newDirection.y < 0 && momentum.y > 0) {
+            if(currentKey == KeyState.Fast && riders.Count > 0 && newDirection.y < -0.9f && momentum.y > 0.9f) {
                 for(int i = 0; i < riders.Count; i++) {
                     riders[i].GetComponent<Rigidbody2D>().velocity += momentum;
+
                     if(riders[i].name == "Player") {
                         // switch player to fall gravity because the grounded gravity is a lot stronger and it cancells the momentum
                         riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.FALL_GRAVITY;
@@ -74,6 +79,10 @@ public class MovingWallScript : Rideable, IKeyWindable
         }
 
         CheckSideRiders();
+
+        if(momentumBufferTime > 0) {
+            momentumBufferTime -= Time.deltaTime;
+        }
     }
 
     private void NextWaypoint() {
@@ -112,7 +121,10 @@ public class MovingWallScript : Rideable, IKeyWindable
         // keep rider momentum if moving fast
         if(currentKey == KeyState.Fast) {
             Vector2 momentum = Momentum;
-            rider.GetComponent<Rigidbody2D>().velocity += (momentum.x == 0 ? 0.5f : 1f) * Momentum; // less boost when upward
+            if(momentumBufferTime > 0) {
+                momentum = bufferedMomentum;
+            }
+            rider.GetComponent<Rigidbody2D>().velocity += (momentum.x == 0 ? 0.5f : 1f) * momentum; // less boost when upward
         }
     }
 

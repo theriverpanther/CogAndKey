@@ -126,19 +126,12 @@ public class PlayerScript : MonoBehaviour
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
                     physicsBody.gravityScale = JUMP_GRAVITY;
-                    if(velocity.y < 0) {
-                        velocity.y = 0;
-                    }
-
                     bool boosted = false;
                     const float WALL_JUMP_SPEED = 11f;
-                    if(velocity.y > WALL_JUMP_SPEED) {
-                        // less boost if there is already upward momentum
-                        //velocity.y += WALL_JUMP_SPEED / 4f;
+                    if(velocity.y < WALL_JUMP_SPEED) {
+                        velocity.y = WALL_JUMP_SPEED;
+                    } else {
                         boosted = true;
-                    }
-                    else {
-                        velocity.y += WALL_JUMP_SPEED;
                     }
 
                     int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
