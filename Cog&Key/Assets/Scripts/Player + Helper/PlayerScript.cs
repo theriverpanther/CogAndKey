@@ -255,6 +255,7 @@ public class PlayerScript : MonoBehaviour
         }
 
         if(keyCooldown <= 0) {
+            // determine attack direction
             Vector2 keyDirection = Vector2.zero;
             if(input.JustPressed(PlayerInput.Action.ThrowUp)) {
                 keyDirection = Vector2.up;
@@ -269,20 +270,19 @@ public class PlayerScript : MonoBehaviour
                 keyDirection = Vector2.right;
             }
 
+            if(input.MouseClicked()) {
+                // use mouse position to determine the direction
+                Vector3 mouseDir = input.GetMouseWorldPosition() - transform.position;
+                if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
+                    mouseDir.y = 0;
+                } else {
+                    mouseDir.x = 0;
+                }
+                keyDirection = mouseDir.normalized;
+            }
+
             // send key attack
             if(keyDirection != Vector2.zero) {
-                // determine attack direction
-                if(input.MouseClicked()) {
-                    // use mouse position to determine the direction
-                    Vector3 mouseDir = input.GetMouseWorldPosition() - transform.position;
-                    if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
-                        mouseDir.y = 0;
-                    } else {
-                        mouseDir.x = 0;
-                    }
-                    keyDirection = mouseDir.normalized;
-                }
-
                 switch(selectedKey) {
                     case KeyState.Fast:
                         activeKey = FastKey;
