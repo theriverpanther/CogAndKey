@@ -22,7 +22,7 @@ public class LevelData : MonoBehaviour
     public float XMax { get; private set; }
     public float YMin { get; private set; }
 
-    public List<KeyState> StartingKeys;
+    private Dictionary<KeyState, bool> checkpointKeys; // saves keys that are claimed before a checkpoint
 
     // needs CameraScript Awake() to run first
     void Start() {
@@ -82,7 +82,12 @@ public class LevelData : MonoBehaviour
         CameraScript.Instance.SetInitialPosition();
 
         // equip the player with the starting keys
-        EquipStartKeys();
+        checkpointKeys = new Dictionary<KeyState, bool>();
+        checkpointKeys[KeyState.Fast] = false;
+        checkpointKeys[KeyState.Lock] = false;
+        checkpointKeys[KeyState.Reverse] = false;
+
+        EquipCheckpointKeys();
     }
 
     // called when the scene changes, deletes the instance if it is no longer the correct level
@@ -92,7 +97,7 @@ public class LevelData : MonoBehaviour
             SceneManager.sceneLoaded += NewLevelLoaded;
         } else {
             // level restarted
-            EquipStartKeys();
+            EquipCheckpointKeys();
         }
     }
 
@@ -130,22 +135,22 @@ public class LevelData : MonoBehaviour
 
         // save keys acquired since the last checkpoint
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        if(!StartingKeys.Contains(KeyState.Fast) && player.FastKey != null) {
-            StartingKeys.Add(KeyState.Fast);
+        if(!checkpointKeys[KeyState.Fast] && player.FastKey != null) {
+            checkpointKeys[KeyState.Fast] = true;
         }
-        if(!StartingKeys.Contains(KeyState.Lock) && player.LockKey != null) {
-            StartingKeys.Add(KeyState.Lock);
+        if(!checkpointKeys[KeyState.Lock] && player.LockKey != null) {
+            checkpointKeys[KeyState.Lock] = true;
         }
-        if(!StartingKeys.Contains(KeyState.Reverse) && player.ReverseKey != null) {
-            StartingKeys.Add(KeyState.Reverse);
+        if(!checkpointKeys[KeyState.Reverse] && player.ReverseKey != null) {
+            checkpointKeys[KeyState.Reverse] = true;
         }
     }
 
-    private void EquipStartKeys() {
+    private void EquipCheckpointKeys() {
         GameObject[] keys = GameObject.FindGameObjectsWithTag("Key");
         foreach(GameObject key in keys) {
             KeyScript keyScript = key.GetComponent<KeyScript>();
-            if(StartingKeys.Contains(keyScript.Type)) {
+            if(checkpointKeys[keyScript.Type]) {
                 keyScript.Equip();
             }
         }
@@ -201,6 +206,7 @@ public class LevelData : MonoBehaviour
         cameraZones.AddRange(addedZones);
     }
 
+    // Note to future self: delete this awful function
     private bool AreZonesOppositeDirection(LevelBoundScript one, LevelBoundScript other)
     {
         bool hasUp = one.AreaType == CamerBoundType.Up || other.AreaType == CamerBoundType.Up;

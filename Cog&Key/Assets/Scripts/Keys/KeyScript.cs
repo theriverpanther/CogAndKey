@@ -25,6 +25,7 @@ public class KeyScript : MonoBehaviour
     private KeyShowcaser uiKeys;
     private KeyUI keyUI;
 
+    [SerializeField] private bool StartEquipped;
     [SerializeField] private KeyState type;
     public KeyState Type { get { return type; } }
 
@@ -35,6 +36,10 @@ public class KeyScript : MonoBehaviour
         physicsBody = GetComponent<Rigidbody2D>();
         keyUI = GameObject.Find("KeyBG")?.GetComponent<KeyUI>();
         player = GameObject.Find("Player");
+
+        if(StartEquipped) {
+            Equip();
+        }
     }
 
     void Update()
