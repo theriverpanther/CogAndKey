@@ -108,7 +108,7 @@ public class Agent : KeyWindable
 
     protected void IsGrounded()
     {
-        bool grounded = Physics2D.Raycast(transform.position, -Vector2.up, distToGround + 0.1f) && Mathf.Abs(rb.velocity.y) <= Mathf.Epsilon;
+        bool grounded = Physics2D.Raycast(transform.position, Vector2.down, distToGround) && Mathf.Abs(rb.velocity.y) <= Mathf.Epsilon;
         jumpState = grounded ? JumpState.Grounded : JumpState.Aerial;
         //Debug.DrawRay(transform.position, -Vector2.up, Color.red, 2.0f);
     }

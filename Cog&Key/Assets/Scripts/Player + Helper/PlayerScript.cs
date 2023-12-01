@@ -384,4 +384,8 @@ public class PlayerScript : MonoBehaviour
 
         return Direction.None;
     }
+
+    public void SetSelectedKey(KeyState keyType) {
+        selectedKey = keyType;
+    }
 }

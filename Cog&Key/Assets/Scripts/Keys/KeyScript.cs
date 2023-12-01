@@ -95,6 +95,7 @@ public class KeyScript : MonoBehaviour
     public void Equip() {
         SetState(State.PlayerHeld);
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+        player.SetSelectedKey(Type);
 
         switch(Type) {
             case KeyState.Fast:
