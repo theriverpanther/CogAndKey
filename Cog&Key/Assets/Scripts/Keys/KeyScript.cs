@@ -18,13 +18,14 @@ public class KeyScript : MonoBehaviour
 
     private State currentState;
     private Vector3 velocity;
-    private IKeyWindable insertTarget;
-    private KeyShowcaser uiKeys;
+    private KeyWindable insertTarget;
     private Rigidbody2D physicsBody;
     private GameObject player;
 
-    [SerializeField] private KeyState type;
+    private KeyShowcaser uiKeys;
     private KeyUI keyUI;
+
+    [SerializeField] private KeyState type;
     public KeyState Type { get { return type; } }
 
     void Awake()
@@ -91,12 +92,11 @@ public class KeyScript : MonoBehaviour
     }
 
     // gives the player possession of a key pickup, turning it into an ability
-    public void Equip()
-    {
+    public void Equip() {
         SetState(State.PlayerHeld);
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
 
-        switch (Type) {
+        switch(Type) {
             case KeyState.Fast:
                 player.FastKey = this;
                 break;
@@ -110,8 +110,7 @@ public class KeyScript : MonoBehaviour
                 break;
         }
 
-        if (keyUI != null)
-        {
+        if(keyUI != null) {
             keyUI.UpdateKeyUI(Type);
         }
 
@@ -155,22 +154,21 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
-        insertTarget.InsertKey(KeyState.Normal);
+        insertTarget.RemoveKey();
         insertTarget = null;
         SetState(State.Returning);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
-        if(currentState == State.Pickup && player != null) {
+        if(currentState == State.Pickup && collision.gameObject.tag == "Player") {
             Equip();
             return;
         }
 
-        IKeyWindable windable = collision.gameObject.GetComponent<IKeyWindable>();
+        KeyWindable windable = collision.gameObject.GetComponent<KeyWindable>();
         if(currentState == State.Attacking && windable != null) {
             insertTarget = windable;
-            insertTarget.InsertKey(type);
+            insertTarget.InsertKey(this);
             SetState(State.Attached);
             transform.SetParent(collision.gameObject.transform);
             return;

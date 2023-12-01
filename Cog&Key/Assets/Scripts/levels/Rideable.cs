@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // generic class for an obstacle that affects entities attached to it
-[RequireComponent(typeof(BoxCollider2D))]
-public abstract class Rideable : MonoBehaviour
+public abstract class Rideable : KeyWindable
 {
     protected List<GameObject> riders = new List<GameObject>();
     private List<GameObject> attachedNonRiders = new List<GameObject>(); // colliding objects which are not attached

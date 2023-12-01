@@ -20,7 +20,6 @@ public class Hunter : Agent
     // Start is called before the first frame update
     protected override void Start()
     {
-        state = KeyState.Normal;
         base.Start();
         direction = new Vector2(-1, 0);
         wallDetected = false;
@@ -30,9 +29,9 @@ public class Hunter : Agent
     // Update is called once per frame
     protected override void Update()
     {
-        switch(state)
+        switch(InsertedKeyType)
         {
-            case KeyState.Normal:
+            case KeyState.None:
                 // Move forward until an edge is hit, turn around on the edge
                 // Hits edge = either collision on side or edge of platform
                 BehaviorTree(movementSpeed, false);
@@ -69,11 +68,6 @@ public class Hunter : Agent
         //    //InsertKey((KeyState)Mathf.FloorToInt(Random.Range(1, 3)));
         //}
     }
-    
-    //public void AttachKey(KeyState key)
-    //{
-
-    //}
 
     private void EdgeDetectMovement(bool detectFloorEdges, bool detectWalls)
     {
