@@ -45,10 +45,9 @@ public class KeyScript : MonoBehaviour
     void Update()
     {
         if(currentState == State.Attacking) {
-            Vector3 startVel = velocity;
             velocity += Time.deltaTime * ACCEL * -velocity.normalized;
 
-            if(Vector2.Dot(startVel, velocity) < 0) {
+            if(velocity.sqrMagnitude < 1f) {
                 SetState(State.Returning);
             } else {
                 transform.position += Time.deltaTime * velocity;
