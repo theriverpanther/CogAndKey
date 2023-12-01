@@ -24,9 +24,11 @@ public class KeyUI : MonoBehaviour
 
     public void ShowCollectedKeys()
     {
-
-        foreach(KeyState state in data.StartingKeys) {
-            keyDictionary[state].SetActive(true);
+        PlayerScript player = GameObject.Find("Player").GetComponent<PlayerScript>();
+        foreach(KeyScript key in new KeyScript[3] { player.FastKey, player.LockKey, player.ReverseKey }) {
+            if(key != null) {
+                keyDictionary[key.Type].SetActive(true);
+            }
         }
     }
 
