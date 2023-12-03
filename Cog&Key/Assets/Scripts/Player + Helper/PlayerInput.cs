@@ -21,7 +21,8 @@ public class PlayerInput
         ThrowRight,
         FastKey,
         LockKey,
-        ReverseKey
+        ReverseKey,
+        Pause
     }
 
     private readonly int NUM_ACTIONS;
@@ -123,6 +124,7 @@ public class PlayerInput
             keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentGP.xButton });
             keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentGP.yButton });
             keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentGP.bButton });
+            keyBindings[Action.Pause].AddRange(new List<ButtonControl>() { currentGP.startButton });
         }
 
         // add keyboard bindings
@@ -139,10 +141,11 @@ public class PlayerInput
             keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentKB.digit1Key, currentKB.numpad1Key, currentKB.zKey });
             keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentKB.digit2Key, currentKB.numpad2Key, currentKB.xKey });
             keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentKB.digit3Key, currentKB.numpad3Key, currentKB.cKey });
+            keyBindings[Action.Pause].AddRange(new List<ButtonControl>() { currentKB.escapeKey });
         }
 
         // add mouse input
-        if(currentMouse != null) {
+        if (currentMouse != null) {
             keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentMouse.leftButton });
         }
     }
