@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class SkyManager : MonoBehaviour
 {
+    public float rotateSpeed = 0.05f;
     private void Start()
     {
-        StartCoroutine(CoBlendSkies());
+        //StartCoroutine(CoBlendSkies());
+    }
+
+    private void Update()
+    {
+        RenderSettings.skybox.SetFloat("_Rotation", Time.time * rotateSpeed);
     }
 
     private IEnumerator CoBlendSkies()
