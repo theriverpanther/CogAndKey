@@ -13,6 +13,7 @@ public class LevelData : MonoBehaviour
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
     [SerializeField] private List<LevelBoundScript> levelAreas = new List<LevelBoundScript>();
+    private Dictionary<KeyState, bool> checkpointKeys; // saves keys that are claimed before a checkpoint
     private List<Rect> cameraZones;
 
     public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
@@ -21,8 +22,7 @@ public class LevelData : MonoBehaviour
     public float XMin { get; private set; }
     public float XMax { get; private set; }
     public float YMin { get; private set; }
-
-    private Dictionary<KeyState, bool> checkpointKeys; // saves keys that are claimed before a checkpoint
+    public int DeathsSinceCheckpoint { get; private set; }
 
     // needs CameraScript Awake() to run first
     void Start() {
@@ -97,6 +97,7 @@ public class LevelData : MonoBehaviour
             SceneManager.sceneLoaded += NewLevelLoaded;
         } else {
             // level restarted
+            DeathsSinceCheckpoint++;
             EquipCheckpointKeys();
         }
     }
@@ -132,6 +133,7 @@ public class LevelData : MonoBehaviour
 
         currentCheckpoint = checkpoint;
         currentCheckpoint.SetAsCheckpoint(true);
+        DeathsSinceCheckpoint = 0;
 
         // save keys acquired since the last checkpoint
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
