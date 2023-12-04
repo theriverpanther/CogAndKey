@@ -167,16 +167,25 @@ public class ConveyorBeltScript : Rideable
 
     protected override void OnKeyInserted(KeyState newKey) {
         if(newKey == KeyState.Reverse) {
-            // flip direction
-            clockwise = !clockwise;
+            ReverseDirection();
         }
     }
 
     protected override void OnKeyRemoved(KeyState removedKey) {
         if(removedKey == KeyState.Reverse) {
-            // flip direction
-            clockwise = !clockwise;
+            ReverseDirection();
         }
+    }
+
+    private void ReverseDirection() {
+        clockwise = !clockwise;
+        for(int i = 0; i < riders.Count; i++) {
+            List<Vector3> allRiderDirections = allBeltRiders[riders[i]];
+            int reverseIndex = allRiderDirections.IndexOf(shiftDirections[i]);
+            allRiderDirections[reverseIndex] = -allRiderDirections[reverseIndex];
+            shiftDirections[i] = -shiftDirections[i];
+        }
+
     }
 
     // only works for objects touching the collider
