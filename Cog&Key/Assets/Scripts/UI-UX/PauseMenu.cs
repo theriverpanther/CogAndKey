@@ -34,8 +34,10 @@ public class PauseMenu : MonoBehaviour
     /// <summary>
     /// Checks for input
     /// </summary>
-    void FixedUpdate()
+    void Update()
     {
+        playerScript.Input.Update();
+
         Debug.Log("Checking for pause");
         Debug.Log(playerScript.Input.JustPressed(PlayerInput.Action.Pause));
         //If the start button is pressed on the controller
@@ -58,7 +60,7 @@ public class PauseMenu : MonoBehaviour
             //}
         }
          
-        playerScript.Input.Update();
+ 
     }
 
     /// <summary>
@@ -77,6 +79,7 @@ public class PauseMenu : MonoBehaviour
     /// </summary>
     public void Pause()
     {
+        current.enabled = true;
         pauseMenuUI.SetActive(true);
         current.SetSelectedGameObject(pauseMenuUI.transform.GetChild(0).gameObject);
         Time.timeScale = 0f;
@@ -107,6 +110,7 @@ public class PauseMenu : MonoBehaviour
     /// </summary>
     public void Quit()
     {
+        Resume();
         SceneManager.LoadScene("Titlescreen");
     }
 
@@ -115,8 +119,7 @@ public class PauseMenu : MonoBehaviour
     /// </summary>
     public void Checkpoint()
     {
-        pauseMenuUI.SetActive(false);
-
+        Resume();
         //respawn at checkpoint
         playerScript.Die();
 
