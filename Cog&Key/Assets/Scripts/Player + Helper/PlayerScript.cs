@@ -43,7 +43,10 @@ public class PlayerScript : MonoBehaviour
 
     public PlayerInput Input {  get { return input; } }
     public Vector2 CoyoteMomentum { get; set; } // for momentum buffering with moving platforms
-    public KeyState SelectedKey { get { return selectedKey; } }
+    public KeyState SelectedKey { 
+        get { return selectedKey; }
+        set { selectedKey = value; }
+    }
 
     void Start()
     {
@@ -240,7 +243,7 @@ public class PlayerScript : MonoBehaviour
         else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
             selectedKey = KeyState.Reverse;
         }
-
+        
         if(coyoteTime > 0) {
             coyoteTime -= Time.deltaTime;
             if(coyoteTime <= 0) {
@@ -319,9 +322,5 @@ public class PlayerScript : MonoBehaviour
         }
 
         return Direction.None;
-    }
-
-    public void SetSelectedKey(KeyState keyType) {
-        selectedKey = keyType;
     }
 }

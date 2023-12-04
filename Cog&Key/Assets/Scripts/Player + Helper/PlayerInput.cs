@@ -143,7 +143,7 @@ public class PlayerInput
 
         // add mouse input
         if(currentMouse != null) {
-            keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentMouse.leftButton });
+            //keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentMouse.leftButton });
         }
     }
 
