@@ -30,11 +30,9 @@ public class PlayerScript : MonoBehaviour
     private Vector2 colliderSize;
     private State currentState;
     private PlayerInput input;
-    private KeyScript activeKey;
     private KeyState selectedKey = KeyState.Fast;
 
     private float coyoteTime;
-    private float keyCooldown;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
 
     private GameObject helper;
@@ -45,6 +43,10 @@ public class PlayerScript : MonoBehaviour
 
     public PlayerInput Input {  get { return input; } }
     public Vector2 CoyoteMomentum { get; set; } // for momentum buffering with moving platforms
+    public KeyState SelectedKey { 
+        get { return selectedKey; }
+        set { selectedKey = value; }
+    }
 
     void Start()
     {
@@ -234,77 +236,14 @@ public class PlayerScript : MonoBehaviour
         // manage key ability
         if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
             selectedKey = KeyState.Fast;
-            if(activeKey == FastKey) {
-                activeKey.Detach();
-                activeKey = null;
-            }
         }
         else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
             selectedKey = KeyState.Lock;
-            if(activeKey == LockKey) {
-                activeKey.Detach();
-                activeKey = null;
-            }
         }
         else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
             selectedKey = KeyState.Reverse;
-            if(activeKey == ReverseKey) {
-                activeKey.Detach();
-                activeKey = null;
-            }
         }
-
-        if(keyCooldown <= 0) {
-            // determine attack direction
-            Vector2 keyDirection = Vector2.zero;
-            if(input.JustPressed(PlayerInput.Action.ThrowUp)) {
-                keyDirection = Vector2.up;
-            }
-            else if(input.JustPressed(PlayerInput.Action.ThrowDown)) {
-                keyDirection = Vector2.down;
-            }
-            else if(input.JustPressed(PlayerInput.Action.ThrowLeft)) {
-                keyDirection = Vector2.left;
-            }
-            else if(input.JustPressed(PlayerInput.Action.ThrowRight)) {
-                keyDirection = Vector2.right;
-            }
-
-            if(input.MouseClicked()) {
-                // use mouse position to determine the direction
-                Vector3 mouseDir = input.GetMouseWorldPosition() - transform.position;
-                if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
-                    mouseDir.y = 0;
-                } else {
-                    mouseDir.x = 0;
-                }
-                keyDirection = mouseDir.normalized;
-            }
-
-            // send key attack
-            if(keyDirection != Vector2.zero) {
-                switch(selectedKey) {
-                    case KeyState.Fast:
-                        activeKey = FastKey;
-                        break;
-                    case KeyState.Lock:
-                        activeKey = LockKey;
-                        break;
-                    case KeyState.Reverse:
-                        activeKey = ReverseKey;
-                        break;
-                }
-
-                if(activeKey != null) {
-                    activeKey.Attack(keyDirection, velocity);
-                    keyCooldown = 0.1f;
-                }
-            }
-        }
-        else {
-            keyCooldown -= Time.deltaTime;
-        }
-
+        
         if(coyoteTime > 0) {
             coyoteTime -= Time.deltaTime;
             if(coyoteTime <= 0) {
@@ -383,9 +322,5 @@ public class PlayerScript : MonoBehaviour
         }
 
         return Direction.None;
-    }
-
-    public void SetSelectedKey(KeyState keyType) {
-        selectedKey = keyType;
     }
 }

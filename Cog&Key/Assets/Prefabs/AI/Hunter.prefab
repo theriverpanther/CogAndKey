@@ -478,19 +478,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 5
   jumpSpeed: 8
-  attackSpeed: 0
   fastScalar: 2
-  keyInserted: 0
   collidingObjs: []
-  direction: {x: 1, y: 0}
-  turnDelay: 0.5
-  processingTurn: 0
+  distToGround: 0
   nodes: []
-  distThreshold: 0.2
-  wallDetected: 0
   idleColor: {r: 0, g: 0.3019608, b: 0.2509804, a: 1}
   huntColor: {r: 0.84705883, g: 0.105882354, b: 0.3764706, a: 1}
-  maxHuntTime: 5
 --- !u!61 &2698930125854928055
 BoxCollider2D:
   m_ObjectHideFlags: 0

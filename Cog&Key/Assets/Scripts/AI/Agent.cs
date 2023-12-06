@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Agent : MonoBehaviour, IKeyWindable
+public class Agent : KeyWindable
 {
     protected enum JumpState
     {
@@ -11,7 +11,6 @@ public class Agent : MonoBehaviour, IKeyWindable
     }
 
     #region Fields
-    protected KeyState state;
     protected JumpState jumpState;
 
     [Header("Agent Statistics")]
@@ -33,7 +32,6 @@ public class Agent : MonoBehaviour, IKeyWindable
     protected Vector3 scaleVal = Vector3.zero;
 
     [Header("Runtime Logic")]
-    protected bool keyInserted = false;
     [SerializeField] protected List<GameObject> collidingObjs;
     protected Vector2 direction = Vector2.zero;
 
@@ -50,12 +48,6 @@ public class Agent : MonoBehaviour, IKeyWindable
     #endregion
 
     #region Properties
-    public bool KeyInserted
-    {
-        get { return keyInserted; }
-        set { keyInserted = value; }
-    }
-
     public Vector3 PlayerPosition
     {
         get { return playerPosition; }
@@ -82,7 +74,6 @@ public class Agent : MonoBehaviour, IKeyWindable
     // Update is called once per frame
     protected virtual void Update()
     {
-        if(!keyInserted) state = KeyState.Normal;
         if(jumpState == JumpState.Aerial) IsGrounded();
         if (transform.position.y + distToGround <= LevelData.Instance.YMin)
         {
@@ -94,13 +85,7 @@ public class Agent : MonoBehaviour, IKeyWindable
                 Destroy(gameObject);
             }
         }
-        cog.fast = state != KeyState.Normal;
-    }
-
-    public void InsertKey(KeyState keyState)
-    {
-        state = keyState;
-        keyInserted = keyState != KeyState.Normal;
+        cog.fast = InsertedKeyType == KeyState.Fast;
     }
 
     protected virtual void BehaviorTree(float walkSpeed, bool fast)

@@ -16,16 +16,26 @@ public class KeyScript : MonoBehaviour
     private const float SPEED = 20f;
     private const float ACCEL = 40.0f;
 
+    private static Dictionary<KeyState, PlayerInput.Action> keyToInput = new Dictionary<KeyState, PlayerInput.Action>() { 
+        { KeyState.Fast, PlayerInput.Action.FastKey },
+        { KeyState.Lock, PlayerInput.Action.LockKey },
+        { KeyState.Reverse, PlayerInput.Action.ReverseKey }
+    };
+
     private State currentState;
     private Vector3 velocity;
-    private IKeyWindable insertTarget;
-    private KeyShowcaser uiKeys;
+    private KeyWindable insertTarget;
     private Rigidbody2D physicsBody;
     private GameObject player;
 
-    [SerializeField] private KeyState type;
+    private KeyShowcaser uiKeys;
     private KeyUI keyUI;
+
+    [SerializeField] private bool StartEquipped;
+    [SerializeField] private KeyState type;
     public KeyState Type { get { return type; } }
+
+    public bool Attached { get { return currentState == State.Attached; } }
 
     void Awake()
     {
@@ -34,15 +44,52 @@ public class KeyScript : MonoBehaviour
         physicsBody = GetComponent<Rigidbody2D>();
         keyUI = GameObject.Find("KeyBG")?.GetComponent<KeyUI>();
         player = GameObject.Find("Player");
+
+        if(StartEquipped) {
+            Equip();
+        }
     }
 
-    void Update()
-    {
-        if(currentState == State.Attacking) {
-            Vector3 startVel = velocity;
+    void Update() {
+        if(currentState == State.PlayerHeld) {
+            // check if the player is throwing this
+            PlayerScript playerScript = player.GetComponent<PlayerScript>();
+            if(playerScript.SelectedKey == Type) {
+                // determine attack direction
+                Vector2 keyDirection = Vector2.zero;
+                if(playerScript.Input.JustPressed(PlayerInput.Action.ThrowUp)) {
+                    keyDirection = Vector2.up;
+                }
+                else if(playerScript.Input.JustPressed(PlayerInput.Action.ThrowDown)) {
+                    keyDirection = Vector2.down;
+                }
+                else if(playerScript.Input.JustPressed(PlayerInput.Action.ThrowLeft)) {
+                    keyDirection = Vector2.left;
+                }
+                else if(playerScript.Input.JustPressed(PlayerInput.Action.ThrowRight)) {
+                    keyDirection = Vector2.right;
+                }
+
+                if(playerScript.Input.MouseClicked()) {
+                    // use mouse position to determine the direction
+                    Vector3 mouseDir = playerScript.Input.GetMouseWorldPosition() - player.transform.position;
+                    if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
+                        mouseDir.y = 0;
+                    } else {
+                        mouseDir.x = 0;
+                    }
+                    keyDirection = mouseDir.normalized;
+                }
+
+                if(keyDirection != Vector2.zero) {
+                    Attack(keyDirection);
+                }
+            }
+        }
+        else if(currentState == State.Attacking) {
             velocity += Time.deltaTime * ACCEL * -velocity.normalized;
 
-            if(Vector2.Dot(startVel, velocity) < 0) {
+            if(velocity.sqrMagnitude < 1f) {
                 SetState(State.Returning);
             } else {
                 transform.position += Time.deltaTime * velocity;
@@ -62,7 +109,10 @@ public class KeyScript : MonoBehaviour
             }
         }
         else if(currentState == State.Attached) {
-            if(Mathf.Abs(player.transform.position.y - transform.position.y) > 12f || Mathf.Abs(player.transform.position.x - transform.position.x) > 12f) {
+            if(player.GetComponent<PlayerScript>().Input.JustPressed(keyToInput[Type])
+                || Mathf.Abs(player.transform.position.y - transform.position.y) > 12f 
+                || Mathf.Abs(player.transform.position.x - transform.position.x) > 12f
+            ) {
                 Detach();
             }
         }
@@ -72,18 +122,13 @@ public class KeyScript : MonoBehaviour
         currentState = keyState;
         transform.SetParent(null);
 
-        switch(currentState)
-        {
-            case State.Pickup:
-                break;
+        switch(currentState) {
             case State.PlayerHeld:
-                gameObject.SetActive(false);
+                transform.GetChild(0).gameObject.SetActive(false);
                 break;
             case State.Attacking:
-                gameObject.SetActive(true);
+                transform.GetChild(0).gameObject.SetActive(true);
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
-                break;
-            case State.Attached:
                 break;
         }
 
@@ -91,11 +136,10 @@ public class KeyScript : MonoBehaviour
     }
 
     // gives the player possession of a key pickup, turning it into an ability
-    public void Equip()
-    {
+    public void Equip() {
         SetState(State.PlayerHeld);
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        player.SetSelectedKey(Type);
+        player.SelectedKey = Type;
 
         switch(Type) {
             case KeyState.Fast:
@@ -111,19 +155,19 @@ public class KeyScript : MonoBehaviour
                 break;
         }
 
-        if (keyUI != null)
-        {
+        if(keyUI != null) {
             keyUI.UpdateKeyUI(Type);
         }
 
     }
 
     // called when the player shoots the key out to try and insert it
-    public void Attack(Vector2 direction, Vector2 playerSpeed) {
+    public void Attack(Vector2 direction) {
         if(currentState != State.PlayerHeld) {
             return;
         }
 
+        Vector2 playerSpeed = player.GetComponent<Rigidbody2D>().velocity;
         if(Mathf.Abs(direction.x) > Mathf.Abs(direction.y)) {
             playerSpeed.y = 0;
         } else {
@@ -156,22 +200,21 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
-        insertTarget.InsertKey(KeyState.Normal);
+        insertTarget.RemoveKey();
         insertTarget = null;
         SetState(State.Returning);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
-        if(currentState == State.Pickup && player != null) {
+        if(currentState == State.Pickup && collision.gameObject.tag == "Player") {
             Equip();
             return;
         }
 
-        IKeyWindable windable = collision.gameObject.GetComponent<IKeyWindable>();
+        KeyWindable windable = collision.gameObject.GetComponent<KeyWindable>();
         if(currentState == State.Attacking && windable != null) {
             insertTarget = windable;
-            insertTarget.InsertKey(type);
+            insertTarget.InsertKey(this);
             SetState(State.Attached);
             transform.SetParent(collision.gameObject.transform);
             return;

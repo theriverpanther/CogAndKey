@@ -51,7 +51,7 @@ public class KeyShowcaser : MonoBehaviour
     /// </summary>
     /// <param name="status">If in use or not</param>
     /// <param name="keyNumber">0, 1, 2 key values</param>
-    public void MainKeyStatusUpdate(bool status, KeyState keyState = KeyState.Normal)
+    public void MainKeyStatusUpdate(bool status, KeyState keyState = KeyState.None)
     {
         int keyNumber = GetPlacementNum(keyState);
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // path is defined by objects with the waypoint tag
-public class MovingWallScript : Rideable, IKeyWindable
+public class MovingWallScript : Rideable
 {
     [SerializeField] private GameObject[] Path;
     [SerializeField] private bool LoopPath; // false, back and forth
@@ -14,10 +14,9 @@ public class MovingWallScript : Rideable, IKeyWindable
     private List<Vector2> pathPoints;
     private int nextPointIndex;
     private bool forward; // false: moving backwards through the path
-    private KeyState currentKey;
     private Vector2 bufferedMomentum;
     private float momentumBufferTime;
-    private float CurrentSpeed { get { return MOVE_SPEED * (currentKey == KeyState.Fast ? 2 : 1); } }
+    private float CurrentSpeed { get { return MOVE_SPEED * (InsertedKeyType == KeyState.Fast ? 2 : 1); } }
     private Vector2 Momentum { get { return CurrentSpeed * (pathPoints[nextPointIndex] - (Vector2)transform.position).normalized; } }
 
     void Awake()
@@ -44,7 +43,7 @@ public class MovingWallScript : Rideable, IKeyWindable
 
     void FixedUpdate()
     {
-        if(currentKey == KeyState.Lock) {
+        if(InsertedKeyType == KeyState.Lock) {
             return;
         }
 
@@ -63,7 +62,7 @@ public class MovingWallScript : Rideable, IKeyWindable
             // apply vertical bump when changing from upward to down and going fast
             Vector2 newDirection = pathPoints[nextPointIndex] - (Vector2)transform.position;
             Vector2 momentum = 1.5f * currentSpeed * (transform.position - startPosition).normalized;
-            if(currentKey == KeyState.Fast && riders.Count > 0 && newDirection.y < -0.9f && momentum.y > 0.9f) {
+            if(InsertedKeyType == KeyState.Fast && riders.Count > 0 && newDirection.y < -0.9f && momentum.y > 0.9f) {
                 momentumBufferTime = 0f; // no buffered momentum in this case
                 for(int i = 0; i < riders.Count; i++) {
                     riders[i].GetComponent<Rigidbody2D>().velocity += momentum;
@@ -123,7 +122,7 @@ public class MovingWallScript : Rideable, IKeyWindable
         rider.transform.SetParent(null);
 
         // keep rider momentum if moving fast
-        if(currentKey == KeyState.Fast) {
+        if(InsertedKeyType == KeyState.Fast) {
             Vector2 momentum = Momentum;
             if(momentumBufferTime > 0) {
                 momentum = bufferedMomentum;
@@ -146,13 +145,19 @@ public class MovingWallScript : Rideable, IKeyWindable
         }
     }
 
-    public void InsertKey(KeyState key) {
-        if( (currentKey == KeyState.Reverse) != (key == KeyState.Reverse) ) {
-            // turning reversing key on or off
+    protected override void OnKeyInserted(KeyState newKey) {
+        if(newKey == KeyState.Reverse) {
+            // flip direction
             forward = !forward;
             NextWaypoint();
         }
+    }
 
-        currentKey = key;
+    protected override void OnKeyRemoved(KeyState removedKey) {
+        if(removedKey == KeyState.Reverse) {
+            // flip direction
+            forward = !forward;
+            NextWaypoint();
+        }
     }
 }
