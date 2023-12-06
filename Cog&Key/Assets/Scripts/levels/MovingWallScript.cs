@@ -69,10 +69,7 @@ public class MovingWallScript : Rideable
 
                     if(riders[i].tag == "Player") {
                         // switch player to fall gravity because the grounded gravity is a lot stronger and it cancells the momentum
-                        riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.FALL_GRAVITY;
-
-                        // give the player the boost momentum during their coyote time
-                        riders[i].GetComponent<PlayerScript>().CoyoteMomentum = 0.3f * momentum;
+                        //riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.FALL_GRAVITY;
                     }
                 }
             }

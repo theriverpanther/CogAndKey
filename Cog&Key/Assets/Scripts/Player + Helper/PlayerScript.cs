@@ -42,7 +42,6 @@ public class PlayerScript : MonoBehaviour
     private Animator playerAnimation;
 
     public PlayerInput Input {  get { return input; } }
-    public Vector2 CoyoteMomentum { get; set; } // for momentum buffering with moving platforms
     public KeyState SelectedKey { 
         get { return selectedKey; }
         set { selectedKey = value; }
@@ -95,7 +94,8 @@ public class PlayerScript : MonoBehaviour
 
         // vertical movement
         Vector2 floorNorm;
-        bool onFloor = IsOnFloor(out floorNorm);
+        GameObject floorObject = null;
+        bool onFloor = IsOnFloor(out floorNorm, out floorObject);
 
         switch(currentState) {
             case State.Aerial:
@@ -148,12 +148,9 @@ public class PlayerScript : MonoBehaviour
 
                 // allow jump during coyote time
                 if(coyoteTime > 0 && input.JustPressed(PlayerInput.Action.Jump)) {
-                    Jump(ref velocity);
+                    Jump(ref velocity, true);
                     SetAnimation("Jumping");
                     coyoteTime = 0;
-                    if(CoyoteMomentum != Vector2.zero) {
-                        velocity.y = JUMP_VELOCITY + CoyoteMomentum.y;
-                    }
                 }
 
                 // land on the ground
@@ -166,7 +163,7 @@ public class PlayerScript : MonoBehaviour
 
             case State.Grounded:
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
-                    Jump(ref velocity);
+                    Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
                 }
                 else if(!onFloor) {
                     // fall off platform
@@ -246,9 +243,6 @@ public class PlayerScript : MonoBehaviour
         
         if(coyoteTime > 0) {
             coyoteTime -= Time.deltaTime;
-            if(coyoteTime <= 0) {
-                CoyoteMomentum = Vector2.zero;
-            }
         }
     }
 
@@ -257,8 +251,15 @@ public class PlayerScript : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    private void Jump(ref Vector2 newVelocity) {
-        newVelocity.y = JUMP_VELOCITY;
+    private void Jump(ref Vector2 newVelocity, bool applyMomentum) {
+        if(applyMomentum) {
+            if(newVelocity.y < 0) {
+                newVelocity.y = 0;
+            }
+            newVelocity.y += JUMP_VELOCITY;
+        } else {
+            newVelocity.y = JUMP_VELOCITY;
+        }
         physicsBody.gravityScale = JUMP_GRAVITY;
         SetAnimation("Jumping");
         currentState = State.Aerial;
@@ -266,7 +267,8 @@ public class PlayerScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision) {
         Vector2 floorNormal;
-        if(collision.gameObject.tag == "Wall" && physicsBody.velocity.y < 0 && IsOnFloor(out floorNormal) && floorNormal != Vector2.zero && floorNormal != Vector2.up) {
+        GameObject hitSurface;
+        if(collision.gameObject.tag == "Wall" && physicsBody.velocity.y < 0 && IsOnFloor(out floorNormal, out hitSurface) && floorNormal != Vector2.zero && floorNormal != Vector2.up) {
             physicsBody.velocity *= 0.5f; // prevent sliding down slopes
         }
     }
@@ -284,7 +286,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     // uses raycasts to determine if the player is standing on a surface
-    private bool IsOnFloor(out Vector2 normal) {
+    private bool IsOnFloor(out Vector2 normal, out GameObject hitSurface) {
         const float BUFFER = 0.2f;
         float halfRadius = colliderSize.x / 2f;
         RaycastHit2D left = Physics2D.Raycast(new Vector3(transform.position.x - colliderSize.x / 2f, transform.position.y - colliderSize.y / 2f + halfRadius, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
@@ -292,6 +294,7 @@ public class PlayerScript : MonoBehaviour
         RaycastHit2D right = Physics2D.Raycast(new Vector3(transform.position.x + colliderSize.x / 2f, transform.position.y - colliderSize.y / 2f + halfRadius, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
 
         normal = (mid.collider == null ? Vector2.zero : mid.normal);
+        hitSurface = (mid.collider == null ? mid.collider.gameObject : null);
 
         return mid.collider != null && mid.distance < BUFFER || left.collider != null && left.distance < halfRadius + BUFFER || right.collider != null && right.distance < halfRadius + BUFFER;
     }
