@@ -115,7 +115,7 @@ public class MovingWallScript : Rideable
     }
 
     protected override void OnRiderAdded(GameObject rider) {
-        rider.transform.SetParent(transform, true);
+        rider.transform.SetParent(transform.GetChild(0), true);
     }
 
     protected override void OnRiderRemoved(GameObject rider, int index) {
