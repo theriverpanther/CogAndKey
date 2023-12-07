@@ -294,7 +294,7 @@ public class PlayerScript : MonoBehaviour
         RaycastHit2D right = Physics2D.Raycast(new Vector3(transform.position.x + colliderSize.x / 2f, transform.position.y - colliderSize.y / 2f + halfRadius, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
 
         normal = (mid.collider == null ? Vector2.zero : mid.normal);
-        hitSurface = (mid.collider == null ? mid.collider.gameObject : null);
+        hitSurface = (mid.collider == null ? null : mid.collider.gameObject);
 
         return mid.collider != null && mid.distance < BUFFER || left.collider != null && left.distance < halfRadius + BUFFER || right.collider != null && right.distance < halfRadius + BUFFER;
     }
