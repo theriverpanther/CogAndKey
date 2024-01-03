@@ -27,6 +27,7 @@ public class KeyScript : MonoBehaviour
     private KeyWindable insertTarget;
     private Rigidbody2D physicsBody;
     private GameObject player;
+    private Animator keyAni;
 
     private KeyShowcaser uiKeys;
     private KeyUI keyUI;
@@ -44,8 +45,9 @@ public class KeyScript : MonoBehaviour
         physicsBody = GetComponent<Rigidbody2D>();
         keyUI = GameObject.Find("KeyBG")?.GetComponent<KeyUI>();
         player = GameObject.Find("Player");
+        keyAni = transform.GetChild(0).GetComponent<Animator>();
 
-        if(StartEquipped) {
+        if (StartEquipped) {
             Equip();
         }
     }
@@ -207,6 +209,7 @@ public class KeyScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision) {
         if(currentState == State.Pickup && collision.gameObject.tag == "Player") {
+            keyAni.SetInteger("Status", 0);
             Equip();
             return;
         }
@@ -215,12 +218,16 @@ public class KeyScript : MonoBehaviour
         if(currentState == State.Attacking && windable != null) {
             insertTarget = windable;
             insertTarget.InsertKey(this);
+            
+            keyAni.SetInteger("Status", (int)windable.InsertedKeyType);
+
             SetState(State.Attached);
             transform.SetParent(collision.gameObject.transform);
             return;
         }
 
         if(currentState == State.Attacking && collision.gameObject.tag == "Wall") {
+            keyAni.SetInteger("Status", 0);
             SetState(State.Returning);
         }
     }
