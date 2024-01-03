@@ -32,6 +32,8 @@ public class HelperUI : MonoBehaviour
 
     [SerializeField]
     private Animator imageAnimator;
+    [SerializeField]
+    private HelperAnimations helperAnimation;
 
     void Start()
     {
@@ -50,7 +52,9 @@ public class HelperUI : MonoBehaviour
 
     IEnumerator ShowText()
     {
-        if(fullText.Length <= 1 && !topRightCorner)
+
+        helperAnimation.PlayStopEmote("Chat");
+        if (fullText.Length <= 1 && !topRightCorner)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", true);
         }
@@ -77,7 +81,9 @@ public class HelperUI : MonoBehaviour
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", true);
         }
-        
+
+        helperAnimation.PlayStopEmote("Chat");
+
         yield return null;
     }
 

@@ -14,7 +14,7 @@ public class HelperCreature : MonoBehaviour
     private GameObject player;
     private Rigidbody2D rb;
     private float dis = 0f;
-    //public AnimationCurve myCurve;
+
     float distanceAwayAllowed = 2f;
     private Vector3 goPoint;
     string dir = "left";
@@ -23,13 +23,13 @@ public class HelperCreature : MonoBehaviour
     public bool followPlayer;
     [SerializeField]
     private GameObject helperVisual;
+    private Animator visualAni;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player");
         moveSpeed = 2f;
-        //Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
         followPlayer = true;
 
         if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue)
@@ -37,12 +37,8 @@ public class HelperCreature : MonoBehaviour
             transform.position = LevelData.Instance.RespawnPoint.Value;
             transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
+        visualAni = helperVisual.GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -136,84 +132,4 @@ public class HelperCreature : MonoBehaviour
     {
         goPoint = position;
     }
-
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if(!followPlayer)
-    //    {
-    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>() , true);
-    //    }
-
-    //    if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Agent")
-    //    {
-    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
-    //    }
-    //}
-
-    //private void OnCollisionStay2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.tag == "Wall")
-    //    {
-    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
-    //    }
-    //}
-
-    //private void OnCollisionExit2D(Collision2D collision)
-    //{
-    //    if (!followPlayer)
-    //    {
-    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), false);
-    //    }
-    //}
-
-
-
-    //void FloatInPlace()
-    //{
-    //    if (!stopped)
-    //    {
-    //        stopped = true;
-    //        stopX = transform.position.x;
-    //        stopY = transform.position.y;
-    //    } else
-    //    {
-    //        float yTo = myCurve.Evaluate((Time.time % myCurve.length));
-    //        // Mathf.Lerp(transform.position.y, transform.position.y + yTo
-    //        transform.position = new Vector3(stopX, Mathf.Lerp(transform.position.y, stopY + yTo, Time.time), transform.position.z);
-    //    }
-
-    //}
-
-    //IEnumerator floatPlace()
-    //{
-
-    //    if (!stopped)
-    //    {
-    //        stopped = true;
-    //        midFrame = true;
-    //        stopX = transform.position.x;
-    //        stopY = transform.position.y;
-    //    }
-
-    //    startedCorountine = true;
-    //    rb.velocity = Vector3.zero;
-
-    //    int loopTime = 0;
-
-
-    //    float yTo = myCurve.Evaluate((Time.time % myCurve.length));
-    //    // Mathf.Lerp(transform.position.y, transform.position.y + yTo
-    //    while(currentFrame != myCurve.length)
-    //    {
-    //        transform.position = new Vector3(stopX, Mathf.Lerp(transform.position.y, stopY + yTo, Time.time), transform.position.z);
-    //        currentFrame++;
-    //    }
-
-    //    Debug.Log("hit here");
-    //    midFrame = false;
-    //    startedCorountine = false;
-    //    currentFrame = 0;
-    //    yield return null;
-    //}
-
 }
