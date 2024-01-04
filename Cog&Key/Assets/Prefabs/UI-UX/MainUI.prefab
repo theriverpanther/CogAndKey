@@ -400,7 +400,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 105, y: -106}
+  m_AnchoredPosition: {x: 105, y: -113}
   m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5018282335559042351
@@ -475,7 +475,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 935, y: -56}
+  m_AnchoredPosition: {x: 935, y: -63}
   m_SizeDelta: {x: 1500, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2037264445233330333
@@ -992,6 +992,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5519884914175904603}
     m_Modifications:
+    - target: {fileID: 90509306475760250, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_Color.b
+      value: 0.25882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 90509306475760250, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 90509306475760250, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1777258764903648534, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Name
       value: KeyFillerUI
@@ -1098,6 +1110,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5519884914175904603}
     m_Modifications:
+    - target: {fileID: 90509306475760250, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_Color.b
+      value: 0.28627452
+      objectReference: {fileID: 0}
+    - target: {fileID: 90509306475760250, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_Color.g
+      value: 0.4862745
+      objectReference: {fileID: 0}
     - target: {fileID: 1777258764903648534, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Name
       value: KeyFillerUI
@@ -1204,6 +1224,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5519884914175904603}
     m_Modifications:
+    - target: {fileID: 90509306475760250, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 90509306475760250, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_Color.g
+      value: 0.37254903
+      objectReference: {fileID: 0}
+    - target: {fileID: 90509306475760250, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7411765
+      objectReference: {fileID: 0}
     - target: {fileID: 1777258764903648534, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Name
       value: KeyFillerUI
