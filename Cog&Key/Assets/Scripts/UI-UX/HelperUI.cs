@@ -128,13 +128,8 @@ public class HelperUI : MonoBehaviour
         //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", false);
         Debug.Log("Hiding Helper...");
     }
-    public void ShowHelper()
+    public void ShowHelper(bool showTextAboveHead = true)
     {
-        Debug.Log("Showing Helper...");
-
-        if(!topRightCorner)
-        {
-            Debug.Log("Showing Helper...");
             if (imgToShow.sprite != null)
                     {
                         Debug.Log("Show image!");
@@ -147,8 +142,9 @@ public class HelperUI : MonoBehaviour
                         gameObject.GetComponent<Animator>().SetBool("Fade", true);
                         imgToShow.gameObject.SetActive(false);
                     }
-        }
-        
+
+        /// shows/hides text box above the head
+        imgToShow.transform.parent.transform.GetChild(1).gameObject.SetActive(showTextAboveHead);
     }
 
     public void SetTextSpeed(float speed)

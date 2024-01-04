@@ -73,6 +73,8 @@ public class TutorialBox : MonoBehaviour
                     helperUI.SetTextSpeed(textSpeed);
                     helperUI.StartText(textToShow, true);
                     helperUI.IndicatorImage(imgToShow);
+                    helperUI.ShowImage(imgToShow, size, animationIndex, forceFade);
+                    helperUI.ShowHelper(false);
                 }
 
             }
@@ -99,6 +101,7 @@ public class TutorialBox : MonoBehaviour
             if (!topRightCorner)
             {
                 helperUI.HideHelper();
+                helperUI.IndicatorImage();
             } else
             {
                 helperUI.AlertMessage(false);
