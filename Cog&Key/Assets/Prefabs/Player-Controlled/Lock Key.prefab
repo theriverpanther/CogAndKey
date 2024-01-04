@@ -145,6 +145,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WindKeyGen
       objectReference: {fileID: 0}
+    - target: {fileID: 6867547011804954589, guid: feb86469af4bbea4f88a30c87080b59d, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8e27c4d175df5824480178ae5d75cfa2, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
