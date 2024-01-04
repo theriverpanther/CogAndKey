@@ -8,7 +8,7 @@ public class HelperUI : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField]
-    bool topRightCorner;
+    bool topLeftCorner;
 
     [SerializeField]
     TextMeshProUGUI textToMod;
@@ -54,12 +54,12 @@ public class HelperUI : MonoBehaviour
     {
 
         helperAnimation.PlayStopEmote("Chat");
-        if (fullText.Length <= 1 && !topRightCorner)
+        if (fullText.Length <= 1 && !topLeftCorner)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", true);
         }
 
-        if(topRightCorner)
+        if(topLeftCorner)
         {
             for (int i = 0; i < fullText.Length; i++)
             {
@@ -77,7 +77,7 @@ public class HelperUI : MonoBehaviour
             }
         }
 
-        if (fullText.Length <= 1 && !topRightCorner)
+        if (fullText.Length <= 1 && !topLeftCorner)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", true);
         }
@@ -89,7 +89,7 @@ public class HelperUI : MonoBehaviour
 
     public void StartText(string text, bool inCorner = false)
     {
-        topRightCorner = inCorner;
+        topLeftCorner = inCorner;
         fullText = text + " ";
         StartCoroutine(ShowText());
     }
@@ -120,7 +120,7 @@ public class HelperUI : MonoBehaviour
 
     public void HideHelper()
     {
-        if(forceFade && !topRightCorner)
+        if(forceFade && !topLeftCorner)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", false);
         }

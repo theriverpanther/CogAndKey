@@ -15,7 +15,7 @@ public class TutorialBox : MonoBehaviour
     public bool overlapping;
 
     [SerializeField]
-    bool topRightCorner;
+    bool topLeftCorner;
 
     [SerializeField]
     string textToShow;
@@ -53,7 +53,7 @@ public class TutorialBox : MonoBehaviour
     {
         if(collision.tag == "Player")
         {
-            if(!topRightCorner && textToShow != "TRIGGER") 
+            if(!topLeftCorner && textToShow != "TRIGGER") 
             {
                 if (imgToShow != null)
                 {
@@ -98,7 +98,7 @@ public class TutorialBox : MonoBehaviour
     {
         if (collision.tag == "Player" && !overlapping)
         {
-            if (!topRightCorner)
+            if (!topLeftCorner)
             {
                 helperUI.HideHelper();
                 helperUI.IndicatorImage();

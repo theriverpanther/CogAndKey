@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overlapping: 0
-  topRightCorner: 1
+  topLeftCorner: 1
   textToShow: Test Text!
   imgToShow: {fileID: 2800000, guid: 3719e5d35c66d4747be0d44c2d6b25df, type: 3}
   attachToCenterPoint: 0
