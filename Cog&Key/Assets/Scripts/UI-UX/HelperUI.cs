@@ -8,7 +8,7 @@ public class HelperUI : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField]
-    bool topRightCorner;
+    bool topLeftCorner;
 
     [SerializeField]
     TextMeshProUGUI textToMod;
@@ -32,6 +32,8 @@ public class HelperUI : MonoBehaviour
 
     [SerializeField]
     private Animator imageAnimator;
+    [SerializeField]
+    private HelperAnimations helperAnimation;
 
     void Start()
     {
@@ -50,12 +52,14 @@ public class HelperUI : MonoBehaviour
 
     IEnumerator ShowText()
     {
-        if(fullText.Length <= 1 && !topRightCorner)
+
+        helperAnimation.PlayStopEmote("Chat");
+        if (fullText.Length <= 1 && !topLeftCorner)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", true);
         }
 
-        if(topRightCorner)
+        if(topLeftCorner)
         {
             for (int i = 0; i < fullText.Length; i++)
             {
@@ -73,17 +77,19 @@ public class HelperUI : MonoBehaviour
             }
         }
 
-        if (fullText.Length <= 1 && !topRightCorner)
+        if (fullText.Length <= 1 && !topLeftCorner)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", true);
         }
-        
+
+        helperAnimation.PlayStopEmote("Chat");
+
         yield return null;
     }
 
     public void StartText(string text, bool inCorner = false)
     {
-        topRightCorner = inCorner;
+        topLeftCorner = inCorner;
         fullText = text + " ";
         StartCoroutine(ShowText());
     }
@@ -114,7 +120,7 @@ public class HelperUI : MonoBehaviour
 
     public void HideHelper()
     {
-        if(forceFade && !topRightCorner)
+        if(forceFade && !topLeftCorner)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", false);
         }
@@ -122,13 +128,8 @@ public class HelperUI : MonoBehaviour
         //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", false);
         Debug.Log("Hiding Helper...");
     }
-    public void ShowHelper()
+    public void ShowHelper(bool showTextAboveHead = true)
     {
-        Debug.Log("Showing Helper...");
-
-        if(!topRightCorner)
-        {
-            Debug.Log("Showing Helper...");
             if (imgToShow.sprite != null)
                     {
                         Debug.Log("Show image!");
@@ -141,8 +142,9 @@ public class HelperUI : MonoBehaviour
                         gameObject.GetComponent<Animator>().SetBool("Fade", true);
                         imgToShow.gameObject.SetActive(false);
                     }
-        }
-        
+
+        /// shows/hides text box above the head
+        imgToShow.transform.parent.transform.GetChild(1).gameObject.SetActive(showTextAboveHead);
     }
 
     public void SetTextSpeed(float speed)
