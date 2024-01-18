@@ -100,16 +100,27 @@ public class PlayerScript : MonoBehaviour
         switch(currentState) {
             case State.Aerial:
                 // reduce jump boost when there is a lot of upward momentum
-                if(velocity.y > 1.5f * JUMP_VELOCITY) {
-                    physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2f;
+                //if(velocity.y > 1.6f * JUMP_VELOCITY) {
+                //    physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2f;
+                //}
+
+                if(physicsBody.gravityScale != FALL_GRAVITY) {
+                    physicsBody.gravityScale = JUMP_GRAVITY;
+                    if(velocity.y >  1.5f * JUMP_VELOCITY) {
+                        physicsBody.gravityScale = (JUMP_GRAVITY + FALL_GRAVITY) / 2f; // reduce jump boost when there is a lot of upward momentum
+                    }
+
+                    if(velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump)) {
+                        physicsBody.gravityScale = FALL_GRAVITY;
+                    }
                 }
 
                 // extend jump height while jump is held
-                if(physicsBody.gravityScale != FALL_GRAVITY && 
-                    (velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
-                ) {
-                    physicsBody.gravityScale = FALL_GRAVITY;
-                }
+                //if(physicsBody.gravityScale != FALL_GRAVITY && 
+                //    (velocity.y < 0 || !input.IsPressed(PlayerInput.Action.Jump))
+                //) {
+                //    physicsBody.gravityScale = FALL_GRAVITY;
+                //}
                 
                 Direction adjWallDir = GetAdjacentWallDireciton();
                 if(adjWallDir != Direction.None) {
