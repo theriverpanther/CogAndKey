@@ -477,11 +477,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 5
-  jumpSpeed: 8
+  jumpSpeed: 13
   fastScalar: 2
   collidingObjs: []
   distToGround: 0
+  stopDelay: 0.5
   nodes: []
+  pathTarget: {fileID: 0}
   idleColor: {r: 0, g: 0.3019608, b: 0.2509804, a: 1}
   huntColor: {r: 0.84705883, g: 0.105882354, b: 0.3764706, a: 1}
 --- !u!61 &2698930125854928055
@@ -544,7 +546,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2.4
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

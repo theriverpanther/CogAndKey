@@ -39,9 +39,9 @@ public class Agent : KeyWindable
     [SerializeField] protected float distToGround;
 
     protected float turnDelay = 0.5f;
-    protected bool processingTurn = false;
+    [SerializeField] protected bool processingTurn = false;
     [SerializeField] protected float stopDelay = 0.5f;
-    protected bool processingStop = false;
+    [SerializeField] protected bool processingStop = false;
 
     [SerializeField] protected List<GameObject> nodes = new List<GameObject>();
     public PathNode pathTarget;
@@ -173,7 +173,8 @@ public class Agent : KeyWindable
             tempVelocity.y = rb.velocity.y;
             rb.velocity = tempVelocity;
             // Wait until the agent is moving
-            yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
+            if (tempVelocity.x > 0) yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
+            else yield return new WaitForSeconds(turnDelay);
             processingTurn = false;
             //Debug.Log("Coroutine End");
         }
@@ -239,55 +240,72 @@ public class Agent : KeyWindable
     /// <returns>x direction to turn towards</returns>
     protected int EdgeDetect(bool detectFloorEdges, bool detectWalls)
     {
-        int returnVal = 0;
-        foreach (GameObject obj in collidingObjs)
-        {
-            if(obj.GetComponent<BoxCollider2D>() != null)
-            {
-                if (detectWalls && transform.position.y > obj.transform.position.y - obj.GetComponent<BoxCollider2D>().bounds.size.y / 2 &&
-                transform.position.y < obj.transform.position.y + obj.GetComponent<BoxCollider2D>().bounds.size.y / 2)
-                {
-                    returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
-                }
-                else if (detectFloorEdges && transform.position.x + GetComponent<BoxCollider2D>().bounds.size.x / 2 > obj.transform.position.x + obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
-                {
-                    jumpState = JumpState.Grounded;
-                    returnVal = -1;
-                }
-                else if (detectFloorEdges && transform.position.x - GetComponent<BoxCollider2D>().bounds.size.x / 2 < obj.transform.position.x - obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
-                {
-                    jumpState = JumpState.Grounded;
-                    returnVal = 1;
-                }
-            }
-            else
-            {
-                // If the agent is stuck at a wall, search for a node to move towards
-                if(detectWalls && !processingTurn)
-                {
-                    foreach(GameObject node in nodes)
-                    {
-                        if(Mathf.Sign((node.transform.position - transform.position).x) == Mathf.Sign(direction.x) &&
-                            Vector2.Distance(node.transform.position, transform.position) <= 0.25f && 
-                            Physics2D.Raycast(transform.position, node.transform.position, 0.6f))
-                        {
-                            Debug.DrawLine(node.transform.position, transform.position, Color.red, 2f);
-                            // Turn
-                            returnVal = transform.position.x > node.transform.position.x ? 1 : -1;
-                            break;
-                        }
-                    }
-                }
-                // If the collision is against a node, that means that the agent is at a ledge, so turn around
-                if(detectFloorEdges && obj.tag == "Node" && !processingTurn)
-                {
-                    returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
-                }
-            }
-        }
+        List<ContactPoint2D> points = new List<ContactPoint2D>();
+        GetComponent<BoxCollider2D>().GetContacts(points);
 
-        return returnVal;
-        
+
+        // Floor Edges -
+        // Find the contact points at the base of the agent
+        // If the distance between the poles of these points is less than a proportion of the size of the hunter, turn (need to determine proportion)
+
+        // Wall Edges -
+        // Find contact points that are at any x extremity
+        // Clean the list, only check ones that are in the direction of traversal
+        // If the y position is at max y
+            // If the player is past the wall, check the jump height
+            // If a jump is possible, try it
+            // Turn if fail
+        // If the y position is below max y, jump
+
+        //int returnVal = 0;
+        //foreach (GameObject obj in collidingObjs)
+        //{
+        //    if(obj.GetComponent<BoxCollider2D>() != null)
+        //    {
+        //        if (detectWalls && transform.position.y > obj.transform.position.y - obj.GetComponent<BoxCollider2D>().bounds.size.y / 2 &&
+        //        transform.position.y < obj.transform.position.y + obj.GetComponent<BoxCollider2D>().bounds.size.y / 2)
+        //        {
+        //            returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
+        //        }
+        //        else if (detectFloorEdges && transform.position.x + GetComponent<BoxCollider2D>().bounds.size.x / 2 > obj.transform.position.x + obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
+        //        {
+        //            jumpState = JumpState.Grounded;
+        //            returnVal = -1;
+        //        }
+        //        else if (detectFloorEdges && transform.position.x - GetComponent<BoxCollider2D>().bounds.size.x / 2 < obj.transform.position.x - obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
+        //        {
+        //            jumpState = JumpState.Grounded;
+        //            returnVal = 1;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // If the agent is stuck at a wall, search for a node to move towards
+        //        if(detectWalls && !processingTurn)
+        //        {
+        //            foreach(GameObject node in nodes)
+        //            {
+        //                if(Mathf.Sign((node.transform.position - transform.position).x) == Mathf.Sign(direction.x) &&
+        //                    Vector2.Distance(node.transform.position, transform.position) <= 0.25f && 
+        //                    Physics2D.Raycast(transform.position, node.transform.position, 0.6f))
+        //                {
+        //                    Debug.DrawLine(node.transform.position, transform.position, Color.red, 2f);
+        //                    // Turn
+        //                    returnVal = transform.position.x > node.transform.position.x ? 1 : -1;
+        //                    break;
+        //                }
+        //            }
+        //        }
+        //        // If the collision is against a node, that means that the agent is at a ledge, so turn around
+        //        if(detectFloorEdges && obj.tag == "Node" && !processingTurn)
+        //        {
+        //            returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
+        //        }
+        //    }
+        //}
+
+        //return returnVal;
+        return 0;
     }
 
     public void PassTriggerValue(GameObject obj, bool delete = false)
@@ -305,4 +323,17 @@ public class Agent : KeyWindable
         }
     }
     #endregion
+
+    protected virtual void OnDrawGizmos()
+    {
+        List<ContactPoint2D> points = new List<ContactPoint2D>();
+        GetComponent<BoxCollider2D>().GetContacts(points);
+
+        Gizmos.color = Color.white;
+
+        foreach(ContactPoint2D contact in points)
+        {
+            Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
+        }
+    }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4003886884080579254}
   - component: {fileID: 7056393648130258895}
   - component: {fileID: 9219762790446681842}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PathNode
   m_TagString: Path
   m_Icon: {fileID: 0}
@@ -82,3 +82,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gizmoColor: {r: 0, g: 0.045641232, b: 0.4433962, a: 1}
   nextNodes: []
+  stopAt: 0

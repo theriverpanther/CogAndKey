@@ -186,8 +186,9 @@ public class Hunter : Agent
         base.BehaviorTree(walkSpeed, fast);
     }
 
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
+        base.OnDrawGizmos();
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(playerPosition, 1);
     }

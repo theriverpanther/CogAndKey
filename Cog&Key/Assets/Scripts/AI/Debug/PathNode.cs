@@ -75,10 +75,10 @@ public class PathNode : Node
             #endif
         }
 
-        Gizmos.DrawLine(transform.position, transform.position + transform.up);
+        //Gizmos.DrawLine(transform.position, transform.position + transform.up);
         //Gizmos.DrawWireSphere()
 
         Gizmos.color = gizmoColor;
-        Gizmos.DrawSphere(transform.position, 0.25f);
+        Gizmos.DrawSphere(transform.position, 0.125f);
     }
 }
