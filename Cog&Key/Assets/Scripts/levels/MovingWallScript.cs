@@ -67,10 +67,10 @@ public class MovingWallScript : Rideable
                 for(int i = 0; i < riders.Count; i++) {
                     riders[i].GetComponent<Rigidbody2D>().velocity += momentum;
 
-                    if(riders[i].tag == "Player") {
+                    //if(riders[i].tag == "Player") {
                         // switch player to fall gravity because the grounded gravity is a lot stronger and it cancells the momentum
                         //riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.FALL_GRAVITY;
-                    }
+                    //}
                 }
             }
         } else {
