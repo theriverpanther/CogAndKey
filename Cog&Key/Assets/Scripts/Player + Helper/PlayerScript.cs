@@ -18,7 +18,7 @@ public class PlayerScript : MonoBehaviour
     public KeyScript ReverseKey { get; set; }
 
     public const float FALL_GRAVITY = 5.0f;
-    private const float JUMP_GRAVITY = 2.4f;
+    public const float JUMP_GRAVITY = 2.4f;
     private const float GROUND_GRAVITY = 10.0f; // a higher gravity makes the player move smoothly over the tops of slopes
     private const float JUMP_VELOCITY = 13.0f;
     private const float CLING_VELOCITY = -1.0f; // the maximum downward speed when pressed against a wall
@@ -34,6 +34,7 @@ public class PlayerScript : MonoBehaviour
 
     private float coyoteTime;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
+    public Vector2? CoyoteMomentum { get; set; } // allows mechanics like vertical platforms to give momentum buffers
 
     private GameObject helper;
     private HelperCreature helperScript;
@@ -96,6 +97,9 @@ public class PlayerScript : MonoBehaviour
         Vector2 floorNorm;
         GameObject floorObject = null;
         bool onFloor = IsOnFloor(out floorNorm, out floorObject);
+        if(onFloor) {
+            //CoyoteMomentum = null;
+        }
 
         switch(currentState) {
             case State.Aerial:
@@ -251,7 +255,11 @@ public class PlayerScript : MonoBehaviour
         
         if(coyoteTime > 0) {
             coyoteTime -= Time.deltaTime;
+            if(coyoteTime <= 0) {
+                CoyoteMomentum = null;
+            }
         }
+        Debug.Log(CoyoteMomentum.HasValue ? CoyoteMomentum.Value : "null");
     }
 
     // restarts the level from the most recent checkpoint
@@ -261,7 +269,10 @@ public class PlayerScript : MonoBehaviour
 
     private void Jump(ref Vector2 newVelocity, bool applyMomentum) {
         if(applyMomentum) {
-            if(newVelocity.y < 0) {
+            if(CoyoteMomentum.HasValue) {
+                newVelocity = CoyoteMomentum.Value;
+            }
+            else if(newVelocity.y < 0) {
                 newVelocity.y = 0;
             }
             newVelocity.y += JUMP_VELOCITY;
