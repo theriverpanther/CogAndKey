@@ -13,6 +13,7 @@ public class Hunter : Agent
     [SerializeField] private Color idleColor;
     [SerializeField] private Color huntColor;
     private GameObject player;
+    private SpriteRenderer huntSignifier;
 
     private float maxHuntTime = 2f;
     private float huntTimer = 0f;
@@ -24,6 +25,7 @@ public class Hunter : Agent
         direction = new Vector2(-1, 0);
         wallDetected = false;
         player = GameObject.Find("Player");
+        huntSignifier = gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -89,7 +91,8 @@ public class Hunter : Agent
                 playerPosition = player.transform.position;
             }  
         }
-        float sqrDist = Mathf.Pow(playerPosition.x - direction.x, 2) + Mathf.Pow(playerPosition.y - direction.y, 2);
+
+        float sqrDist = SquareDistance(playerPosition, direction);
 
         if (sqrDist <= distThreshold * distThreshold && !playerSensed)
         {
@@ -100,14 +103,14 @@ public class Hunter : Agent
         {
             // patrol
             // for now just deal with edge detection
-            //EdgeDetectMovement(!fast, true);
+            EdgeDetectMovement(!fast, true);
             Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
-            if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x)) StartCoroutine(TurnDelay());
-            gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().color = idleColor;
+            if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > 2) StartCoroutine(TurnDelay());
+            huntSignifier.color = idleColor;
         }
         else if (sqrDist > distThreshold * distThreshold)
         {
-            gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().color = huntColor;
+            huntSignifier.color = huntColor;
             // try to chase the player
             float tempX = (playerPosition - transform.position).x;
             if(Mathf.Sign(tempX) != Mathf.Sign(direction.x) && !processingTurn) 
@@ -126,9 +129,22 @@ public class Hunter : Agent
             {
                 if(playerSensed || wallDetected) Jump();
             }
+            if (!playerSensed)
+            {
+                huntTimer += Time.deltaTime;
+                if (huntTimer >= maxHuntTime)
+                {
+                    huntTimer = 0f;
+                    playerPosition = Vector2.zero;
+                }
+            }
+            else
+            {
+                huntTimer = 0f;
+            }
             //List<Vector2> jumps = new List<Vector2>();
             //jumps = ValidJumps();
-            
+
             //if (IsPointOnJump(playerPosition.x, playerPosition.y, mistakeThreshold))
             //{
             //    Jump();
@@ -158,19 +174,7 @@ public class Hunter : Agent
 
             //    }
             //}
-            if(!playerSensed)
-            {
-                huntTimer += Time.deltaTime;
-                if(huntTimer >= maxHuntTime)
-                {
-                    huntTimer = 0f;
-                    playerPosition = Vector2.zero;
-                }
-            }
-            else
-            {
-                huntTimer = 0f;
-            }
+
 
             // TODO
             // NEED TO ACCOUNT FOR LOWER BOUNDS AKA FALLING OFF INTO DEATH
