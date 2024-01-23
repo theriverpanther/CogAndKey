@@ -78,13 +78,13 @@ public class MovingWallScript : Rideable
                 riders[i].GetComponent<Rigidbody2D>().velocity += bumpMomentum.Value;
                 if(riders[i].tag == "Player") {
                     // switch player to fall gravity because the grounded gravity is a lot stronger and it cancells the momentum
-                    riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.FALL_GRAVITY;
+                    riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.JUMP_GRAVITY;
+                    riders[i].GetComponent<PlayerScript>().CoyoteMomentum = bumpMomentum.Value;
                 }
 
                 riders[i].transform.SetParent(null);
                 riders.RemoveAt(i);
                 i--;
-                Debug.Log("applied bump");
             }
         }
 
@@ -128,13 +128,7 @@ public class MovingWallScript : Rideable
 
         // keep rider momentum if moving fast
         if(InsertedKeyType == KeyState.Fast) {
-            //Vector2 momentum = CurrentSpeed * (pathPoints[nextPointIndex] - (Vector2)transform.position).normalized; ;
-            //if(momentumBufferTime > 0) {
-            //    momentum = bufferedMomentum;
-            //}
-            //rider.GetComponent<Rigidbody2D>().velocity += (momentum.x == 0 ? 0.5f : 1f) * momentum; // less boost when upward
             rider.GetComponent<Rigidbody2D>().velocity += momentumBufferTime > 0 ? bufferedMomentum : BecomeMomentum(pathPoints[nextPointIndex] - (Vector2)transform.position);
-            Debug.Log("applied exit boost");
         }
     }
 
