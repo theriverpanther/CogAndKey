@@ -157,17 +157,18 @@ public class PlayerScript : MonoBehaviour
                 if(onFloor) {
                     currentState = State.Grounded;
                     physicsBody.gravityScale = GROUND_GRAVITY;
-                    SetAnimation(null);
                 }
                 break;
 
             case State.Grounded:
-                if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
+                playerAnimation.SetBool("Falling", false);
+
+                if (input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
                 }
                 else if(!onFloor) {
                     // fall off platform
-                    SetAnimation("Falling");
+                    //playerAnimation.SetBool("Falling", true);
                     currentState = State.Aerial;
                     coyoteTime = 0.1f;
                     physicsBody.gravityScale = FALL_GRAVITY;
@@ -194,9 +195,6 @@ public class PlayerScript : MonoBehaviour
         bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && (Vector2.Dot(velocity, slopeRight) <= 0 || Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
         bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && (Vector2.Dot(velocity, slopeLeft) <= 0 || Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
         if(moveRight == moveLeft && velocity.x != 0) { // both pressed is same as neither pressed
-            if(currentState == State.Grounded) {
-                SetAnimation(null);
-            }
 
             // apply friction
             Vector2 fricDir = velocity.x > 0 ? slopeLeft : slopeRight;
@@ -207,19 +205,26 @@ public class PlayerScript : MonoBehaviour
             // check if slowed to a stop
             if(onFloor && velocity.sqrMagnitude < 0.1f) {
                 velocity = Vector2.zero;
+                playerAnimation.SetBool("Running", false);
             }
             else if(!onFloor && Vector2.Dot(velocity, fricDir) > 0) {
                 velocity.x = 0;
+                playerAnimation.SetBool("Running", false);
             }
         }
         else if(moveRight || moveLeft) {
             // walk (or midair strafe)
             transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             if(currentState == State.Grounded) {
-                SetAnimation("Running");
+                playerAnimation.SetBool("Running", true);
             }
 
             Vector2 moveDir = (moveRight ? slopeRight : slopeLeft);
+
+            if(playerAnimation.GetBool("Falling") == false)
+            {
+                velocity += WALK_ACCEL * Time.deltaTime * moveDir;
+            }
             velocity += WALK_ACCEL * Time.deltaTime * moveDir;
 
             // cap walk speed
@@ -279,6 +284,7 @@ public class PlayerScript : MonoBehaviour
         playerAnimation.SetBool("Running", false);
         playerAnimation.SetBool("Jumping", false);
         playerAnimation.SetBool("Wallslide", false);
+        Debug.Log("RUNNING THIS RN" + animationState);
 
         if(animationState != null) {
             playerAnimation.SetBool(animationState, true);
