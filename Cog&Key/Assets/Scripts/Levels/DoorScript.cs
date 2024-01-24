@@ -4,16 +4,21 @@ using UnityEngine;
 
 public class DoorScript : MonoBehaviour
 {
+    [SerializeField] private bool RequireAll = true;
+
     private bool open;
+    private List<DoorOpener> locks = new List<DoorOpener>();
     private float startY;
     private float height;
 
     private const float MOVE_SPEED = 10f;
+
     public bool Locked { get; set; }
 
     void Start() {
         startY = transform.position.y;
         height = transform.localScale.y;
+        open = false;
     }
 
     void Update() {
@@ -37,7 +42,22 @@ public class DoorScript : MonoBehaviour
         }
     }
 
-    public void SetOpen(bool open) {
-        this.open = open;
+    public void AddLock(DoorOpener doorLock) {
+        locks.Add(doorLock);
+    }
+
+    public void CheckLocks() {
+        open = RequireAll;
+        foreach(DoorOpener opener in locks) {
+            if(!RequireAll && opener.Activated) {
+                open = true;
+                return;
+            }
+
+            if(RequireAll && !opener.Activated) {
+                open = false;
+                return;
+            }
+        }
     }
 }
