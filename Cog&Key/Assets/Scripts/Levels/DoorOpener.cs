@@ -2,25 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorOpener : KeyWindable
+public class DoorOpener
 {
-    [SerializeField] private DoorScript target;
-
-    protected override void OnKeyInserted(KeyState newKey) {
-        if(newKey == KeyState.Fast) {
-            target.SetOpen(true);
-        }
-        else if(newKey == KeyState.Lock) {
-            target.Locked = true;
+    private bool activated;
+    public bool Activated {
+        get { return activated; }
+        set { 
+            activated = value; 
+            lockedDoor.CheckLocks(); 
         }
     }
 
-    protected override void OnKeyRemoved(KeyState removedKey) {
-        if(removedKey == KeyState.Fast) {
-            target.SetOpen(false);
-        }
-        else if(removedKey == KeyState.Lock) {
-            target.Locked = false;
-        }
+    private DoorScript lockedDoor;
+
+    public DoorOpener(DoorScript lockedDoor) {
+        this.lockedDoor = lockedDoor;
+        lockedDoor.AddLock(this);
     }
 }
