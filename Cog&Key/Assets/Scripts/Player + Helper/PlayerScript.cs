@@ -98,7 +98,7 @@ public class PlayerScript : MonoBehaviour
         GameObject floorObject = null;
         bool onFloor = IsOnFloor(out floorNorm, out floorObject);
         if(onFloor) {
-            //CoyoteMomentum = null;
+            CoyoteMomentum = null;
         }
 
         switch(currentState) {
@@ -259,7 +259,6 @@ public class PlayerScript : MonoBehaviour
                 CoyoteMomentum = null;
             }
         }
-        Debug.Log(CoyoteMomentum.HasValue ? CoyoteMomentum.Value : "null");
     }
 
     // restarts the level from the most recent checkpoint

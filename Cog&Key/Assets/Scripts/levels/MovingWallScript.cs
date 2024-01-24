@@ -51,7 +51,6 @@ public class MovingWallScript : Rideable
         float currentSpeed = CurrentSpeed;
         float shift = currentSpeed * Time.deltaTime;
 
-        Vector2? bumpMomentum = null;
         if(Vector2.Distance(target, transform.position) <= shift) {
             // reached target point
             transform.position = target;
@@ -63,7 +62,18 @@ public class MovingWallScript : Rideable
             Vector2 newDirection = pathPoints[nextPointIndex] - (Vector2)transform.position;
             if(InsertedKeyType == KeyState.Fast && riders.Count > 0 && newDirection.y < -0.9f && bufferedMomentum.y > 0.9f) {
                 momentumBufferTime = 0f; // no buffered momentum in this case
-                bumpMomentum = bufferedMomentum;
+                for(int i = 0; i < riders.Count; i++) {
+                    riders[i].GetComponent<Rigidbody2D>().velocity += bufferedMomentum;
+                    if(riders[i].tag == "Player") {
+                        // switch player to fall gravity because the grounded gravity is a lot stronger and it cancells the momentum
+                        riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.JUMP_GRAVITY;
+                        riders[i].GetComponent<PlayerScript>().CoyoteMomentum = bufferedMomentum;
+                    }
+
+                    riders[i].transform.SetParent(null);
+                    riders.RemoveAt(i);
+                    i--;
+                }
             }
         } else {
             // moving towards target point
@@ -71,22 +81,6 @@ public class MovingWallScript : Rideable
         }
 
         CheckSideRiders();
-
-        if(bumpMomentum.HasValue) {
-            // this is placed after checking side riders to prevent granting the bump and the exit momentum together
-            for(int i = 0; i < riders.Count; i++) {
-                riders[i].GetComponent<Rigidbody2D>().velocity += bumpMomentum.Value;
-                if(riders[i].tag == "Player") {
-                    // switch player to fall gravity because the grounded gravity is a lot stronger and it cancells the momentum
-                    riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.JUMP_GRAVITY;
-                    riders[i].GetComponent<PlayerScript>().CoyoteMomentum = bumpMomentum.Value;
-                }
-
-                riders[i].transform.SetParent(null);
-                riders.RemoveAt(i);
-                i--;
-            }
-        }
 
         if(momentumBufferTime > 0) {
             momentumBufferTime -= Time.deltaTime;
