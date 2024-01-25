@@ -617,10 +617,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Door Opener (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 5707118110934639047, guid: 27465bf0636e55945bb03b435a1d402e, type: 3}
-      propertyPath: target
-      value: 
-      objectReference: {fileID: 95245836}
+    - target: {fileID: 4859316991184812423, guid: 27465bf0636e55945bb03b435a1d402e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1176,6 +1176,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 025cdb5a36be30449a21b764fe684d3c, type: 3}
+--- !u!1001 &2119762762851220830
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 942477314398512366, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582428666939927456, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 95245836}
+    - target: {fileID: 6802910104195471641, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
+      propertyPath: m_Name
+      value: Pressure Plate
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d41b85533a15c994d96e477ee585ae21, type: 3}
 --- !u!1001 &2240820350854992776
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1228,10 +1289,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Door Opener
       objectReference: {fileID: 0}
-    - target: {fileID: 5707118110934639047, guid: 27465bf0636e55945bb03b435a1d402e, type: 3}
-      propertyPath: target
-      value: 
-      objectReference: {fileID: 95245836}
+    - target: {fileID: 4859316991184812423, guid: 27465bf0636e55945bb03b435a1d402e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11038,3 +11099,4 @@ SceneRoots:
   - {fileID: 542846108}
   - {fileID: 493054448}
   - {fileID: 891764693}
+  - {fileID: 2119762762851220830}
