@@ -27,7 +27,7 @@ public class PlayerScript : MonoBehaviour
     private const float WALK_ACCEL = 100.0f; // per second^2
 
     private Rigidbody2D physicsBody;
-    private Vector2 colliderSize;
+    private Vector2 colliderHalfSize;
     private State currentState;
     private PlayerInput input;
     private KeyState selectedKey = KeyState.Fast;
@@ -51,7 +51,7 @@ public class PlayerScript : MonoBehaviour
     void Start()
     {
         physicsBody = GetComponent<Rigidbody2D>();
-        colliderSize = GetComponent<CapsuleCollider2D>().size;
+        colliderHalfSize = GetComponent<BoxCollider2D>().size / 2f;
         physicsBody.gravityScale = FALL_GRAVITY;
         currentState = State.Aerial;
         input = new PlayerInput();
@@ -172,10 +172,30 @@ public class PlayerScript : MonoBehaviour
                     // fall off platform
                     SetAnimation("Falling");
                     currentState = State.Aerial;
-                    coyoteTime = 0.1f;
+                    coyoteTime = 0.125f;
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
-                
+
+                // check if walking into a slope
+                bool movingRight = input.IsPressed(PlayerInput.Action.Right);
+                bool movingLeft = input.IsPressed(PlayerInput.Action.Left);
+                if(floorNorm == Vector2.up && movingLeft != movingRight) {
+                    RaycastHit2D floorCast = new RaycastHit2D();
+                    RaycastHit2D hipCast = new RaycastHit2D();
+                    if(movingRight) {
+                        floorCast = Physics2D.Raycast(new Vector3(transform.position.x + colliderHalfSize.x, transform.position.y - colliderHalfSize.y + 0.05f, 0), Vector2.right, 0.15f, LayerMask.NameToLayer("Player"));
+                        hipCast = Physics2D.Raycast(new Vector3(transform.position.x + colliderHalfSize.x, transform.position.y, 0), Vector2.right, 0.15f, LayerMask.NameToLayer("Player"));
+                    }
+                    else if(movingLeft) {
+                        floorCast = Physics2D.Raycast(new Vector3(transform.position.x - colliderHalfSize.x, transform.position.y - colliderHalfSize.y + 0.05f, 0), Vector2.left, 0.15f, LayerMask.NameToLayer("Player"));
+                        hipCast = Physics2D.Raycast(new Vector3(transform.position.x - colliderHalfSize.x, transform.position.y, 0), Vector2.left, 0.15f, LayerMask.NameToLayer("Player"));
+                    }
+
+                    if(hipCast.collider == null && floorCast.collider != null) {
+                        floorNorm = floorCast.normal;
+                    }
+                }
+
                 if(floorNorm.y < 0.9f) {
                     // apply a force to stay still on slopes
                     Vector2 gravity = Physics2D.gravity * physicsBody.gravityScale;
@@ -297,24 +317,51 @@ public class PlayerScript : MonoBehaviour
     // uses raycasts to determine if the player is standing on a surface
     private bool IsOnFloor(out Vector2 normal, out GameObject hitSurface) {
         const float BUFFER = 0.2f;
-        float halfRadius = colliderSize.x / 2f;
-        RaycastHit2D left = Physics2D.Raycast(new Vector3(transform.position.x - colliderSize.x / 2f, transform.position.y - colliderSize.y / 2f + halfRadius, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D mid = Physics2D.Raycast(new Vector3(transform.position.x, transform.position.y - colliderSize.y / 2f, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D right = Physics2D.Raycast(new Vector3(transform.position.x + colliderSize.x / 2f, transform.position.y - colliderSize.y / 2f + halfRadius, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D left = Physics2D.Raycast(new Vector3(transform.position.x - colliderHalfSize.x, transform.position.y - colliderHalfSize.y, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D right = Physics2D.Raycast(new Vector3(transform.position.x + colliderHalfSize.x, transform.position.y - colliderHalfSize.y, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
 
-        normal = (mid.collider == null ? Vector2.zero : mid.normal);
-        hitSurface = (mid.collider == null ? null : mid.collider.gameObject);
+        bool leftOnSurface = left.collider != null && left.distance < BUFFER;
+        bool rightOnSurface = right.collider != null && right.distance < BUFFER;
 
-        return mid.collider != null && mid.distance < BUFFER || left.collider != null && left.distance < halfRadius + BUFFER || right.collider != null && right.distance < halfRadius + BUFFER;
+        if(leftOnSurface && rightOnSurface) {
+            // if split between two surfaces, favor the direction the player is trying to move
+            bool movingRight = input.IsPressed(PlayerInput.Action.Right);
+            bool movingLeft = input.IsPressed(PlayerInput.Action.Left);
+            if(movingRight && !movingLeft) {
+                leftOnSurface = false;
+            }
+            if(movingLeft && !movingRight) {
+                rightOnSurface = false;
+            }
+        }
+
+        if(leftOnSurface && rightOnSurface) {
+            normal = (left.normal + right.normal) / 2f;
+            hitSurface = right.collider.gameObject;
+        }
+        else if(leftOnSurface) {
+            normal = left.normal;
+            hitSurface = left.collider.gameObject;
+        }
+        else if(rightOnSurface) {
+            normal = right.normal;
+            hitSurface = right.collider.gameObject;
+        }
+        else {
+            normal = Vector2.zero;
+            hitSurface = null;
+        }
+
+        return leftOnSurface || rightOnSurface;
     }
 
     // checks if the player's left and right sides are against any surfaces. Returns Direction.None for no wall, and left or right if there is a wall
     private Direction GetAdjacentWallDireciton() {
-        float left = transform.position.x - colliderSize.x / 2f;
-        float right = transform.position.x + colliderSize.x / 2f;
-        float top = transform.position.y + colliderSize.y / 2f - colliderSize.x / 2f;
+        float left = transform.position.x - colliderHalfSize.x;
+        float right = transform.position.x + colliderHalfSize.x;
+        float top = transform.position.y + colliderHalfSize.y;
         float mid = transform.position.y;
-        float bottom = transform.position.y - colliderSize.y / 2f + colliderSize.x / 2f;
+        float bottom = transform.position.y - colliderHalfSize.y;
 
         const float BUFFER = 0.2f;
 
@@ -326,10 +373,17 @@ public class PlayerScript : MonoBehaviour
         RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(right, mid, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
         RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(right, bottom, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
 
-        if(leftTop.collider != null && leftTop.distance < BUFFER || leftMid.collider != null && leftMid.distance < BUFFER || leftBot.collider != null && leftBot.distance < BUFFER) {
+        if(leftTop.collider != null && leftTop.distance < BUFFER 
+            || leftMid.collider != null && leftMid.distance < BUFFER 
+            || leftBot.collider != null && leftBot.distance < BUFFER
+        ) {
             return Direction.Left;
         }
-        if(rightTop.collider != null && rightTop.distance < BUFFER || rightMid.collider != null && rightMid.distance < BUFFER || rightBot.collider != null && rightBot.distance < BUFFER) {
+
+        if(rightTop.collider != null && rightTop.distance < BUFFER 
+            || rightMid.collider != null && rightMid.distance < BUFFER 
+            || rightBot.collider != null && rightBot.distance < BUFFER
+        ) {
             return Direction.Right;
         }
 
