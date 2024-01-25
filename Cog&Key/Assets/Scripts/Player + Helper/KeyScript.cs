@@ -31,6 +31,8 @@ public class KeyScript : MonoBehaviour
 
     private KeyShowcaser uiKeys;
     private KeyUI keyUI;
+    private GameObject visual;
+    private Collider2D collider;
 
     [SerializeField] private bool StartEquipped;
     [SerializeField] private KeyState type;
@@ -45,7 +47,9 @@ public class KeyScript : MonoBehaviour
         physicsBody = GetComponent<Rigidbody2D>();
         keyUI = GameObject.Find("KeyBG")?.GetComponent<KeyUI>();
         player = GameObject.Find("Player");
-        keyAni = transform.GetChild(0).GetComponent<Animator>();
+        visual = transform.GetChild(0).gameObject;
+        keyAni = visual.GetComponent<Animator>();
+        collider = GetComponent<Collider2D>();
 
         if (StartEquipped) {
             Equip();
@@ -126,10 +130,10 @@ public class KeyScript : MonoBehaviour
 
         switch(currentState) {
             case State.PlayerHeld:
-                transform.GetChild(0).gameObject.SetActive(false);
+                SetActive(false);
                 break;
             case State.Attacking:
-                transform.GetChild(0).gameObject.SetActive(true);
+                SetActive(true);
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
                 break;
         }
@@ -230,5 +234,10 @@ public class KeyScript : MonoBehaviour
             keyAni.SetInteger("Status", 0);
             SetState(State.Returning);
         }
+    }
+
+    private void SetActive(bool active) {
+        visual.SetActive(active);
+        collider.enabled = active;
     }
 }
