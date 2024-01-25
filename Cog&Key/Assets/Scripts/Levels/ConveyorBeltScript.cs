@@ -2,19 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConveyorBeltScript : Rideable
+public class ConveyorBeltScript : Rideable, IKeyWindable
 {
     [SerializeField] private bool clockwise;
     [SerializeField] private GameObject TickMarkPrefab;
     private const float SHIFT_SPEED = 5.0f;
-    private float ShiftSpeed {  get { return SHIFT_SPEED * (InsertedKeyType == KeyState.Fast ? 2f : 1f) * (InsertedKeyType == KeyState.Lock ? 0f : 1f); } }
-
-    private List<Vector3> shiftDirections = new List<Vector3>(); // index matches the list of riders. This allows the code to calculate the shift direction once when first touching
-    private List<GameObject> attachedDuplicateRiders = new List<GameObject>(); // stores riders that are already being pushed in the same direction by an adjacent belt
-    private GameObject stopVelocityNextFrame; // used because the player can jump the same frame it makes contact and get a super boost otherwise
-    private int frameCount;
-
-    private static Dictionary<GameObject, List<Vector3>> allBeltRiders; // prevents multiple belts affecting things at the seams
+    private const float LAUNCH_FORCE = 100.0f;
+    private KeyState insertedKey = KeyState.Normal;
+    private float ShiftSpeed {  get { return SHIFT_SPEED * (insertedKey == KeyState.Fast ? 2f : 1f); } }
 
     // temp visual spin
     private List<GameObject> topTicks = new List<GameObject>();
@@ -25,7 +20,6 @@ public class ConveyorBeltScript : Rideable
 
     void Start()
     {
-        allBeltRiders = new Dictionary<GameObject, List<Vector3>>();
         Rect area = Global.GetCollisionArea(gameObject);
 
         float tickHalfWidth = TickMarkPrefab.transform.localScale.y / 2;
@@ -56,45 +50,31 @@ public class ConveyorBeltScript : Rideable
     }
 
     void FixedUpdate() {
-        if(stopVelocityNextFrame != null) {
-            frameCount--;
-            if(frameCount <= 0) {
-                stopVelocityNextFrame.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                stopVelocityNextFrame = null;
-            }
-        }
-
         CheckSideRiders();
 
-        // check for an adjacent belt passing something onto this
-        for(int i = attachedDuplicateRiders.Count - 1; i >= 0; i--) {
-            Vector3 shiftDir = DetermineShiftDirection(attachedDuplicateRiders[i]);
-            if(!allBeltRiders[attachedDuplicateRiders[i]].Contains(shiftDir)) {
-                riders.Add(attachedDuplicateRiders[i]);
-                OnRiderAdded(attachedDuplicateRiders[i]);
-                attachedDuplicateRiders.RemoveAt(i);
-            }
-        }
-
         // shift riders
-        for(int i = 0; i < riders.Count; i++) {
-            Vector3 shiftDir = shiftDirections[i];
-            riders[i].transform.position += ShiftSpeed * Time.deltaTime * shiftDir;
+        foreach(GameObject rider in riders) {
+            if(insertedKey == KeyState.Fast) {
+                Vector3 shiftDirection = DetermineShiftDirection(rider);
+                Rigidbody2D riderPhys = rider.GetComponent<Rigidbody2D>();
+                riderPhys.AddForce(LAUNCH_FORCE * (shiftDirection.x > 0.1f ? 0.5f : 1f) * shiftDirection);
+                if(Vector3.Dot(riderPhys.velocity, shiftDirection) < SHIFT_SPEED) {
+                    riderPhys.velocity = SHIFT_SPEED * shiftDirection + Vector3.Project(riderPhys.velocity, Vector2.Perpendicular(shiftDirection));
+                }
+            } else {
+                rider.transform.position += ShiftSpeed * Time.deltaTime * DetermineShiftDirection(rider);
 
-            // cancel out gravity when on the side
-            if(shiftDir == Vector3.up && InsertedKeyType != KeyState.Lock) {
-                Rigidbody2D physBod = riders[i].GetComponent<Rigidbody2D>();
-                physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
-
-                if(InsertedKeyType == KeyState.Fast) {
-                    physBod.AddForce(-Physics2D.gravity * physBod.gravityScale); // shift more with upward fast key
+                // cancel out gravity when on the side
+                if(OnSide(rider)) {
+                    Rigidbody2D physBod = rider.GetComponent<Rigidbody2D>();
+                    physBod.AddForce(-Physics2D.gravity * physBod.gravityScale);
                 }
             }
         }
-        
+
         // update temp visuals
         float lastTime = visualTimer;
-        visualTimer += ShiftSpeed * 0.5f * Time.deltaTime * (clockwise ? 1 : -1);
+        visualTimer += ShiftSpeed * 0.7f * Time.deltaTime * (clockwise ? 1 : -1);
         if(visualTimer >= 0.5f || visualTimer <= -0.5f) {
             visualTimer = 0;
         }
@@ -126,69 +106,27 @@ public class ConveyorBeltScript : Rideable
     }
 
     protected override void OnRiderAdded(GameObject rider) {
-        Vector3 shiftDir = DetermineShiftDirection(rider);
-
-        if(allBeltRiders.ContainsKey(rider) && allBeltRiders[rider].Contains(shiftDir)) {
-            // prevent multiple belts from shifting something in the same direction
-            riders.Remove(rider);
-            attachedDuplicateRiders.Add(rider);
-            return;
-        }
-
-        shiftDirections.Add(shiftDir);
-        if(!allBeltRiders.ContainsKey(rider)) {
-            allBeltRiders[rider] = new List<Vector3>();
-        }
-        allBeltRiders[rider].Add(shiftDir);
-
-        if(InsertedKeyType != KeyState.Lock && (shiftDir == Vector3.up || shiftDir == Vector3.down)) { // if on the side
-            stopVelocityNextFrame = rider;
-            frameCount = 2;
+        if(OnSide(rider)) {
+            rider.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         }
     }
 
-    protected override void OnRiderRemoved(GameObject rider, int index) {
+    protected override void OnRiderRemoved(GameObject rider) {
         // keep rider momentum if moving fast
-        if(InsertedKeyType == KeyState.Fast) {
-            Vector2 launchDir = shiftDirections[index];
-            rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (launchDir == Vector2.up ? 0.5f : 0.8f) * launchDir;
-        }
-
-        allBeltRiders[rider].Remove(shiftDirections[index]);
-        shiftDirections.RemoveAt(index);
-    }
-
-    // on collision exit 2D for sub class
-    protected override void SubCollisionExit(Collision2D collision) {
-        if(attachedDuplicateRiders.Contains(collision.gameObject)) {
-            attachedDuplicateRiders.Remove(collision.gameObject);
+        if(insertedKey == KeyState.Fast) {
+            //rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * 0.8f * (Vector2)DetermineShiftDirection(rider);
         }
     }
 
-    protected override void OnKeyInserted(KeyState newKey) {
-        if(newKey == KeyState.Reverse) {
-            ReverseDirection();
-        }
-    }
-
-    protected override void OnKeyRemoved(KeyState removedKey) {
-        if(removedKey == KeyState.Reverse) {
-            ReverseDirection();
-        }
-    }
-
-    private void ReverseDirection() {
-        clockwise = !clockwise;
-        for(int i = 0; i < riders.Count; i++) {
-            List<Vector3> allRiderDirections = allBeltRiders[riders[i]];
-            int reverseIndex = allRiderDirections.IndexOf(shiftDirections[i]);
-            allRiderDirections[reverseIndex] = -allRiderDirections[reverseIndex];
-            shiftDirections[i] = -shiftDirections[i];
+    public void InsertKey(KeyState key) {
+        if( (insertedKey == KeyState.Reverse) != (key == KeyState.Reverse) ) {
+            // flip direction
+            clockwise = !clockwise;
         }
 
+        insertedKey = key;
     }
 
-    // only works for objects touching the collider
     private Vector3 DetermineShiftDirection(GameObject rider) {
         if(OnSide(rider)) {
             // left or right

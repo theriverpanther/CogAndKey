@@ -157,7 +157,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: -1
-  m_Material: {fileID: 6200000, guid: 2d1d6d90ce0911c4b947c35dad2a08b7, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -180,6 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a19a504a0fb4124a8ad8ba9ab66c934, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  helper: {fileID: 4028172589446067974, guid: c025d1d86b0844849acb2e5719b88bce, type: 3}
   playerAnimation: {fileID: 99628898399518511}
 --- !u!70 &2356840491197058099
 CapsuleCollider2D:

@@ -44,6 +44,8 @@ public class KeyShowcaser : MonoBehaviour
 
         ConvertKeys(keyImages, keyImagesConvert);
         ConvertKeys(keyImagesBlank, keyImagesBlankConvert);
+
+        DisplayXCircle();
     }
 
     /// <summary>
@@ -51,7 +53,7 @@ public class KeyShowcaser : MonoBehaviour
     /// </summary>
     /// <param name="status">If in use or not</param>
     /// <param name="keyNumber">0, 1, 2 key values</param>
-    public void MainKeyStatusUpdate(bool status, KeyState keyState = KeyState.None)
+    public void MainKeyStatusUpdate(bool status, KeyState keyState = KeyState.Normal)
     {
         int keyNumber = GetPlacementNum(keyState);
 
@@ -121,6 +123,15 @@ public class KeyShowcaser : MonoBehaviour
         {
             Rect rec = new Rect(0, 0, keyImg.width, keyImg.height);
             addTo.Add(Sprite.Create(keyImg, rec, new Vector2(0, 0), 1));
+        }
+    }
+
+    private void DisplayXCircle()
+    {
+        PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+        if (player.FastKey == null && player.ReverseKey == null && player.LockKey == null)
+        {
+            MainKeyStatusUpdate(true);
         }
     }
 }

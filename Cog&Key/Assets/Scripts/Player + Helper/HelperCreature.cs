@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,10 +10,11 @@ public class HelperCreature : MonoBehaviour
 
     private Vector2 directionToplayer;
     private float moveSpeed;
-    private GameObject player;
-    private Rigidbody2D rb;
+    [SerializeField]
+    public GameObject player;
+    public Rigidbody2D rb;
     private float dis = 0f;
-
+    //public AnimationCurve myCurve;
     float distanceAwayAllowed = 2f;
     private Vector3 goPoint;
     string dir = "left";
@@ -22,14 +22,13 @@ public class HelperCreature : MonoBehaviour
     [SerializeField]
     public bool followPlayer;
     [SerializeField]
-    private GameObject helperVisual;
-    private Animator visualAni;
+    private GameObject playerSprite;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        player = GameObject.FindGameObjectWithTag("Player");
         moveSpeed = 2f;
+        //Physics2D.IgnoreCollision(player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
         followPlayer = true;
 
         if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue)
@@ -37,8 +36,12 @@ public class HelperCreature : MonoBehaviour
             transform.position = LevelData.Instance.RespawnPoint.Value;
             transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
         }
+    }
 
-        visualAni = helperVisual.GetComponent<Animator>();
+    // Update is called once per frame
+    void Update()
+    {
+
     }
 
     private void FixedUpdate()
@@ -119,11 +122,11 @@ public class HelperCreature : MonoBehaviour
         //Debug.Log(transform.right);debug
         if(directionToplayer.x > 0 && dir == "right")
         {
-            helperVisual.transform.localScale = new Vector3(-Mathf.Abs(helperVisual.transform.localScale.x), helperVisual.transform.localScale.y, helperVisual.transform.localScale.z);
+            playerSprite.transform.localScale = new Vector3(-Mathf.Abs(playerSprite.transform.localScale.x), playerSprite.transform.localScale.y, playerSprite.transform.localScale.z);
             dir = "left";
         } else if (dir == "left" && directionToplayer.x < 0)
         {
-            helperVisual.transform.localScale = new Vector3(Mathf.Abs(helperVisual.transform.localScale.x), helperVisual.transform.localScale.y, helperVisual.transform.localScale.z);
+            playerSprite.transform.localScale = new Vector3(Mathf.Abs(playerSprite.transform.localScale.x), playerSprite.transform.localScale.y, playerSprite.transform.localScale.z);
             dir = "right";
         }
     }
@@ -132,4 +135,84 @@ public class HelperCreature : MonoBehaviour
     {
         goPoint = position;
     }
+
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if(!followPlayer)
+    //    {
+    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>() , true);
+    //    }
+
+    //    if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Agent")
+    //    {
+    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
+    //    }
+    //}
+
+    //private void OnCollisionStay2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.tag == "Wall")
+    //    {
+    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
+    //    }
+    //}
+
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    if (!followPlayer)
+    //    {
+    //        Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), false);
+    //    }
+    //}
+
+
+
+    //void FloatInPlace()
+    //{
+    //    if (!stopped)
+    //    {
+    //        stopped = true;
+    //        stopX = transform.position.x;
+    //        stopY = transform.position.y;
+    //    } else
+    //    {
+    //        float yTo = myCurve.Evaluate((Time.time % myCurve.length));
+    //        // Mathf.Lerp(transform.position.y, transform.position.y + yTo
+    //        transform.position = new Vector3(stopX, Mathf.Lerp(transform.position.y, stopY + yTo, Time.time), transform.position.z);
+    //    }
+
+    //}
+
+    //IEnumerator floatPlace()
+    //{
+
+    //    if (!stopped)
+    //    {
+    //        stopped = true;
+    //        midFrame = true;
+    //        stopX = transform.position.x;
+    //        stopY = transform.position.y;
+    //    }
+
+    //    startedCorountine = true;
+    //    rb.velocity = Vector3.zero;
+
+    //    int loopTime = 0;
+
+
+    //    float yTo = myCurve.Evaluate((Time.time % myCurve.length));
+    //    // Mathf.Lerp(transform.position.y, transform.position.y + yTo
+    //    while(currentFrame != myCurve.length)
+    //    {
+    //        transform.position = new Vector3(stopX, Mathf.Lerp(transform.position.y, stopY + yTo, Time.time), transform.position.z);
+    //        currentFrame++;
+    //    }
+
+    //    Debug.Log("hit here");
+    //    midFrame = false;
+    //    startedCorountine = false;
+    //    currentFrame = 0;
+    //    yield return null;
+    //}
+
 }

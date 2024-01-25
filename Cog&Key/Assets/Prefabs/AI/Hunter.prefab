@@ -476,16 +476,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714b074975505574381f09b8f1114750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpState: 0
   movementSpeed: 5
-  jumpSpeed: 13
+  jumpSpeed: 8
+  attackSpeed: 0
   fastScalar: 2
+  keyInserted: 0
   collidingObjs: []
-  pathTarget: {fileID: 0}
-  minLedgeSize: 0.5
-  ledgeSize: 0
+  direction: {x: 1, y: 0}
+  turnDelay: 0.5
+  processingTurn: 0
+  nodes: []
+  distThreshold: 0.2
+  wallDetected: 0
   idleColor: {r: 0, g: 0.3019608, b: 0.2509804, a: 1}
   huntColor: {r: 0.84705883, g: 0.105882354, b: 0.3764706, a: 1}
+  maxHuntTime: 5
 --- !u!61 &2698930125854928055
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -546,8 +551,8 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2.4
-  m_Material: {fileID: 6200000, guid: 2d1d6d90ce0911c4b947c35dad2a08b7, type: 2}
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -556,7 +561,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!61 &2518777728627218210
 BoxCollider2D:

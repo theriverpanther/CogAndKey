@@ -78,7 +78,7 @@ public class Sense : MonoBehaviour
                 {
                     //Debug.Log($"Pos:{transform.position}, Collider: {player.transform.position}");
 
-                    //Debug.DrawLine(transform.position, (player.transform.position - transform.position).normalized, Color.red, 2f);
+                    Debug.DrawLine(transform.position, (player.transform.position - transform.position).normalized, Color.red, 2f);
                     PlayerSensed(player);
                 }
             }

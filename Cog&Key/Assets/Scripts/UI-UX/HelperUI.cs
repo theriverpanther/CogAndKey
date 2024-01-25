@@ -8,20 +8,10 @@ public class HelperUI : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField]
-    bool topLeftCorner;
-
-    [SerializeField]
     TextMeshProUGUI textToMod;
-
-    GameObject upperText;
-    TextMeshProUGUI textToModUpper;
 
     [SerializeField]
     Image imgToShow;
-    Image imgIndicator;
-    [SerializeField]
-    Texture2D empty;
-    Sprite emptySprite;
 
     [SerializeField]
     bool forceFade;
@@ -32,64 +22,40 @@ public class HelperUI : MonoBehaviour
 
     [SerializeField]
     private Animator imageAnimator;
-    [SerializeField]
-    private HelperAnimations helperAnimation;
 
     void Start()
     {
-        upperText = GameObject.Find("HelperUIUpperGroup");
-        textToModUpper = upperText.transform.Find("HelperText").GetComponent<TextMeshProUGUI>();
-
-        imgIndicator = GameObject.Find("HelperIndicator").GetComponent<Image>();
-
         forceFade = true;
         GetComponent<Canvas>().worldCamera = Camera.main;
-        
-        AlertMessage(false);
+
         imageAnimator.SetInteger("animationPlayerIndex", -1);
-        emptySprite = Sprite.Create(empty, new Rect(0.0f, 0.0f, empty.width, empty.height), new Vector2(0.5f, 0.5f), 100.0f);
     }
 
     IEnumerator ShowText()
     {
-
-        helperAnimation.PlayStopEmote("Chat");
-        if (fullText.Length <= 1 && !topLeftCorner)
+        if(fullText.Length <= 1)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", true);
         }
 
-        if(topLeftCorner)
+
+        for (int i = 0; i < fullText.Length; i++)
         {
-            for (int i = 0; i < fullText.Length; i++)
-            {
-                currentTxt = fullText.Substring(0, i);
-                textToModUpper.text = currentTxt;
-                yield return new WaitForSeconds(textSpeed);
-            }
-        } else
-        {
-            for (int i = 0; i < fullText.Length; i++)
-            {
-                currentTxt = fullText.Substring(0, i);
-                textToMod.text = currentTxt;
-                yield return new WaitForSeconds(textSpeed);
-            }
+            currentTxt = fullText.Substring(0,i);
+            textToMod.text = currentTxt;
+            yield return new WaitForSeconds(textSpeed);
         }
 
-        if (fullText.Length <= 1 && !topLeftCorner)
+        if (fullText.Length <= 1)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", true);
         }
-
-        helperAnimation.PlayStopEmote("Chat");
-
+        //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
         yield return null;
     }
 
-    public void StartText(string text, bool inCorner = false)
+    public void StartText(string text)
     {
-        topLeftCorner = inCorner;
         fullText = text + " ";
         StartCoroutine(ShowText());
     }
@@ -120,7 +86,7 @@ public class HelperUI : MonoBehaviour
 
     public void HideHelper()
     {
-        if(forceFade && !topLeftCorner)
+        if(forceFade)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", false);
         }
@@ -128,43 +94,26 @@ public class HelperUI : MonoBehaviour
         //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", false);
         Debug.Log("Hiding Helper...");
     }
-    public void ShowHelper(bool showTextAboveHead = true)
+    public void ShowHelper()
     {
-            if (imgToShow.sprite != null)
-                    {
-                        Debug.Log("Show image!");
-                        imgToShow.gameObject.SetActive(true);
-                        //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
-                        gameObject.GetComponent<Animator>().SetBool("Fade", true);
-                    }
-                    else
-                    {
-                        gameObject.GetComponent<Animator>().SetBool("Fade", true);
-                        imgToShow.gameObject.SetActive(false);
-                    }
+        Debug.Log("Showing Helper...");
 
-        /// shows/hides text box above the head
-        imgToShow.transform.parent.transform.GetChild(1).gameObject.SetActive(showTextAboveHead);
+        if(imgToShow.sprite != null)
+        {
+            Debug.Log("Show image!");
+            imgToShow.gameObject.SetActive(true);
+            //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
+            gameObject.GetComponent<Animator>().SetBool("Fade", true);
+        }
+        else
+        {
+            gameObject.GetComponent<Animator>().SetBool("Fade", true);
+            imgToShow.gameObject.SetActive(false);
+        }
     }
 
     public void SetTextSpeed(float speed)
     {
         textSpeed = speed;
-    }
-
-    public void IndicatorImage(Texture2D img = null)
-    {
-        if(img != null)
-        {
-            imgIndicator.sprite = Sprite.Create(img, new Rect(0.0f, 0.0f, img.width, img.height), new Vector2(0.5f, 0.5f), 100.0f);
-        } else
-        {
-            imgIndicator.sprite = emptySprite;
-        }
-    }
-
-    public void AlertMessage(bool state)
-    {
-        upperText.SetActive(state);
     }
 }

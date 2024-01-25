@@ -13,7 +13,6 @@ public class LevelData : MonoBehaviour
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
     [SerializeField] private List<LevelBoundScript> levelAreas = new List<LevelBoundScript>();
-    private Dictionary<KeyState, bool> checkpointKeys; // saves keys that are claimed before a checkpoint
     private List<Rect> cameraZones;
 
     public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
@@ -22,7 +21,8 @@ public class LevelData : MonoBehaviour
     public float XMin { get; private set; }
     public float XMax { get; private set; }
     public float YMin { get; private set; }
-    public int DeathsSinceCheckpoint { get; private set; }
+
+    public List<KeyState> StartingKeys;
 
     // needs CameraScript Awake() to run first
     void Start() {
@@ -82,12 +82,7 @@ public class LevelData : MonoBehaviour
         CameraScript.Instance.SetInitialPosition();
 
         // equip the player with the starting keys
-        checkpointKeys = new Dictionary<KeyState, bool>();
-        checkpointKeys[KeyState.Fast] = false;
-        checkpointKeys[KeyState.Lock] = false;
-        checkpointKeys[KeyState.Reverse] = false;
-
-        EquipCheckpointKeys();
+        EquipStartKeys();
     }
 
     // called when the scene changes, deletes the instance if it is no longer the correct level
@@ -97,8 +92,7 @@ public class LevelData : MonoBehaviour
             SceneManager.sceneLoaded += NewLevelLoaded;
         } else {
             // level restarted
-            DeathsSinceCheckpoint++;
-            EquipCheckpointKeys();
+            EquipStartKeys();
         }
     }
 
@@ -133,26 +127,25 @@ public class LevelData : MonoBehaviour
 
         currentCheckpoint = checkpoint;
         currentCheckpoint.SetAsCheckpoint(true);
-        DeathsSinceCheckpoint = 0;
 
         // save keys acquired since the last checkpoint
         PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        if(!checkpointKeys[KeyState.Fast] && player.FastKey != null) {
-            checkpointKeys[KeyState.Fast] = true;
+        if(!StartingKeys.Contains(KeyState.Fast) && player.FastKey != null) {
+            StartingKeys.Add(KeyState.Fast);
         }
-        if(!checkpointKeys[KeyState.Lock] && player.LockKey != null) {
-            checkpointKeys[KeyState.Lock] = true;
+        if(!StartingKeys.Contains(KeyState.Lock) && player.LockKey != null) {
+            StartingKeys.Add(KeyState.Lock);
         }
-        if(!checkpointKeys[KeyState.Reverse] && player.ReverseKey != null) {
-            checkpointKeys[KeyState.Reverse] = true;
+        if(!StartingKeys.Contains(KeyState.Reverse) && player.ReverseKey != null) {
+            StartingKeys.Add(KeyState.Reverse);
         }
     }
 
-    private void EquipCheckpointKeys() {
+    private void EquipStartKeys() {
         GameObject[] keys = GameObject.FindGameObjectsWithTag("Key");
         foreach(GameObject key in keys) {
             KeyScript keyScript = key.GetComponent<KeyScript>();
-            if(checkpointKeys[keyScript.Type]) {
+            if(StartingKeys.Contains(keyScript.Type)) {
                 keyScript.Equip();
             }
         }
@@ -208,13 +201,12 @@ public class LevelData : MonoBehaviour
         cameraZones.AddRange(addedZones);
     }
 
-    // Note to future self: delete this awful function
     private bool AreZonesOppositeDirection(LevelBoundScript one, LevelBoundScript other)
     {
-        bool hasUp = one.AreaType == CameraBoundType.Up || other.AreaType == CameraBoundType.Up;
-        bool hasDown = one.AreaType == CameraBoundType.Down || other.AreaType == CameraBoundType.Down;
-        bool hasLeft = one.AreaType == CameraBoundType.Left || other.AreaType == CameraBoundType.Left;
-        bool hasRight = one.AreaType == CameraBoundType.Right || other.AreaType == CameraBoundType.Right;
+        bool hasUp = one.AreaType == CamerBoundType.Up || other.AreaType == CamerBoundType.Up;
+        bool hasDown = one.AreaType == CamerBoundType.Down || other.AreaType == CamerBoundType.Down;
+        bool hasLeft = one.AreaType == CamerBoundType.Left || other.AreaType == CamerBoundType.Left;
+        bool hasRight = one.AreaType == CamerBoundType.Right || other.AreaType == CamerBoundType.Right;
         return hasUp && hasDown || hasLeft && hasRight;
     }
 }

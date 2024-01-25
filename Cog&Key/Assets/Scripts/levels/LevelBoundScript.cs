@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CameraBoundType {
+public enum CamerBoundType {
     Right,
     Left,
     Up,
@@ -11,7 +11,7 @@ public enum CameraBoundType {
 }
 
 public class LevelBoundScript : MonoBehaviour {
-    [SerializeField] private CameraBoundType type;
-    public CameraBoundType AreaType { get { return type; } }
+    [SerializeField] private CamerBoundType type;
+    public CamerBoundType AreaType { get { return type; } }
     public Rect Area { get; set; }
 }

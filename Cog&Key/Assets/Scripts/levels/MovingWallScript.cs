@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // path is defined by objects with the waypoint tag
-public class MovingWallScript : Rideable
+public class MovingWallScript : Rideable, IKeyWindable
 {
     [SerializeField] private GameObject[] Path;
     [SerializeField] private bool LoopPath; // false, back and forth
@@ -14,9 +14,8 @@ public class MovingWallScript : Rideable
     private List<Vector2> pathPoints;
     private int nextPointIndex;
     private bool forward; // false: moving backwards through the path
-    private Vector2 bufferedMomentum;
-    private float momentumBufferTime;
-    private float CurrentSpeed { get { return MOVE_SPEED * (InsertedKeyType == KeyState.Fast ? 2 : 1); } }
+    private KeyState currentKey;
+    private float CurrentSpeed { get { return MOVE_SPEED * (currentKey == KeyState.Fast ? 2 : 1); } }
     private Vector2 Momentum { get { return CurrentSpeed * (pathPoints[nextPointIndex] - (Vector2)transform.position).normalized; } }
 
     void Awake()
@@ -43,7 +42,7 @@ public class MovingWallScript : Rideable
 
     void FixedUpdate()
     {
-        if(InsertedKeyType == KeyState.Lock) {
+        if(currentKey == KeyState.Lock) {
             return;
         }
 
@@ -55,22 +54,14 @@ public class MovingWallScript : Rideable
         if(Vector2.Distance(target, transform.position) <= shift) {
             // reached target point
             transform.position = target;
-            bufferedMomentum = CurrentSpeed * (pathPoints[nextPointIndex] - (Vector2)startPosition).normalized;
-            momentumBufferTime = 0.2f;
             NextWaypoint();
 
-            // apply vertical bump when changing from upward to down and going fast
+            // apply shift momentum to riders when changing direction
             Vector2 newDirection = pathPoints[nextPointIndex] - (Vector2)transform.position;
-            Vector2 momentum = 1.5f * currentSpeed * (transform.position - startPosition).normalized;
-            if(InsertedKeyType == KeyState.Fast && riders.Count > 0 && newDirection.y < -0.9f && momentum.y > 0.9f) {
-                momentumBufferTime = 0f; // no buffered momentum in this case
+            Vector2 momentum = currentSpeed * (transform.position - startPosition).normalized;
+            if(currentKey == KeyState.Fast && riders.Count > 0 && newDirection.y < 0 && momentum.y > 0) {
                 for(int i = 0; i < riders.Count; i++) {
                     riders[i].GetComponent<Rigidbody2D>().velocity += momentum;
-
-                    if(riders[i].tag == "Player") {
-                        // switch player to fall gravity because the grounded gravity is a lot stronger and it cancells the momentum
-                        //riders[i].GetComponent<Rigidbody2D>().gravityScale = PlayerScript.FALL_GRAVITY;
-                    }
                 }
             }
         } else {
@@ -79,10 +70,6 @@ public class MovingWallScript : Rideable
         }
 
         CheckSideRiders();
-
-        if(momentumBufferTime > 0) {
-            momentumBufferTime -= Time.deltaTime;
-        }
     }
 
     private void NextWaypoint() {
@@ -112,19 +99,15 @@ public class MovingWallScript : Rideable
     }
 
     protected override void OnRiderAdded(GameObject rider) {
-        rider.transform.SetParent(transform.GetChild(0), true);
+        rider.transform.SetParent(transform, true);
     }
 
-    protected override void OnRiderRemoved(GameObject rider, int index) {
+    protected override void OnRiderRemoved(GameObject rider) {
         rider.transform.SetParent(null);
 
         // keep rider momentum if moving fast
-        if(InsertedKeyType == KeyState.Fast) {
-            Vector2 momentum = Momentum;
-            if(momentumBufferTime > 0) {
-                momentum = bufferedMomentum;
-            }
-            rider.GetComponent<Rigidbody2D>().velocity += (momentum.x == 0 ? 0.5f : 1f) * momentum; // less boost when upward
+        if (currentKey == KeyState.Fast) {
+            rider.GetComponent<Rigidbody2D>().velocity += Momentum;
         }
     }
 
@@ -142,19 +125,13 @@ public class MovingWallScript : Rideable
         }
     }
 
-    protected override void OnKeyInserted(KeyState newKey) {
-        if(newKey == KeyState.Reverse) {
-            // flip direction
+    public void InsertKey(KeyState key) {
+        if( (currentKey == KeyState.Reverse) != (key == KeyState.Reverse) ) {
+            // turning reversing key on or off
             forward = !forward;
             NextWaypoint();
         }
-    }
 
-    protected override void OnKeyRemoved(KeyState removedKey) {
-        if(removedKey == KeyState.Reverse) {
-            // flip direction
-            forward = !forward;
-            NextWaypoint();
-        }
+        currentKey = key;
     }
 }

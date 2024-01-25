@@ -23,22 +23,4 @@ public static class Global
         Vector2 size = objectWithCollider.GetComponent<Collider2D>().bounds.size;
         return new Rect((Vector2)objectWithCollider.transform.position - size / 2, size);
     }
-
-    public static Direction GetOpposite(Direction direction) {
-        switch(direction) {
-            case Direction.Up:
-                return Direction.Down;
-
-            case Direction.Down:
-                return Direction.Up;
-
-            case Direction.Left:
-                return Direction.Right;
-
-            case Direction.Right:
-                return Direction.Left;
-        }
-
-        return Direction.None;
-    }
 }

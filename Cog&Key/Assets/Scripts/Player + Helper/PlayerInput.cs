@@ -15,14 +15,9 @@ public class PlayerInput
         Left,
         Up,
         Down,
-        ThrowUp,
-        ThrowDown,
-        ThrowLeft,
-        ThrowRight,
         FastKey,
         LockKey,
-        ReverseKey,
-        Pause
+        ReverseKey
     }
 
     private readonly int NUM_ACTIONS;
@@ -117,36 +112,26 @@ public class PlayerInput
             keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentGP.leftStick.left, currentGP.dpad.left });
             keyBindings[Action.Up].AddRange(new List<ButtonControl>() { currentGP.leftStick.up, currentGP.dpad.up });
             keyBindings[Action.Down].AddRange(new List<ButtonControl>() { currentGP.leftStick.down, currentGP.dpad.down });
-            keyBindings[Action.ThrowUp].AddRange(new List<ButtonControl>() { currentGP.rightStick.up });
-            keyBindings[Action.ThrowDown].AddRange(new List<ButtonControl>() { currentGP.rightStick.down });
-            keyBindings[Action.ThrowLeft].AddRange(new List<ButtonControl>() { currentGP.rightStick.left });
-            keyBindings[Action.ThrowRight].AddRange(new List<ButtonControl>() { currentGP.rightStick.right });
             keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentGP.xButton });
             keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentGP.yButton });
             keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentGP.bButton });
-            keyBindings[Action.Pause].AddRange(new List<ButtonControl>() { currentGP.startButton });
         }
 
         // add keyboard bindings
         if(currentKB != null) {
-            keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentKB.spaceKey });
-            keyBindings[Action.Right].AddRange(new List<ButtonControl>() { currentKB.dKey });
-            keyBindings[Action.Left].AddRange(new List<ButtonControl>() {  currentKB.aKey });
-            keyBindings[Action.Up].AddRange(new List<ButtonControl>() { currentKB.wKey });
-            keyBindings[Action.Down].AddRange(new List<ButtonControl>() { currentKB.sKey });
-            keyBindings[Action.ThrowUp].AddRange(new List<ButtonControl>() { currentKB.upArrowKey });
-            keyBindings[Action.ThrowDown].AddRange(new List<ButtonControl>() { currentKB.downArrowKey });
-            keyBindings[Action.ThrowLeft].AddRange(new List<ButtonControl>() { currentKB.leftArrowKey });
-            keyBindings[Action.ThrowRight].AddRange(new List<ButtonControl>() { currentKB.rightArrowKey });
+            keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentKB.spaceKey, currentKB.upArrowKey });
+            keyBindings[Action.Right].AddRange(new List<ButtonControl>() { currentKB.rightArrowKey, currentKB.dKey });
+            keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentKB.leftArrowKey, currentKB.aKey });
+            keyBindings[Action.Up].AddRange(new List<ButtonControl>() { currentKB.upArrowKey, currentKB.wKey });
+            keyBindings[Action.Down].AddRange(new List<ButtonControl>() { currentKB.downArrowKey, currentKB.sKey });
             keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentKB.digit1Key, currentKB.numpad1Key, currentKB.zKey });
             keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentKB.digit2Key, currentKB.numpad2Key, currentKB.xKey });
             keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentKB.digit3Key, currentKB.numpad3Key, currentKB.cKey });
-            keyBindings[Action.Pause].AddRange(new List<ButtonControl>() { currentKB.escapeKey });
         }
 
         // add mouse input
         if(currentMouse != null) {
-            //keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentMouse.leftButton });
+            keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentMouse.leftButton });
         }
     }
 
