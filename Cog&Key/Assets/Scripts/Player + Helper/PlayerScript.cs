@@ -286,7 +286,6 @@ public class PlayerScript : MonoBehaviour
         playerAnimation.SetBool("Running", false);
         playerAnimation.SetBool("Jumping", false);
         playerAnimation.SetBool("Wallslide", false);
-        Debug.Log("RUNNING THIS RN" + animationState);
 
         if(animationState != null) {
             playerAnimation.SetBool(animationState, true);
