@@ -12,6 +12,12 @@ public class TutorialBox : MonoBehaviour
     private HelperCreature helperScript;
 
     [SerializeField]
+    public bool overlapping;
+
+    [SerializeField]
+    bool topLeftCorner;
+
+    [SerializeField]
     string textToShow;
     [SerializeField]
     Texture2D imgToShow;
@@ -21,8 +27,13 @@ public class TutorialBox : MonoBehaviour
     float textSpeed = 0.1f;
 
     [SerializeField]
+    bool forceFade = true;
+
+    [SerializeField]
     float size = 6f;
 
+    [SerializeField]
+    public int animationIndex = -1;
 
     void Start()
     {
@@ -42,38 +53,60 @@ public class TutorialBox : MonoBehaviour
     {
         if(collision.tag == "Player")
         {
-
-            if (imgToShow != null)
+            if(!topLeftCorner && textToShow != "TRIGGER") 
             {
-                helperUI.ShowImage(imgToShow , size);
-            }
+                if (imgToShow != null)
+                {
+                    helperUI.ShowImage(imgToShow, size, animationIndex, forceFade);
+                }
 
-            helperUI.SetTextSpeed(textSpeed);
-            helperUI.ShowHelper();
+                helperUI.SetTextSpeed(textSpeed);
+
+                helperUI.ShowHelper();
+
+                helperUI.StartText(textToShow);
+            } else
+            {
+                if(textToShow != "TRIGGER")
+                {
+                    helperUI.AlertMessage(true);
+                    helperUI.SetTextSpeed(textSpeed);
+                    helperUI.StartText(textToShow, true);
+                    helperUI.IndicatorImage(imgToShow);
+                    helperUI.ShowImage(imgToShow, size, animationIndex, forceFade);
+                    helperUI.ShowHelper(false);
+                }
+
+            }
 
             if (attachToCenterPoint)
             {
                 helperScript.followPlayer = false;
                 helperScript.SetGoPoint(transform.position);
                 Debug.Log("Not following player.");
-            } else
+            }
+            else
             {
                 helperScript.followPlayer = true;
             }
 
-            helperUI.StartText(textToShow);
         }
 
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.tag == "Player" && !overlapping)
         {
-            helperUI.HideHelper();
-            helperScript.followPlayer = true;
-
-            Debug.Log("Following player.");
+            if (!topLeftCorner)
+            {
+                helperUI.HideHelper();
+                helperUI.IndicatorImage();
+            } else
+            {
+                helperUI.AlertMessage(false);
+                helperUI.IndicatorImage();
+            }
         }
     }
 }

@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
-public class Agent : MonoBehaviour, IKeyWindable
+public class Agent : KeyWindable
 {
     protected enum JumpState
     {
@@ -14,13 +11,12 @@ public class Agent : MonoBehaviour, IKeyWindable
     }
 
     #region Fields
-    protected KeyState state;
     protected JumpState jumpState;
 
     [Header("Agent Statistics")]
     [SerializeField] protected float movementSpeed = 2f;
     [SerializeField] protected float jumpSpeed = 2f;
-    [SerializeField] protected float attackSpeed;
+    protected float attackSpeed;
     [SerializeField] protected float fastScalar = 3f;
 
     protected Rigidbody2D rb;
@@ -36,27 +32,22 @@ public class Agent : MonoBehaviour, IKeyWindable
     protected Vector3 scaleVal = Vector3.zero;
 
     [Header("Runtime Logic")]
-    [SerializeField] protected bool keyInserted = false;
     [SerializeField] protected List<GameObject> collidingObjs;
-    [SerializeField] protected Vector2 direction = Vector2.zero;
+    protected Vector2 direction = Vector2.zero;
 
     protected Vector3 playerPosition = Vector3.zero;
-    protected float distToGround;
+    [SerializeField] protected float distToGround;
 
-    [SerializeField] protected float turnDelay = 0.5f;
-    [SerializeField] protected bool processingTurn = false;
+    protected float turnDelay = 0.5f;
+    protected bool processingTurn = false;
 
     [SerializeField] protected List<GameObject> nodes = new List<GameObject>();
+
+    private CogIndicator cog;
 
     #endregion
 
     #region Properties
-    public bool KeyInserted
-    {
-        get { return keyInserted; }
-        set { keyInserted = value; }
-    }
-
     public Vector3 PlayerPosition
     {
         get { return playerPosition; }
@@ -70,35 +61,31 @@ public class Agent : MonoBehaviour, IKeyWindable
         rb = GetComponent<Rigidbody2D>();
         scaleVal = transform.localScale;
         senses = new List<Sense>();
-        for(int i = 0; i < senseCount; i++) 
-        {
-            senses.Add(transform.GetChild(i+1).GetComponent<Sense>());
-        }
+        senses.Add(transform.GetChild(5).GetComponent<Sense>());
+        senses.Add(transform.GetChild(6).GetComponent<Sense>());
         IsGrounded();
         distToGround = GetComponent<BoxCollider2D>().bounds.extents.y;
 
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
+        // Get a non magic number way pls
+        cog = transform.GetChild(7).GetComponent<CogIndicator>();
     }
 
     // Update is called once per frame
     protected virtual void Update()
     {
-        if(!keyInserted) state = KeyState.Normal;
         if(jumpState == JumpState.Aerial) IsGrounded();
         if (transform.position.y + distToGround <= LevelData.Instance.YMin)
         {
             Transform t = transform.GetChild(transform.childCount - 1);
-            t.parent = null;
-            t.GetComponent<KeyScript>().Detach();
-            Destroy(gameObject);
+            if (t != null && t.name == "Key")
+            {
+                t.parent = null;
+                t.GetComponent<KeyScript>().Detach();
+                Destroy(gameObject);
+            }
         }
-
-    }
-
-    public void InsertKey(KeyState keyState)
-    {
-        state = keyState;
-        keyInserted = keyState != KeyState.Normal;
+        cog.fast = InsertedKeyType == KeyState.Fast;
     }
 
     protected virtual void BehaviorTree(float walkSpeed, bool fast)
@@ -121,7 +108,7 @@ public class Agent : MonoBehaviour, IKeyWindable
 
     protected void IsGrounded()
     {
-        bool grounded = Physics2D.Raycast(transform.position, -Vector2.up, distToGround + 0.1f) && Mathf.Abs(rb.velocity.y) <= Mathf.Epsilon;
+        bool grounded = Physics2D.Raycast(transform.position, Vector2.down, distToGround) && Mathf.Abs(rb.velocity.y) <= Mathf.Epsilon;
         jumpState = grounded ? JumpState.Grounded : JumpState.Aerial;
         //Debug.DrawRay(transform.position, -Vector2.up, Color.red, 2.0f);
     }
@@ -154,6 +141,7 @@ public class Agent : MonoBehaviour, IKeyWindable
             processingTurn = true;
             // Change direction
             direction.x = -direction.x;
+            Vector2 tempVelocity = rb.velocity;
             rb.velocity = new Vector2(0, rb.velocity.y);
             // Idle anim
             yield return new WaitForSeconds(turnDelay);
@@ -161,7 +149,10 @@ public class Agent : MonoBehaviour, IKeyWindable
 
             transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
             // Set values back to how they used to be for a frame to prevent stunlocking
-            rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
+
+
+            tempVelocity.y = rb.velocity.y;
+            rb.velocity = tempVelocity;
             // Wait until the agent is moving
             yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
             processingTurn = false;
@@ -232,12 +223,12 @@ public class Agent : MonoBehaviour, IKeyWindable
             else
             {
                 // If the agent is stuck at a wall, search for a node to move towards
-                if(detectWalls && Mathf.Abs(rb.velocity.x) <= Mathf.Epsilon && !processingTurn)
+                if(detectWalls && !processingTurn)
                 {
                     foreach(GameObject node in nodes)
                     {
                         if(Mathf.Sign((node.transform.position - transform.position).x) == Mathf.Sign(direction.x) &&
-                            Vector2.Distance(node.transform.position, transform.position) > 0.25f && 
+                            Vector2.Distance(node.transform.position, transform.position) <= 0.25f && 
                             Physics2D.Raycast(transform.position, node.transform.position, 0.6f))
                         {
                             Debug.DrawLine(node.transform.position, transform.position, Color.red, 2f);
@@ -248,7 +239,7 @@ public class Agent : MonoBehaviour, IKeyWindable
                     }
                 }
                 // If the collision is against a node, that means that the agent is at a ledge, so turn around
-                else if(detectFloorEdges && obj.tag == "Node" && !processingTurn)
+                if(detectFloorEdges && obj.tag == "Node" && !processingTurn)
                 {
                     returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
                 }

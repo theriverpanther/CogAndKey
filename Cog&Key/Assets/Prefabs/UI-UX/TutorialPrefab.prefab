@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8490082221955376030}
   - component: {fileID: 6292636444233710878}
   - component: {fileID: 7053859272643528850}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: ControlImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31,7 +31,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 694084179366377455}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -89,7 +88,7 @@ GameObject:
   - component: {fileID: 27254245305169972}
   - component: {fileID: 8064803239681596701}
   - component: {fileID: 4359585582891996990}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: TutorialCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +110,6 @@ RectTransform:
   - {fileID: 8255798813627778181}
   - {fileID: 8490082221955376030}
   m_Father: {fileID: 1868048365197178677}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -213,7 +211,7 @@ GameObject:
   - component: {fileID: 1868048365197178677}
   - component: {fileID: 1551441341641457307}
   - component: {fileID: 7990767031584715730}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: TutorialPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,6 +225,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7207097386812336881}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -12.56, y: -9.98, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -234,7 +233,6 @@ Transform:
   m_Children:
   - {fileID: 694084179366377455}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1551441341641457307
 BoxCollider2D:
@@ -305,7 +303,7 @@ GameObject:
   - component: {fileID: 8255798813627778181}
   - component: {fileID: 5160389652392652500}
   - component: {fileID: 6877243542103584493}
-  m_Layer: 5
+  m_Layer: 2
   m_Name: MoveText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -325,7 +323,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 694084179366377455}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

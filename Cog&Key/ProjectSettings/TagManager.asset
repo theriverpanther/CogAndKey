@@ -19,10 +19,10 @@ TagManager:
   - Ground
   - Water
   - UI
+  - Key Trigger
+  - Key
   - 
-  - 
-  - 
-  - 
+  - Helper
   - Player
   - 
   - 
@@ -48,6 +48,21 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3172701027
+    locked: 0
+  - name: Midground
+    uniqueID: 1376984927
+    locked: 0
+  - name: Helper
+    uniqueID: 3227944715
+    locked: 0
+  - name: Player
+    uniqueID: 1011476109
+    locked: 0
+  - name: Foreground
+    uniqueID: 3319633379
     locked: 0
   - name: UI-UXGame
     uniqueID: 2011998787
