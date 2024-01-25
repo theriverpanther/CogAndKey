@@ -63,12 +63,16 @@ public class PathNode : Node
             //Gizmos.DrawWireSphere(midpoint, radius);
 
             // PLEASE COMMENT OUT BEFORE BUILD
-#if DEBUG
+            #if DEBUG
             //bezierPoints = Handles.MakeBezierPoints(transform.position, node.transform.position, transform.up, -transform.up, 5);
 
             
             Handles.color = Color.black;
-            bezierPoints[1] = new Vector3(midpoint.x, midpoint.y + 0.5f * radius, midpoint.z);
+            Vector3 pathDirection = (node.transform.position - transform.position).normalized;
+            Vector3 perpendicularVector = new Vector3(pathDirection.y, Mathf.Abs(pathDirection.x), pathDirection.z) * radius / 4;
+            bezierPoints[1] = new Vector3(midpoint.x + perpendicularVector.x, midpoint.y + perpendicularVector.y, midpoint.z + perpendicularVector.z);
+            //Gizmos.color = Color.red;
+            //Gizmos.DrawSphere(bezierPoints[1], 0.125f);
             bezierPoints[2] = node.transform.position;
             Handles.DrawAAPolyLine(bezierPoints);
             //Handles.DrawWireArc(midpoint, transform.forward, transform.position, 180, radius);

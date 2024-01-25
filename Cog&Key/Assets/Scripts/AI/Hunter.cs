@@ -104,8 +104,11 @@ public class Hunter : Agent
             // patrol
             // for now just deal with edge detection
             EdgeDetectMovement(!fast, true);
-            Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
-            if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > 2) StartCoroutine(TurnDelay());
+            if(!isLost)
+            {
+                Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
+                if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > 2) StartCoroutine(TurnDelay());
+            }
             huntSignifier.color = idleColor;
         }
         else if (sqrDist > distThreshold * distThreshold)
@@ -125,7 +128,7 @@ public class Hunter : Agent
             {
                 Jump();
             }
-            if(playerPosition.y > transform.position.y)
+            if(playerPosition.y > transform.position.y + distToGround * 5)
             {
                 if(playerSensed || wallDetected) Jump();
             }
@@ -194,6 +197,6 @@ public class Hunter : Agent
     {
         base.OnDrawGizmos();
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(playerPosition, 1);
+        if(playerPosition!=Vector3.zero) Gizmos.DrawWireSphere(playerPosition, 1);
     }
 }

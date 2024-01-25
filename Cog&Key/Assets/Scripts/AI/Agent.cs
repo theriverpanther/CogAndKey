@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using Unity.VisualScripting;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class Agent : KeyWindable
@@ -20,6 +22,8 @@ public class Agent : KeyWindable
     [SerializeField] protected float jumpSpeed = 2f;
     protected float attackSpeed;
     [SerializeField] protected float fastScalar = 3f;
+
+    protected const float GROUND_GRAVITY = 7.5f;
 
     protected Rigidbody2D rb;
     /// <summary>
@@ -47,15 +51,19 @@ public class Agent : KeyWindable
 
     protected List<GameObject> nodes = new List<GameObject>();
     public PathNode pathTarget;
-    private CogIndicator cog;
+    protected CogIndicator cog;
 
 
-    private List<ContactPoint2D> contacts;
-    private List<ContactPoint2D> floorPts;
-    private List<ContactPoint2D> wallPts;
+    protected List<ContactPoint2D> contacts;
+    protected List<ContactPoint2D> floorPts;
+    protected List<ContactPoint2D> wallPts;
 
     [SerializeField] protected float minLedgeSize = 0.1f;
     [SerializeField] protected float ledgeSize = 0f;
+
+    [SerializeField] protected bool isLost = false;
+    protected float confusionTime = 5f;
+    protected float lostTimer = 0f;
 
     #endregion
 
@@ -71,6 +79,7 @@ public class Agent : KeyWindable
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = GROUND_GRAVITY;
         scaleVal = transform.localScale;
         senses = new List<Sense>
         {
@@ -125,7 +134,8 @@ public class Agent : KeyWindable
         if(transform.position.y + distToGround < LevelData.Instance.YMin)
         {
             Destroy(gameObject);
-        }
+        }      
+
     }
 
     protected virtual void BehaviorTree(float walkSpeed, bool fast)
@@ -149,11 +159,14 @@ public class Agent : KeyWindable
     protected void IsGrounded()
     {
         const float BUFFER = 0.1f;
-        float halfRadius = distToGround;
-        RaycastHit2D left = Physics2D.Raycast(new Vector3(transform.position.x - halfRadius + BUFFER, transform.position.y - halfRadius, 0), Vector2.down, 10);
-        RaycastHit2D right = Physics2D.Raycast(new Vector3(transform.position.x + halfRadius - BUFFER, transform.position.y - halfRadius, 0), Vector2.down, 10);
 
-        jumpState = (left.collider != null && left.distance < halfRadius + BUFFER || right.collider != null && right.distance < halfRadius + BUFFER ? JumpState.Grounded: JumpState.Aerial);
+        jumpState = (RayCheck(transform.position, BUFFER, -distToGround) || RayCheck(transform.position, -BUFFER, distToGround) ? JumpState.Grounded: JumpState.Aerial);
+    }
+
+    protected bool RayCheck(Vector3 position, float buffer, float halfRadius)
+    {
+        RaycastHit2D ray = Physics2D.Raycast(new Vector3(position.x - halfRadius + buffer, position.y - halfRadius, 0), Vector2.down, 10);
+        return ray.collider != null && ray.distance < halfRadius + buffer;
     }
 
     protected List<Vector2> ValidJumps()
@@ -198,7 +211,7 @@ public class Agent : KeyWindable
             tempVelocity.y = rb.velocity.y;
             rb.velocity = tempVelocity;
             // Wait until the agent is moving
-            if (Mathf.Abs(tempVelocity.x) > 0f) yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
+            if (Mathf.Abs(tempVelocity.x) > 1f) yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
             else yield return new WaitForSeconds(turnDelay);
             processingTurn = false;
             //Debug.Log("Coroutine End");
@@ -286,17 +299,18 @@ public class Agent : KeyWindable
             wallPts.Clear();
             foreach (ContactPoint2D contact in contacts)
             {
-                if (Vector2.Distance(contact.point, new Vector2(contact.point.x, transform.position.y)) <= .1f + distToGround)
+                if (Mathf.Abs(contact.point.y - transform.position.y) <= .1f + distToGround)
                 {
                     floorPts.Add(contact);
                 }
-                if (Vector2.Distance(contact.point, new Vector2(transform.position.x, contact.point.y)) <= .1f + distToGround)
+                if (Mathf.Abs(contact.point.x - transform.position.x) <= .1f + distToGround)
                 {
                     wallPts.Add(contact);
                 }
             }
 
             floorPts.Sort((i, j) => { return i.point.x < j.point.x ? -1 : 1; });
+            wallPts.Sort((i,j) => { return i.point.y < j.point.y ? 1 : -1; });
 
             float sqrDist = 0f;
             ledgeSize = 0f;
@@ -311,24 +325,75 @@ public class Agent : KeyWindable
 
                     if (sqrDist <= minLedgeSize)
                     {
+                        float xDistToTarget = Mathf.Abs(transform.position.x - pathTarget.transform.position.x);
+                        float sqrDistToTarget = Vector3.SqrMagnitude(transform.position - pathTarget.transform.position);
+                        bool leftRayCheck = RayCheck(transform.position, 0.1f, -distToGround);
+                        bool rightRayCheck = RayCheck(transform.position, -0.1f, distToGround);
                         if (PlayerPosition != Vector3.zero)
                         {
-
+                            Jump();
+                            returnVal = 0;
                         }
-                        else
+                        else if(xDistToTarget < 20f)
                         {
-
+                            RaycastHit2D results;
+                            results = Physics2D.Raycast(transform.position, (pathTarget.transform.position - transform.position).normalized, 5f);
+                            if (results.collider != null)
+                            {
+                                //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                Vector3 point = results.collider.transform.position;
+                                if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
+                                {
+                                    if (pathTarget.transform.position.y > transform.position.y) Jump();
+                                    returnVal = 0;
+                                    lostTimer = 0;
+                                    isLost = false;
+                                }
+                                else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
+                                // Still end up stopping at the edge
+                                // This will also run them off the edge
+                                // Is this a garbage collection issue?
+                            }
+                            else
+                            {
+                                //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                if (sqrDistToTarget <= 64f)
+                                {
+                                    if (transform.position.y < pathTarget.transform.position.y) Jump();
+                                    returnVal = 0;
+                                    lostTimer = 0;
+                                    isLost = false;
+                                }
+                                else
+                                {
+                                    lostTimer += Time.deltaTime;
+                                    if (lostTimer >= confusionTime)
+                                    {
+                                        isLost = true;
+                                        Debug.Log(gameObject.name + " can't reach next point at " + pathTarget.transform.position + ".");
+                                    }
+                                    // Turn the way that is opposite of the edge the agent is at
+                                    returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
+                                }
+                            }
                         }
-                        // Turn the way that is opposite of the edge the agent is at
-                        returnVal = floorPts[floorPts.Count - 1].point.x < transform.position.x ? -1 : 1;
+                        else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
+
                     }
                 }
             }
             if (detectWalls)
             {
-                if (wallPts.Count > 1)
+                if (wallPts.Count > 2)
                 {
-
+                    if (wallPts[0].point.y - transform.position.y >= distToGround -.1f)
+                    {
+                        returnVal = wallPts[0].point.x < transform.position.x ? -1 : 1;
+                    }
+                    else
+                    {
+                        Jump();
+                    }
                 }
             }
         }
@@ -419,8 +484,8 @@ public class Agent : KeyWindable
             }
         }
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(new Vector3(transform.position.x - distToGround + 0.2f, transform.position.y - distToGround, 0), .25f);
-        Gizmos.DrawWireSphere(new Vector3(transform.position.x + distToGround - 0.2f, transform.position.y - distToGround, 0), .25f);
+        Gizmos.DrawWireSphere(new Vector3(transform.position.x - distToGround + 0.2f, transform.position.y - distToGround, 0), .125f);
+        Gizmos.DrawWireSphere(new Vector3(transform.position.x + distToGround - 0.2f, transform.position.y - distToGround, 0), .125f);
 
         Gizmos.DrawRay(new Vector3(transform.position.x - distToGround + 0.2f, transform.position.y - distToGround, 0), Vector2.down);
         Gizmos.DrawRay(new Vector3(transform.position.x + distToGround - 0.2f, transform.position.y - distToGround, 0), Vector2.down);
