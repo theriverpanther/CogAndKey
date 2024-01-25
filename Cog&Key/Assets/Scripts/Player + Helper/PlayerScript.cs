@@ -215,7 +215,9 @@ public class PlayerScript : MonoBehaviour
         else if(moveRight || moveLeft) {
             // walk (or midair strafe)
             transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-            if(currentState == State.Grounded) {
+            transform.GetChild(1).localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.GetChild(1).localScale.x), transform.GetChild(1).localScale.y, transform.GetChild(1).localScale.z);
+
+            if (currentState == State.Grounded) {
                 playerAnimation.SetBool("Running", true);
             }
 
