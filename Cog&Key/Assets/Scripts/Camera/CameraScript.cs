@@ -8,7 +8,7 @@ public class CameraScript : MonoBehaviour
 {
     private GameObject player;
     private float z;
-    private CamerBoundType lastLook;
+    private CameraBoundType lastLook;
     private float scrollCD;
 
     private const float SPEED = 12f;
@@ -96,7 +96,7 @@ public class CameraScript : MonoBehaviour
         }
 
         // prevent scrolling back and forth
-        CamerBoundType currentScroll = playerZone.AreaType;
+        CameraBoundType currentScroll = playerZone.AreaType;
         if(scrollCD > 0) {
             currentScroll = lastLook;
         }
@@ -108,23 +108,23 @@ public class CameraScript : MonoBehaviour
         // face the camera towards the end of the level
         List<Rect> cameraAreas = LevelData.Instance.CameraZones;
         switch(currentScroll) {
-            case CamerBoundType.Right:
+            case CameraBoundType.Right:
                 position.x += 4;
                 break;
 
-            case CamerBoundType.Left:
+            case CameraBoundType.Left:
                 position.x -= 4;
                 break;
 
-            case CamerBoundType.Up:
+            case CameraBoundType.Up:
                 position.y += 2.5f;
                 break;
 
-            case CamerBoundType.Down:
+            case CameraBoundType.Down:
                 position.y -= 2.5f;
                 break;
 
-            case CamerBoundType.Lock:
+            case CameraBoundType.Lock:
                 Rect playerRect = playerZone.Area;
                 Vector2 dimensions = Dimensions;
                 cameraAreas = new List<Rect> { new Rect(playerRect.x + dimensions.x/2, playerRect.y + dimensions.y/2, playerRect.width - dimensions.x, playerRect.height - dimensions.y) };

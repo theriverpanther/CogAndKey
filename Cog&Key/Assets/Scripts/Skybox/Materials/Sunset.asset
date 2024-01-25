@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f66fe6e85cf8b4296041ce26d632a1, type: 3}
+  m_Name: Sunset
+  m_EditorClassIdentifier: 
+  SidedSkyboxPreset:
+    FrontTex: {fileID: 2800000, guid: c3548036d9c17034db3cbf768d13219f, type: 3}
+    BackTex: {fileID: 2800000, guid: 5e21b35afb9f059418e1a8ee47f65382, type: 3}
+    LeftTex: {fileID: 2800000, guid: e5f72fc42958c9c4c8bbb203412c3af3, type: 3}
+    RightTex: {fileID: 2800000, guid: d533b63a73a0593468356a0aae73b209, type: 3}
+    UpTex: {fileID: 2800000, guid: 13c455289785d924bbcd1bdf63676307, type: 3}
+    DownTex: {fileID: 2800000, guid: 37fd5ccf0f532fe40844ebd4ff435df1, type: 3}
+  FogPreset:
+    FogStart: 0
+    FogEnd: 0
+    FogColor: {r: 0, g: 0, b: 0, a: 0}
+  SunPreset:
+    SunIntensity: 0.8
+    SunColor: {r: 1, g: 0.6901961, b: 0.4509804, a: 0}
+  LightningIntensityMultiplier: 1.5
+  ReflectionsIntensityMultiplier: 1
