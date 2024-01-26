@@ -13,10 +13,6 @@ public class PlayerScript : MonoBehaviour
         Aerial,
     }
 
-    public KeyScript FastKey { get; set; }
-    public KeyScript LockKey { get; set; }
-    public KeyScript ReverseKey { get; set; }
-
     public const float FALL_GRAVITY = 5.0f;
     public const float JUMP_GRAVITY = 2.4f;
     private const float GROUND_GRAVITY = 10.0f; // a higher gravity makes the player move smoothly over the tops of slopes
@@ -30,7 +26,6 @@ public class PlayerScript : MonoBehaviour
     private Vector2 colliderHalfSize;
     private State currentState;
     private PlayerInput input;
-    private KeyState selectedKey = KeyState.Fast;
 
     private float coyoteTime;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
@@ -42,19 +37,13 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private Animator playerAnimation;
 
-    public PlayerInput Input {  get { return input; } }
-    public KeyState SelectedKey { 
-        get { return selectedKey; }
-        set { selectedKey = value; }
-    }
-
     void Start()
     {
         physicsBody = GetComponent<Rigidbody2D>();
         colliderHalfSize = GetComponent<BoxCollider2D>().size / 2f;
         physicsBody.gravityScale = FALL_GRAVITY;
         currentState = State.Aerial;
-        input = new PlayerInput();
+        input = PlayerInput.Instance;
 
         helper = GameObject.FindGameObjectWithTag("Helper");
 
@@ -253,17 +242,6 @@ public class PlayerScript : MonoBehaviour
 
         physicsBody.velocity = velocity;
 
-        // manage key ability
-        if(FastKey != null && input.JustPressed(PlayerInput.Action.FastKey)) {
-            selectedKey = KeyState.Fast;
-        }
-        else if(LockKey != null && input.JustPressed(PlayerInput.Action.LockKey)) {
-            selectedKey = KeyState.Lock;
-        }
-        else if(ReverseKey != null && input.JustPressed(PlayerInput.Action.ReverseKey)) {
-            selectedKey = KeyState.Reverse;
-        }
-        
         if(coyoteTime > 0) {
             coyoteTime -= Time.deltaTime;
             if(coyoteTime <= 0) {
