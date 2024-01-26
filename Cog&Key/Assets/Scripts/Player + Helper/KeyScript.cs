@@ -16,7 +16,7 @@ public class KeyScript : MonoBehaviour
     private const float SPEED = 20f;
     private const float ACCEL = 40.0f;
 
-    private static Dictionary<KeyState, PlayerInput.Action> keyToInput = new Dictionary<KeyState, PlayerInput.Action>() { 
+    public static Dictionary<KeyState, PlayerInput.Action> keyToInput = new Dictionary<KeyState, PlayerInput.Action>() { 
         { KeyState.Fast, PlayerInput.Action.FastKey },
         { KeyState.Lock, PlayerInput.Action.LockKey },
         { KeyState.Reverse, PlayerInput.Action.ReverseKey }
@@ -32,7 +32,7 @@ public class KeyScript : MonoBehaviour
     private KeyShowcaser uiKeys;
     private KeyUI keyUI;
     private GameObject visual;
-    private Collider2D collider;
+    private Collider2D boxCollider;
 
     [SerializeField] private bool StartEquipped;
     [SerializeField] private KeyState type;
@@ -49,7 +49,7 @@ public class KeyScript : MonoBehaviour
         player = GameObject.Find("Player");
         visual = transform.GetChild(0).gameObject;
         keyAni = visual.GetComponent<Animator>();
-        collider = GetComponent<Collider2D>();
+        boxCollider = GetComponent<Collider2D>();
 
         if (StartEquipped) {
             Equip();
@@ -59,37 +59,9 @@ public class KeyScript : MonoBehaviour
     void Update() {
         if(currentState == State.PlayerHeld) {
             // check if the player is throwing this
-            PlayerScript playerScript = player.GetComponent<PlayerScript>();
-            if(playerScript.SelectedKey == Type) {
-                // determine attack direction
-                Vector2 keyDirection = Vector2.zero;
-                if(playerScript.Input.JustPressed(PlayerInput.Action.ThrowUp)) {
-                    keyDirection = Vector2.up;
-                }
-                else if(playerScript.Input.JustPressed(PlayerInput.Action.ThrowDown)) {
-                    keyDirection = Vector2.down;
-                }
-                else if(playerScript.Input.JustPressed(PlayerInput.Action.ThrowLeft)) {
-                    keyDirection = Vector2.left;
-                }
-                else if(playerScript.Input.JustPressed(PlayerInput.Action.ThrowRight)) {
-                    keyDirection = Vector2.right;
-                }
-
-                if(playerScript.Input.MouseClicked()) {
-                    // use mouse position to determine the direction
-                    Vector3 mouseDir = playerScript.Input.GetMouseWorldPosition() - player.transform.position;
-                    if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
-                        mouseDir.y = 0;
-                    } else {
-                        mouseDir.x = 0;
-                    }
-                    keyDirection = mouseDir.normalized;
-                }
-
-                if(keyDirection != Vector2.zero) {
-                    Attack(keyDirection);
-                }
+            Vector2? throwDirection = PlayerInput.Instance.GetThrowDirection(Type);
+            if(throwDirection.HasValue) {
+                Attack(throwDirection.Value);
             }
         }
         else if(currentState == State.Attacking) {
@@ -115,7 +87,7 @@ public class KeyScript : MonoBehaviour
             }
         }
         else if(currentState == State.Attached) {
-            if(player.GetComponent<PlayerScript>().Input.JustPressed(keyToInput[Type])
+            if(PlayerInput.Instance.JustPressed(keyToInput[Type])
                 || Mathf.Abs(player.transform.position.y - transform.position.y) > 12f 
                 || Mathf.Abs(player.transform.position.x - transform.position.x) > 12f
             ) {
@@ -144,23 +116,8 @@ public class KeyScript : MonoBehaviour
     // gives the player possession of a key pickup, turning it into an ability
     public void Equip() {
         SetState(State.PlayerHeld);
-        PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        player.SelectedKey = Type;
-
-        switch(Type) {
-            case KeyState.Fast:
-                player.FastKey = this;
-                break;
-
-            case KeyState.Lock:
-                player.LockKey = this;
-                break;
-
-            case KeyState.Reverse:
-                player.ReverseKey = this;
-                break;
-        }
-
+        PlayerInput.Instance.SelectedKey = Type;
+        PlayerInput.Instance.EquippedKeys[Type] = true;
         if(keyUI != null) {
             keyUI.UpdateKeyUI(Type);
         }
@@ -238,6 +195,6 @@ public class KeyScript : MonoBehaviour
 
     private void SetActive(bool active) {
         visual.SetActive(active);
-        collider.enabled = active;
+        boxCollider.enabled = active;
     }
 }
