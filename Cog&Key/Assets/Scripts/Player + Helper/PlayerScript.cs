@@ -57,6 +57,7 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        input.Update();
         Vector2 velocity = physicsBody.velocity;
 
         if(physicsBody.velocity.y <= 1.0f) {
