@@ -39,7 +39,7 @@ public class PauseMenu : MonoBehaviour
         //Debug.Log("Checking for pause");
         //Debug.Log(PlayerInput.Instance.JustPressed(PlayerInput.Action.Pause));
         //If the start button is pressed on the controller
-        if (PlayerInput.Instance.JustPressed(PlayerInput.Action.Pause))
+        if (PausedPressed())
         {
             if(!isPaused)
             {
@@ -115,5 +115,10 @@ public class PauseMenu : MonoBehaviour
         //respawn at checkpoint
         playerScript.Die();
 
+    }
+
+    private bool PausedPressed() {
+        return Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame
+            || Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
     }
 }

@@ -90,10 +90,6 @@ public class LevelData : MonoBehaviour
         EquipCheckpointKeys();
     }
 
-    void Update() {
-        PlayerInput.Instance.Update();
-    }
-
     // called when the scene changes, deletes the instance if it is no longer the correct level
     private void CheckNextLevel(Scene current, Scene next) {
         if(next.name != levelName) {
