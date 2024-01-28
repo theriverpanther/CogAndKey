@@ -57,6 +57,10 @@ public class KeyScript : MonoBehaviour
     }
 
     void Update() {
+        if(Time.timeScale == 0) {
+            return;
+        }
+
         if(currentState == State.PlayerHeld) {
             // check if the player is throwing this
             Vector2? throwDirection = PlayerInput.Instance.GetThrowDirection(Type);

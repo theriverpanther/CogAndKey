@@ -82,7 +82,7 @@ public class PlayerInput
         ConstructKeyBindings();
     }
 
-    // should be called once per frame by PlayerScript.Update()
+    // must be called once per frame
     public void Update() {
         if(Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse) {
             ConstructKeyBindings();
