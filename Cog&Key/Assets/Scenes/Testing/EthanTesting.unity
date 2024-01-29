@@ -1720,6 +1720,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 8751292470688992327, guid: aa11c686614da8b43997b46291e85e97, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9176067104390047342, guid: aa11c686614da8b43997b46291e85e97, type: 3}
       propertyPath: m_RootOrder
       value: 0
