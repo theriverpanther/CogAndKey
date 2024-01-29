@@ -51,6 +51,7 @@ public class PlayerScript : MonoBehaviour
         if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
             CameraScript.Instance?.SetInitialPosition();
+            CameraController.Instance?.SetInitialPosition();
         }
 
         helperScript = helper?.GetComponent<HelperCreature>();

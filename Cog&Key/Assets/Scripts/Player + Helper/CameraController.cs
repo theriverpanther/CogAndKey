@@ -8,11 +8,12 @@ public class CameraController : MonoBehaviour
 
     private const float WINDOW_WIDTH = 4f;
     private const float WINDOW_HEIGHT = 3f;
-    private const float AERIAL_WINDOW_EXTENSION = 3f;
+    private const float AERIAL_WINDOW_EXTENSION = 2f;
     private const float WINDOW_X_LIMIT = 8f;
     private const float WINDOW_Y_LIMIT = 5f;
-    private const float WINDOW_X_SHIFT_RATE = 0.5f;
-    private const float WINDOW_Y_SHIFT_RATE = 0.7f;
+    private const float WINDOW_X_SHIFT_RATE = 0.7f;
+    private const float WINDOW_Y_SHIFT_RATE = 0.3f;
+    private const float AERIAL_WINDOW_Y_SHIFT_RATE = 0.8f;
     private const float HORIZONTAL_MOVE_RATE = 0.1f;
     private const float VERTICAL_MOVE_RATE = 0.1f;
 
@@ -84,7 +85,7 @@ public class CameraController : MonoBehaviour
         Vector3 displacement = newPosition - transform.position;
         Vector2 windowCenter = playerWindow.center;
         windowCenter.x += -displacement.x * WINDOW_X_SHIFT_RATE;
-        windowCenter.y += -displacement.y * WINDOW_Y_SHIFT_RATE;
+        windowCenter.y += -displacement.y * (player.CurrentState == PlayerScript.State.Aerial ? AERIAL_WINDOW_Y_SHIFT_RATE : WINDOW_Y_SHIFT_RATE);
         windowCenter.x = Mathf.Clamp(windowCenter.x, -WINDOW_CENTER_X_LIMIT, WINDOW_CENTER_X_LIMIT);
         windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT, WINDOW_CENTER_Y_LIMIT);
         playerWindow.center = windowCenter;
@@ -94,6 +95,6 @@ public class CameraController : MonoBehaviour
 
     // called by LevelData.cs Start() after generating the level bounds
     public void SetInitialPosition() {
-        transform.position = player.transform.position;
+        transform.position = player.transform.position - (Vector3)playerWindow.center + new Vector3(0, 0, fixedZ);
     }
 }

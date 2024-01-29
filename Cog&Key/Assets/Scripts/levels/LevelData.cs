@@ -80,6 +80,7 @@ public class LevelData : MonoBehaviour
 
         GenerateCameraZones();
         CameraScript.Instance?.SetInitialPosition();
+        CameraController.Instance?.SetInitialPosition();
 
         // equip the player with the starting keys
         checkpointKeys = new Dictionary<KeyState, bool>();
