@@ -79,7 +79,7 @@ public class LevelData : MonoBehaviour
         }
 
         GenerateCameraZones();
-        CameraScript.Instance.SetInitialPosition();
+        CameraScript.Instance?.SetInitialPosition();
 
         // equip the player with the starting keys
         checkpointKeys = new Dictionary<KeyState, bool>();
@@ -156,6 +156,9 @@ public class LevelData : MonoBehaviour
     // uses the level bounds to determine where the camera is allowed to be centered
     private void GenerateCameraZones() {
         cameraZones = new List<Rect>();
+        if(CameraScript.Instance == null) {
+            return;
+        }
         Vector2 cameraDims = CameraScript.Instance.Dimensions;
 
         // add areas in the middle of each level boundary

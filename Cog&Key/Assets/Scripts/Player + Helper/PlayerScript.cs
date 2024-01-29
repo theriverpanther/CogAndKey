@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
-    private enum State
+    public enum State
     {
         Grounded,
         Aerial,
@@ -24,7 +24,6 @@ public class PlayerScript : MonoBehaviour
 
     private Rigidbody2D physicsBody;
     private Vector2 colliderHalfSize;
-    private State currentState;
     private PlayerInput input;
 
     private float coyoteTime;
@@ -37,19 +36,21 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     private Animator playerAnimation;
 
+    public State CurrentState { get; private set; }
+
     void Start()
     {
         physicsBody = GetComponent<Rigidbody2D>();
         colliderHalfSize = GetComponent<BoxCollider2D>().size / 2f;
         physicsBody.gravityScale = FALL_GRAVITY;
-        currentState = State.Aerial;
+        CurrentState = State.Aerial;
         input = PlayerInput.Instance;
 
         helper = GameObject.FindGameObjectWithTag("Helper");
 
         if (LevelData.Instance != null && LevelData.Instance.RespawnPoint.HasValue) {
             transform.position = LevelData.Instance.RespawnPoint.Value;
-            CameraScript.Instance.SetInitialPosition();
+            CameraScript.Instance?.SetInitialPosition();
         }
 
         helperScript = helper?.GetComponent<HelperCreature>();
@@ -90,7 +91,7 @@ public class PlayerScript : MonoBehaviour
             CoyoteMomentum = null;
         }
 
-        switch(currentState) {
+        switch(CurrentState) {
             case State.Aerial:
                 if(physicsBody.gravityScale != FALL_GRAVITY) {
                     physicsBody.gravityScale = JUMP_GRAVITY;
@@ -147,7 +148,7 @@ public class PlayerScript : MonoBehaviour
 
                 // land on the ground
                 if(onFloor) {
-                    currentState = State.Grounded;
+                    CurrentState = State.Grounded;
                     physicsBody.gravityScale = GROUND_GRAVITY;
                     SetAnimation(null);
                 }
@@ -160,7 +161,7 @@ public class PlayerScript : MonoBehaviour
                 else if(!onFloor) {
                     // fall off platform
                     SetAnimation("Falling");
-                    currentState = State.Aerial;
+                    CurrentState = State.Aerial;
                     coyoteTime = 0.125f;
                     physicsBody.gravityScale = FALL_GRAVITY;
                 }
@@ -196,7 +197,7 @@ public class PlayerScript : MonoBehaviour
         }
 
         // horizontal movement
-        float friction = (currentState == State.Grounded ? 30f : 5f);
+        float friction = (CurrentState == State.Grounded ? 30f : 5f);
         Vector2 slopeLeft = Vector2.left;
         if(onFloor) {
             slopeLeft = Vector2.Perpendicular(floorNorm);
@@ -206,7 +207,7 @@ public class PlayerScript : MonoBehaviour
         bool moveRight = input.IsPressed(PlayerInput.Action.Right) && moveLockedRight != true && (Vector2.Dot(velocity, slopeRight) <= 0 || Vector3.Project(velocity, slopeRight).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
         bool moveLeft = input.IsPressed(PlayerInput.Action.Left) && moveLockedRight != false && (Vector2.Dot(velocity, slopeLeft) <= 0 || Vector3.Project(velocity, slopeLeft).sqrMagnitude <= WALK_SPEED * WALK_SPEED + Mathf.Epsilon);
         if(moveRight == moveLeft && velocity.x != 0) { // both pressed is same as neither pressed
-            if(currentState == State.Grounded) {
+            if(CurrentState == State.Grounded) {
                 SetAnimation(null);
             }
 
@@ -227,7 +228,7 @@ public class PlayerScript : MonoBehaviour
         else if(moveRight || moveLeft) {
             // walk (or midair strafe)
             transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-            if(currentState == State.Grounded) {
+            if(CurrentState == State.Grounded) {
                 SetAnimation("Running");
             }
 
@@ -269,7 +270,7 @@ public class PlayerScript : MonoBehaviour
         }
         physicsBody.gravityScale = JUMP_GRAVITY;
         SetAnimation("Jumping");
-        currentState = State.Aerial;
+        CurrentState = State.Aerial;
     }
 
     private void OnCollisionEnter2D(Collision2D collision) {
