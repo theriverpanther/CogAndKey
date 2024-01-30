@@ -7,8 +7,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private GameObject visibleWindow;
 
     private const float WINDOW_WIDTH = 4f;
-    private const float WINDOW_HEIGHT = 3f;
-    private const float AERIAL_WINDOW_EXTENSION = 2f;
+    private const float WINDOW_HEIGHT = 2f;
+    private const float AERIAL_WINDOW_EXTENSION = 3.5f;
     private const float WINDOW_X_LIMIT = 8f;
     private const float WINDOW_Y_LIMIT = 5f;
     private const float WINDOW_X_SHIFT_RATE = 0.7f;
@@ -16,6 +16,7 @@ public class CameraController : MonoBehaviour
     private const float AERIAL_WINDOW_Y_SHIFT_RATE = 0.8f;
     private const float HORIZONTAL_MOVE_RATE = 0.1f;
     private const float VERTICAL_MOVE_RATE = 0.1f;
+    private const float AERIAL_VERTICAL_MOVE_RATE = 0.15f;
 
     private const float WINDOW_CENTER_X_LIMIT = WINDOW_X_LIMIT - WINDOW_WIDTH / 2f;
     private const float WINDOW_CENTER_Y_LIMIT = WINDOW_Y_LIMIT - WINDOW_HEIGHT / 2f;
@@ -45,12 +46,6 @@ public class CameraController : MonoBehaviour
     }
 
     void FixedUpdate() {
-        if(visibleWindow != null) {
-            // REMOVE FOR FINAL VERSION
-            visibleWindow.transform.position = transform.position + (Vector3)playerWindow.center + new Vector3(0, 0, -fixedZ);
-            visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
-        }
-
         Vector3 newPosition = transform.position;
         Vector3 playerRelativeToCenter = player.transform.position - transform.position;
 
@@ -70,15 +65,17 @@ public class CameraController : MonoBehaviour
         // manage vertical
         float? movingY = null;
         float aerialExtension = player.CurrentState == PlayerScript.State.Aerial ? AERIAL_WINDOW_EXTENSION : 0f;
-        if(playerRelativeToCenter.y < playerWindow.yMin - aerialExtension) {
-            movingY = playerWindow.yMin - aerialExtension;
+        float minBound = Mathf.Max(playerWindow.yMin - aerialExtension, -WINDOW_Y_LIMIT);
+        float maxBound = Mathf.Min(playerWindow.yMax + aerialExtension, WINDOW_Y_LIMIT);
+        if(playerRelativeToCenter.y < minBound) {
+            movingY = minBound;
         }
-        else if(playerRelativeToCenter.y > playerWindow.yMax + aerialExtension) {
-            movingY = playerWindow.yMax + aerialExtension;
+        else if(playerRelativeToCenter.y > maxBound) {
+            movingY = maxBound;
         }
 
         if(movingY.HasValue) {
-            newPosition.y += (playerRelativeToCenter.y - movingY.Value) * VERTICAL_MOVE_RATE * Time.timeScale;
+            newPosition.y += (playerRelativeToCenter.y - movingY.Value) * (player.CurrentState == PlayerScript.State.Aerial ? AERIAL_VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE) * Time.timeScale;
         }
 
         // move the camera window away from the direction the player is going
@@ -91,6 +88,15 @@ public class CameraController : MonoBehaviour
         playerWindow.center = windowCenter;
 
         transform.position = newPosition;
+
+         if(visibleWindow != null) {
+            // REMOVE FOR FINAL VERSION
+            //visibleWindow.transform.position = transform.position + (Vector3)playerWindow.center + new Vector3(0, 0, -fixedZ);
+            //visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
+            visibleWindow.transform.position = new Vector3(transform.position.x + playerWindow.center.x, transform.position.y + (maxBound + minBound) / 2f, 0);
+            visibleWindow.transform.localScale = new Vector3(playerWindow.width, maxBound - minBound, 1f);
+
+        }
     }
 
     // called by LevelData.cs Start() after generating the level bounds
