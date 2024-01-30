@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7843668174038334658}
   - component: {fileID: 6076023700761837155}
   - component: {fileID: 7083429154805820375}
+  - component: {fileID: 33000857886739659}
   - component: {fileID: -6785975975753577973}
   m_Layer: 0
   m_Name: Level Camera
@@ -106,6 +107,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65438768e8929674a88e0ca3fdded68b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &33000857886739659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7453649272723269901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863d9c0f6aebc0d4cab3e03f4fbaf956, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateSpeed: 0.4
 --- !u!114 &-6785975975753577973
 MonoBehaviour:
   m_ObjectHideFlags: 0
