@@ -844,6 +844,7 @@ MonoBehaviour:
   emotes:
   - Spin
   - Chat
+  visualUI: {fileID: 6247805519078552652}
 --- !u!1 &7018683099200092206
 GameObject:
   m_ObjectHideFlags: 0

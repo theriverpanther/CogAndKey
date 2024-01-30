@@ -158,8 +158,6 @@ public class HelperCreature : MonoBehaviour
         {
             UnityEngine.Debug.Log("Inside connection point");
             rb.velocity = Vector2.zero;
-
-
         }
     }
 
