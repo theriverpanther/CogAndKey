@@ -149,11 +149,13 @@ public class PlayerScript : MonoBehaviour
                 if(onFloor) {
                     currentState = State.Grounded;
                     physicsBody.gravityScale = GROUND_GRAVITY;
+                    SetAnimation(null);
                 }
                 break;
 
             case State.Grounded:
                 playerAnimation.SetBool("Falling", false);
+                playerAnimation.SetBool("Wallslide", false);
 
                 if (input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
