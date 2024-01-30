@@ -35,16 +35,19 @@ public class HelperUI : MonoBehaviour
     [SerializeField]
     private HelperAnimations helperAnimation;
 
+    public DetectControllerType detectControllerType;
+
     void Start()
     {
         upperText = GameObject.Find("HelperUIUpperGroup");
         textToModUpper = upperText.transform.Find("HelperText").GetComponent<TextMeshProUGUI>();
+        detectControllerType = gameObject.gameObject.GetComponent<DetectControllerType>();
 
         imgIndicator = GameObject.Find("HelperIndicator").GetComponent<Image>();
 
         forceFade = true;
         GetComponent<Canvas>().worldCamera = Camera.main;
-        
+
         AlertMessage(false);
         imageAnimator.SetInteger("animationPlayerIndex", -1);
         emptySprite = Sprite.Create(empty, new Rect(0.0f, 0.0f, empty.width, empty.height), new Vector2(0.5f, 0.5f), 100.0f);
@@ -52,14 +55,13 @@ public class HelperUI : MonoBehaviour
 
     IEnumerator ShowText()
     {
-
         helperAnimation.PlayStopEmote("Chat");
         if (fullText.Length <= 1 && !topLeftCorner)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", true);
         }
 
-        if(topLeftCorner)
+        if (topLeftCorner)
         {
             for (int i = 0; i < fullText.Length; i++)
             {
@@ -67,12 +69,13 @@ public class HelperUI : MonoBehaviour
                 textToModUpper.text = currentTxt;
                 yield return new WaitForSeconds(textSpeed);
             }
-        } else
+        }
+        else
         {
             for (int i = 0; i < fullText.Length; i++)
             {
                 currentTxt = fullText.Substring(0, i);
-                textToMod.text = currentTxt;
+                textToModUpper.text = currentTxt;
                 yield return new WaitForSeconds(textSpeed);
             }
         }
@@ -94,7 +97,7 @@ public class HelperUI : MonoBehaviour
         StartCoroutine(ShowText());
     }
 
-    public void ShowImage(Texture2D img, float size, int index, bool forceFader)
+    public void ShowImage(Texture2D img, float size, int index, bool forceFader, string mapping, bool specific)
     {
         forceFade = forceFader;
         if (index != -1)
@@ -105,6 +108,11 @@ public class HelperUI : MonoBehaviour
         else
         {
             imageAnimator.enabled = false;
+            if (mapping != "none")
+            {
+                Debug.Log("Replacing now...");
+                img = detectControllerType.ReturnImage(mapping, specific);
+            }
         }
 
         imgToShow.sprite = Sprite.Create(img, new Rect(0.0f, 0.0f, img.width, img.height), new Vector2(0.5f, 0.5f), 100.0f);
@@ -120,7 +128,7 @@ public class HelperUI : MonoBehaviour
 
     public void HideHelper()
     {
-        if(forceFade && !topLeftCorner)
+        if (forceFade)
         {
             gameObject.GetComponent<Animator>().SetBool("Fade", false);
         }
@@ -130,18 +138,18 @@ public class HelperUI : MonoBehaviour
     }
     public void ShowHelper(bool showTextAboveHead = true)
     {
-            if (imgToShow.sprite != null)
-                    {
-                        Debug.Log("Show image!");
-                        imgToShow.gameObject.SetActive(true);
-                        //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
-                        gameObject.GetComponent<Animator>().SetBool("Fade", true);
-                    }
-                    else
-                    {
-                        gameObject.GetComponent<Animator>().SetBool("Fade", true);
-                        imgToShow.gameObject.SetActive(false);
-                    }
+        if (imgToShow.sprite != null)
+        {
+            Debug.Log("Show image!");
+            imgToShow.gameObject.SetActive(true);
+            //imgToShow.gameObject.GetComponent<Animator>().SetBool("Fade", true);
+            gameObject.GetComponent<Animator>().SetBool("Fade", true);
+        }
+        else
+        {
+            gameObject.GetComponent<Animator>().SetBool("Fade", true);
+            imgToShow.gameObject.SetActive(false);
+        }
 
         /// shows/hides text box above the head
         imgToShow.transform.parent.transform.GetChild(1).gameObject.SetActive(showTextAboveHead);
@@ -154,10 +162,11 @@ public class HelperUI : MonoBehaviour
 
     public void IndicatorImage(Texture2D img = null)
     {
-        if(img != null)
+        if (img != null)
         {
             imgIndicator.sprite = Sprite.Create(img, new Rect(0.0f, 0.0f, img.width, img.height), new Vector2(0.5f, 0.5f), 100.0f);
-        } else
+        }
+        else
         {
             imgIndicator.sprite = emptySprite;
         }
