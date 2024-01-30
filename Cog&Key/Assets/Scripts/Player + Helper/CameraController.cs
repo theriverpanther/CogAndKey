@@ -87,6 +87,10 @@ public class CameraController : MonoBehaviour
         windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT, WINDOW_CENTER_Y_LIMIT);
         playerWindow.center = windowCenter;
 
+        Vector2 cameraSize = Dimensions;
+        LevelData level = LevelData.Instance;
+        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
+        newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = newPosition;
 
          if(visibleWindow != null) {
@@ -95,7 +99,6 @@ public class CameraController : MonoBehaviour
             //visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
             visibleWindow.transform.position = new Vector3(transform.position.x + playerWindow.center.x, transform.position.y + (maxBound + minBound) / 2f, 0);
             visibleWindow.transform.localScale = new Vector3(playerWindow.width, maxBound - minBound, 1f);
-
         }
     }
 
