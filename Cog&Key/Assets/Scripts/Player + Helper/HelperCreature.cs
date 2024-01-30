@@ -58,7 +58,7 @@ public class HelperCreature : MonoBehaviour
     {
         if(followPlayer && !connectedToPlayer)
         {
-            directionToplayer = (player.transform.position + (Vector3)capsuleContainer.offset) - transform.position;
+            directionToplayer = capsuleContainer.transform.position - transform.position;
 
             rb.velocity = directionToplayer * speed;
         }
@@ -157,7 +157,9 @@ public class HelperCreature : MonoBehaviour
         if (collision.transform.name == "HelperConnection")
         {
             UnityEngine.Debug.Log("Inside connection point");
-            
+            rb.velocity = Vector2.zero;
+
+
         }
     }
 
@@ -167,10 +169,11 @@ public class HelperCreature : MonoBehaviour
         if (collision.transform.name == "HelperConnection" && !connectedToPlayer)
         {
             Vector3 offset = capsuleContainer.offset;
-            if (Vector3.Distance(capsuleContainer.transform.position - offset, transform.position) < 0.1f)
+            if (Vector3.Distance(capsuleContainer.transform.position - transform.position, transform.position) < 0.1f)
             {
                 UnityEngine.Debug.Log("Centered inside point");
                 connectedToPlayer = true;
+                rb.velocity = Vector2.zero;
             }
         }
     }
