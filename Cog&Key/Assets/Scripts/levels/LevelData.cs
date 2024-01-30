@@ -6,8 +6,9 @@ using UnityEngine.SceneManagement;
 // one of these scripts should exist per level. Does not delete when the level is reloaded, but deletes when going to a new level
 public class LevelData : MonoBehaviour
 {
-    private static LevelData instance;
-    public static LevelData Instance { get { return instance; } }
+    public static LevelData Instance { get; private set; }
+    [SerializeField] private GameObject LevelBoundary;
+    private Rect levelBounds;
 
     private string levelName;
     private CheckpointScript currentCheckpoint;
@@ -19,9 +20,10 @@ public class LevelData : MonoBehaviour
     public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
     public List<Rect> CameraZones { get { return cameraZones; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
-    public float XMin { get; private set; }
-    public float XMax { get; private set; }
-    public float YMin { get; private set; }
+    public float XMin { get { return levelBounds.xMin; } }
+    public float XMax { get { return levelBounds.xMax; } }
+    public float YMin { get { return levelBounds.yMin; } }
+    public float YMax { get { return levelBounds.yMax; } }
     public int DeathsSinceCheckpoint { get; private set; }
 
     // needs CameraScript Awake() to run first
@@ -32,46 +34,51 @@ public class LevelData : MonoBehaviour
         GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
 
         // delete duplicates
-        if(instance != null) {
+        if(Instance != null) {
             foreach(GameObject checkpoint in checkpoints) {
-                if(!instance.checkpoints.Contains(checkpoint)) {
+                if(!Instance.checkpoints.Contains(checkpoint)) {
                     Destroy(checkpoint);
                     
                 }
             }
 
             foreach(GameObject bound in bounds) {
-                if(!instance.levelAreas.Contains(bound.GetComponent<LevelBoundScript>())) {
+                if(!Instance.levelAreas.Contains(bound.GetComponent<LevelBoundScript>())) {
                     Destroy(bound);
                 }
             }
             Destroy(gameObject);
             return;
         }
-        
+
         // set up the single instance
-        instance = this;
+        Instance = this;
         levelName = SceneManager.GetActiveScene().name;
         DontDestroyOnLoad(gameObject);
         SceneManager.activeSceneChanged += CheckNextLevel;
 
         // store the level's boundaries and checkpoints
+        Vector2 boundMid = LevelBoundary.transform.position;
+        Vector2 boundDims = LevelBoundary.transform.localScale;
+        levelBounds = new Rect(boundMid - boundDims / 2f, boundDims);
+        LevelBoundary.SetActive(false);
+
         foreach(GameObject checkpoint in checkpoints) {
             checkpoint.transform.SetParent(null, true);
             DontDestroyOnLoad(checkpoint);
         }
 
-        XMin = float.MaxValue;
-        XMax = float.MinValue;
-        YMin = float.MaxValue;
+        //XMin = float.MaxValue;
+        //XMax = float.MinValue;
+        //YMin = float.MaxValue;
         foreach(GameObject bound in bounds) {
             LevelBoundScript boundScript = bound.GetComponent<LevelBoundScript>();
             if(boundScript != null) {
                 boundScript.Area = new Rect(bound.transform.position - bound.transform.lossyScale / 2, bound.transform.lossyScale);
                 levelAreas.Add(boundScript);
-                XMin = Mathf.Min(XMin, boundScript.Area.xMin);
-                XMax = Mathf.Max(XMax, boundScript.Area.xMax);
-                YMin = Mathf.Min(YMin, boundScript.Area.yMin);
+                //XMin = Mathf.Min(XMin, boundScript.Area.xMin);
+                //XMax = Mathf.Max(XMax, boundScript.Area.xMax);
+                //YMin = Mathf.Min(YMin, boundScript.Area.yMin);
                 bound.GetComponent<SpriteRenderer>().enabled = false;
                 bound.transform.SetParent(null, true);
                 DontDestroyOnLoad(bound);
@@ -118,7 +125,7 @@ public class LevelData : MonoBehaviour
         levelAreas.Clear();
 
         Destroy(gameObject);
-        instance = null;
+        Instance = null;
         SceneManager.sceneLoaded -= NewLevelLoaded;
     }
 
