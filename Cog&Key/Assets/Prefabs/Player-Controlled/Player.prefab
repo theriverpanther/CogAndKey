@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 2208531331978425151}
   - component: {fileID: 8878191611086893552}
   - component: {fileID: 4496142851364735746}
-  - component: {fileID: 2356840491197058099}
+  - component: {fileID: 8685771593466919902}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -636,3 +636,15 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3133367370787780945, guid: c69492696ddbc8f4e9e7641878bc2e82, type: 3}
   m_PrefabInstance: {fileID: 4711280639026299374}
   m_PrefabAsset: {fileID: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.4646747, y: 1.779961}
+  m_EdgeRadius: 0

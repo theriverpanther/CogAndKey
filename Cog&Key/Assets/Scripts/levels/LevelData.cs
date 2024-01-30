@@ -136,15 +136,10 @@ public class LevelData : MonoBehaviour
         DeathsSinceCheckpoint = 0;
 
         // save keys acquired since the last checkpoint
-        PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        if(!checkpointKeys[KeyState.Fast] && player.FastKey != null) {
-            checkpointKeys[KeyState.Fast] = true;
-        }
-        if(!checkpointKeys[KeyState.Lock] && player.LockKey != null) {
-            checkpointKeys[KeyState.Lock] = true;
-        }
-        if(!checkpointKeys[KeyState.Reverse] && player.ReverseKey != null) {
-            checkpointKeys[KeyState.Reverse] = true;
+        foreach(KeyState keyType in new KeyState[3] { KeyState.Fast, KeyState.Lock, KeyState.Reverse }) {
+            if(PlayerInput.Instance.EquippedKeys[keyType]) {
+                checkpointKeys[keyType] = true;
+            }
         }
     }
 

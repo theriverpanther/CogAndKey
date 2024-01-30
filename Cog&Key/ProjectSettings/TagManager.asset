@@ -12,6 +12,7 @@ TagManager:
   - Helper
   - Node
   - Agent
+  - Not Physics
   layers:
   - Default
   - TransparentFX

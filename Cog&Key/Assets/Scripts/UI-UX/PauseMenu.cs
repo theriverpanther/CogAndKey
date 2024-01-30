@@ -36,31 +36,23 @@ public class PauseMenu : MonoBehaviour
     /// </summary>
     void Update()
     {
-        playerScript.Input.Update();
-
-        Debug.Log("Checking for pause");
-        Debug.Log(playerScript.Input.JustPressed(PlayerInput.Action.Pause));
+        //Debug.Log("Checking for pause");
+        //Debug.Log(PlayerInput.Instance.JustPressed(PlayerInput.Action.Pause));
         //If the start button is pressed on the controller
-        if (playerScript.Input.JustPressed(PlayerInput.Action.Pause))
+        if (PausedPressed())
         {
             if(!isPaused)
             {
                 Debug.Log("Pausing");
                 Pause();
-                return;
             }
-
-            // Spam opens/closes if put in -- figure out something or just leave it?
-            //if (isPaused)
-            //{
-            //    Debug.Log("Unpausing");
-            //    current.enabled = false;
-            //    Resume();
-            //    return;
-            //}
+            else
+            {
+                Debug.Log("Unpausing");
+                current.enabled = false;
+                Resume();
+            }
         }
-         
- 
     }
 
     /// <summary>
@@ -123,5 +115,10 @@ public class PauseMenu : MonoBehaviour
         //respawn at checkpoint
         playerScript.Die();
 
+    }
+
+    private bool PausedPressed() {
+        return Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame
+            || Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
     }
 }
