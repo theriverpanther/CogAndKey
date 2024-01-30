@@ -1152,11 +1152,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2646182891262756355, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_text
-      value: 
+      value: 'aaaaaaaaaaa
+
+        aaaaaaaaaaa
+
+        aaaaaaaaaaa
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 2646182891262756355, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_fontSize
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2646182891262756355, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 3406903062921563124, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_Pivot.x
@@ -1280,7 +1290,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7357272213753369625, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 7780794695589043668, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchorMax.y
