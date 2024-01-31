@@ -26,7 +26,7 @@ public class LevelData : MonoBehaviour
     //public float YMax { get { return levelBounds.yMax; } }
     public float XMin { get { return float.MinValue; } }
     public float XMax { get { return float.MaxValue; } }
-    public float YMin { get { return float.MinValue; } }
+    public float YMin { get { return -100; } }
     public float YMax { get { return float.MaxValue; } }
     public int DeathsSinceCheckpoint { get; private set; }
 
