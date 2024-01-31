@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorOpener
+public class DoorOpener : MonoBehaviour
 {
     private bool activated;
     public bool Activated {
