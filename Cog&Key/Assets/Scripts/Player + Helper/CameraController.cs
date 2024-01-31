@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
     private const float AERIAL_WINDOW_Y_SHIFT_RATE = 0.8f;
     private const float HORIZONTAL_MOVE_RATE = 0.1f;
     private const float VERTICAL_MOVE_RATE = 0.1f;
-    private const float AERIAL_VERTICAL_MOVE_RATE = 0.15f;
+    private const float AERIAL_VERTICAL_MOVE_RATE = 0.12f;
 
     private const float WINDOW_CENTER_X_LIMIT = WINDOW_X_LIMIT - WINDOW_WIDTH / 2f;
     private const float WINDOW_CENTER_Y_LIMIT = WINDOW_Y_LIMIT - WINDOW_HEIGHT / 2f;
@@ -24,6 +24,8 @@ public class CameraController : MonoBehaviour
     private PlayerScript player;
     private float fixedZ;
     private Rect playerWindow;
+    private float topAirExtension;
+    private float bottomAirExtension;
 
     public static CameraController Instance { get; private set; }
 
@@ -63,8 +65,9 @@ public class CameraController : MonoBehaviour
         }
 
         // manage vertical
+        bool aerial = player.CurrentState == PlayerScript.State.Aerial;
         float? movingY = null;
-        float aerialExtension = player.CurrentState == PlayerScript.State.Aerial ? AERIAL_WINDOW_EXTENSION : 0f;
+        float aerialExtension = aerial ? AERIAL_WINDOW_EXTENSION : 0f;
         float minBound = Mathf.Max(playerWindow.yMin - aerialExtension, -WINDOW_Y_LIMIT);
         float maxBound = Mathf.Min(playerWindow.yMax + aerialExtension, WINDOW_Y_LIMIT);
         if(playerRelativeToCenter.y < minBound) {
@@ -75,22 +78,22 @@ public class CameraController : MonoBehaviour
         }
 
         if(movingY.HasValue) {
-            newPosition.y += (playerRelativeToCenter.y - movingY.Value) * (player.CurrentState == PlayerScript.State.Aerial ? AERIAL_VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE) * Time.timeScale;
+            newPosition.y += (playerRelativeToCenter.y - movingY.Value) * (aerial ? AERIAL_VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE) * Time.timeScale;
         }
 
         // move the camera window away from the direction the player is going
         Vector3 displacement = newPosition - transform.position;
         Vector2 windowCenter = playerWindow.center;
         windowCenter.x += -displacement.x * WINDOW_X_SHIFT_RATE;
-        windowCenter.y += -displacement.y * (player.CurrentState == PlayerScript.State.Aerial ? AERIAL_WINDOW_Y_SHIFT_RATE : WINDOW_Y_SHIFT_RATE);
+        windowCenter.y += -displacement.y * (aerial ? AERIAL_WINDOW_Y_SHIFT_RATE : WINDOW_Y_SHIFT_RATE);
         windowCenter.x = Mathf.Clamp(windowCenter.x, -WINDOW_CENTER_X_LIMIT, WINDOW_CENTER_X_LIMIT);
-        windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT, WINDOW_CENTER_Y_LIMIT);
+        windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT - aerialExtension, WINDOW_CENTER_Y_LIMIT + aerialExtension);
         playerWindow.center = windowCenter;
 
         Vector2 cameraSize = Dimensions;
         LevelData level = LevelData.Instance;
-        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
-        newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
+        //newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
+        //newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = newPosition;
 
          if(visibleWindow != null) {
