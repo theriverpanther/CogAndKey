@@ -2,8 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Build.Content;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
+using UnityEngine.UIElements;
 
 
 #if UNITY_EDITOR
@@ -11,13 +16,14 @@ using UnityEditor.SceneManagement;
 
 [ExecuteInEditMode]
 
+//https://docs.unity3d.com/ScriptReference/MenuItem.html
 public class NodePlacer : MonoBehaviour
 {
-    static string path = "AgentNode";
+    static string path = "BoundNode";
 
     Vector3 mousePos = Vector3.zero;
 
-    [MenuItem("GameObject/Nodes/AgentNode", false, 10)]
+    [MenuItem("GameObject/Nodes/BoundNode", false, 10)]
     static void CreateNodeObject(MenuCommand cmd)
     {
         // Find location
@@ -43,7 +49,7 @@ public class NodePlacer : MonoBehaviour
 
                     Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
                     mousePos = ray.origin;
-
+                    
                     //mousePos.y = sceneCam.scaledPixelHeight - mousePos.y;
                     //mousePos = sceneCam.ScreenToWorldPoint(mousePos);
                     mousePos.z = 0;
@@ -57,7 +63,7 @@ public class NodePlacer : MonoBehaviour
                 }
             }
         }
-        if (mousePos != Vector3.negativeInfinity) obj.transform.position = mousePos;
+        if(mousePos != Vector3.negativeInfinity) obj.transform.position = mousePos;
         else obj.transform.position = lastView ? lastView.pivot : Vector3.zero;
 
         // Set name in proper scene
@@ -66,6 +72,7 @@ public class NodePlacer : MonoBehaviour
 
         // Reparent if context clicked
         GameObjectUtility.SetParentAndAlign(obj, cmd.context as GameObject);
+        
 
         // Register in the undo system
         Undo.RegisterCreatedObjectUndo(obj, "Create " + obj.name);
@@ -79,6 +86,11 @@ public class NodePlacer : MonoBehaviour
     {
         string mouseOver = EditorWindow.mouseOverWindow ? EditorWindow.mouseOverWindow.ToString() : "Nada";
     }
+    
+    //[MenuItem ("Nodes/Click")]
+    //public static void Clicked()
+    //{
+        
 
     //[MenuItem ("Nodes/Click")]
     //public static void Clicked()

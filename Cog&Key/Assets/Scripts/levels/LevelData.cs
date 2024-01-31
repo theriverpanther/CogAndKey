@@ -221,10 +221,10 @@ public class LevelData : MonoBehaviour
     // Note to future self: delete this awful function
     private bool AreZonesOppositeDirection(LevelBoundScript one, LevelBoundScript other)
     {
-        bool hasUp = one.AreaType == CamerBoundType.Up || other.AreaType == CamerBoundType.Up;
-        bool hasDown = one.AreaType == CamerBoundType.Down || other.AreaType == CamerBoundType.Down;
-        bool hasLeft = one.AreaType == CamerBoundType.Left || other.AreaType == CamerBoundType.Left;
-        bool hasRight = one.AreaType == CamerBoundType.Right || other.AreaType == CamerBoundType.Right;
+        bool hasUp = one.AreaType == CameraBoundType.Up || other.AreaType == CameraBoundType.Up;
+        bool hasDown = one.AreaType == CameraBoundType.Down || other.AreaType == CameraBoundType.Down;
+        bool hasLeft = one.AreaType == CameraBoundType.Left || other.AreaType == CameraBoundType.Left;
+        bool hasRight = one.AreaType == CameraBoundType.Right || other.AreaType == CameraBoundType.Right;
         return hasUp && hasDown || hasLeft && hasRight;
     }
 }

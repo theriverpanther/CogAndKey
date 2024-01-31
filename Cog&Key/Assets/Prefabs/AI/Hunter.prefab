@@ -100,7 +100,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6024628286499215771
 Transform:
   m_ObjectHideFlags: 0
@@ -353,7 +353,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8993465985529767004
 Transform:
   m_ObjectHideFlags: 0
@@ -476,12 +476,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714b074975505574381f09b8f1114750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpState: 0
   movementSpeed: 5
-  jumpSpeed: 8
+  jumpSpeed: 13
   fastScalar: 2
   collidingObjs: []
-  distToGround: 0
-  nodes: []
+  pathTarget: {fileID: 0}
+  minLedgeSize: 0.5
+  ledgeSize: 0
   idleColor: {r: 0, g: 0.3019608, b: 0.2509804, a: 1}
   huntColor: {r: 0.84705883, g: 0.105882354, b: 0.3764706, a: 1}
 --- !u!61 &2698930125854928055
@@ -544,8 +546,8 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_GravityScale: 2.4
+  m_Material: {fileID: 6200000, guid: 2d1d6d90ce0911c4b947c35dad2a08b7, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -554,7 +556,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &2518777728627218210
 BoxCollider2D:
