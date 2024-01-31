@@ -92,8 +92,8 @@ public class CameraController : MonoBehaviour
 
         Vector2 cameraSize = Dimensions;
         LevelData level = LevelData.Instance;
-        //newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
-        //newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
+        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
+        newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = newPosition;
 
          if(visibleWindow != null) {
