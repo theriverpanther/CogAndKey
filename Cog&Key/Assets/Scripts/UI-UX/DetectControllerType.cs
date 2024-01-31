@@ -128,7 +128,14 @@ public class DetectControllerType : MonoBehaviour
             }
         } else
         {
-            genPairsDictionary.TryGetValue(mapping, out texture);
+            if(current == "keyboard")
+            {
+                keyboardPairsDictionary.TryGetValue(mapping, out texture);
+            }
+            else
+            {
+                genPairsDictionary.TryGetValue(mapping, out texture);
+            }
         }
 
         Debug.Log("Returning new texture...");
