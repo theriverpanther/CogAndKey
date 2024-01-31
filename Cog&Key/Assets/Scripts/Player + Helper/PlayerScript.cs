@@ -45,6 +45,7 @@ public class PlayerScript : MonoBehaviour
         physicsBody.gravityScale = FALL_GRAVITY;
         CurrentState = State.Aerial;
         input = PlayerInput.Instance;
+        input.Player = this;
 
         helper = GameObject.FindGameObjectWithTag("Helper");
 
