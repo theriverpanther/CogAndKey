@@ -20,10 +20,14 @@ public class LevelData : MonoBehaviour
     public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
     public List<Rect> CameraZones { get { return cameraZones; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
-    public float XMin { get { return levelBounds.xMin; } }
-    public float XMax { get { return levelBounds.xMax; } }
-    public float YMin { get { return levelBounds.yMin; } }
-    public float YMax { get { return levelBounds.yMax; } }
+    //public float XMin { get { return levelBounds.xMin; } }
+    //public float XMax { get { return levelBounds.xMax; } }
+    //public float YMin { get { return levelBounds.yMin; } }
+    //public float YMax { get { return levelBounds.yMax; } }
+    public float XMin { get { return float.MinValue; } }
+    public float XMax { get { return float.MaxValue; } }
+    public float YMin { get { return float.MinValue; } }
+    public float YMax { get { return float.MaxValue; } }
     public int DeathsSinceCheckpoint { get; private set; }
 
     // needs CameraScript Awake() to run first
