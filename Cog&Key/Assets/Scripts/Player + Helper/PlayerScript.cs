@@ -233,7 +233,7 @@ public class PlayerScript : MonoBehaviour
             transform.localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             transform.GetChild(1).localScale = new Vector3((moveRight ? 1 : -1) * Mathf.Abs(transform.GetChild(1).localScale.x), transform.GetChild(1).localScale.y, transform.GetChild(1).localScale.z);
 
-            if (currentState == State.Grounded) {
+            if(CurrentState == State.Grounded) {
                 playerAnimation.SetBool("Running", true);
             }
 
