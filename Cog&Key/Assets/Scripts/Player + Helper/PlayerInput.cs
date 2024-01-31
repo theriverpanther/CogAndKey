@@ -39,7 +39,6 @@ public class PlayerInput
     private Mouse currentMouse;
 
     private string controllerName;
-    private PlayerScript player;
 
     public string ControllerName { get { return controllerName; } }
 
@@ -56,6 +55,8 @@ public class PlayerInput
     public KeyState SelectedKey { get; set; }
     public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
 
+    public PlayerScript Player { get; set; }
+
     private static PlayerInput instance;
     public static PlayerInput Instance { get {  
         if(instance == null) {
@@ -64,7 +65,6 @@ public class PlayerInput
         return instance;
     } }
     private PlayerInput() {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         NUM_ACTIONS = Enum.GetNames(typeof(Action)).Length;
         pressedLastFrame = new bool[NUM_ACTIONS];
         pressedThisFrame = new bool[NUM_ACTIONS];
@@ -122,7 +122,7 @@ public class PlayerInput
     public Vector2? GetThrowDirection(KeyState key) {
         if(JustPressed(KeyScript.keyToInput[key])) {
             // when pressing the controller button, use the left stick for the direction and default to the player's facing direction
-            Vector2 result = player.gameObject.transform.localScale.x > 0 ? Vector2.right : Vector2.left;
+            Vector2 result = Player.gameObject.transform.localScale.x > 0 ? Vector2.right : Vector2.left;
             if(IsPressed(Action.Up)) {
                 result = Vector2.up;
             }
@@ -138,7 +138,7 @@ public class PlayerInput
 
         if(MouseJustClicked()) {
             // throw in the direction the mouse is relative to the player's position
-            Vector3 mouseDir = GetMouseWorldPosition() - player.transform.position;
+            Vector3 mouseDir = GetMouseWorldPosition() - Player.transform.position;
             if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
                 mouseDir.y = 0;
             } else {
