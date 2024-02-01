@@ -95,7 +95,7 @@ public class Agent : KeyWindable
 
         // Get the collection of path nodes in the scene
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Path");
-        if (objs.Count > 0)
+        if (objs.Length > 0)
         {
             GameObject obj = objs[0];
             float dist = Vector3.Distance(transform.position, obj.transform.position);
@@ -329,57 +329,63 @@ public class Agent : KeyWindable
 
                     if (sqrDist <= minLedgeSize)
                     {
-                        float xDistToTarget = Mathf.Abs(transform.position.x - pathTarget.transform.position.x);
-                        float sqrDistToTarget = Vector3.SqrMagnitude(transform.position - pathTarget.transform.position);
                         bool leftRayCheck = RayCheck(transform.position, 0.1f, -distToGround);
                         bool rightRayCheck = RayCheck(transform.position, -0.1f, distToGround);
-                        if (PlayerPosition != Vector3.zero)
+                        if (pathTarget != null)
                         {
-                            Jump();
-                            returnVal = 0;
-                        }
-                        else if(xDistToTarget < 20f)
-                        {
-                            RaycastHit2D results;
-                            results = Physics2D.Raycast(transform.position, (pathTarget.transform.position - transform.position).normalized, 5f);
-                            if (results.collider != null)
+                            float xDistToTarget = Mathf.Abs(transform.position.x - pathTarget.transform.position.x);
+                            float sqrDistToTarget = Vector3.SqrMagnitude(transform.position - pathTarget.transform.position);
+                            if (xDistToTarget < 20f)
                             {
-                                //Debug.DrawLine(transform.position, pathTarget.transform.position);
-                                Vector3 point = results.collider.transform.position;
-                                if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
+                                RaycastHit2D results;
+                                results = Physics2D.Raycast(transform.position, (pathTarget.transform.position - transform.position).normalized, 5f);
+                                if (results.collider != null)
                                 {
-                                    if (pathTarget.transform.position.y > transform.position.y) Jump();
-                                    returnVal = 0;
-                                    lostTimer = 0;
-                                    isLost = false;
-                                }
-                                else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
-                                // Still end up stopping at the edge
-                                // This will also run them off the edge
-                                // Is this a garbage collection issue?
-                            }
-                            else
-                            {
-                                //Debug.DrawLine(transform.position, pathTarget.transform.position);
-                                if (sqrDistToTarget <= 64f)
-                                {
-                                    if (transform.position.y < pathTarget.transform.position.y) Jump();
-                                    returnVal = 0;
-                                    lostTimer = 0;
-                                    isLost = false;
+                                    //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                    Vector3 point = results.collider.transform.position;
+                                    if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
+                                    {
+                                        if (pathTarget.transform.position.y > transform.position.y) Jump();
+                                        returnVal = 0;
+                                        lostTimer = 0;
+                                        isLost = false;
+                                    }
+                                    else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
+                                    // Still end up stopping at the edge
+                                    // This will also run them off the edge
+                                    // Is this a garbage collection issue?
                                 }
                                 else
                                 {
-                                    lostTimer += Time.deltaTime;
-                                    if (lostTimer >= confusionTime)
+                                    //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                    if (sqrDistToTarget <= 64f)
                                     {
-                                        isLost = true;
-                                        Debug.Log(gameObject.name + " can't reach next point at " + pathTarget.transform.position + ".");
+                                        if (transform.position.y < pathTarget.transform.position.y) Jump();
+                                        returnVal = 0;
+                                        lostTimer = 0;
+                                        isLost = false;
                                     }
-                                    // Turn the way that is opposite of the edge the agent is at
-                                    returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
+                                    else
+                                    {
+                                        lostTimer += Time.deltaTime;
+                                        if (lostTimer >= confusionTime)
+                                        {
+                                            isLost = true;
+                                            Debug.Log(gameObject.name + " can't reach next point at " + pathTarget.transform.position + ".");
+                                        }
+                                        // Turn the way that is opposite of the edge the agent is at
+                                        returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
+                                    }
                                 }
                             }
+                        
+                            
+                            if (PlayerPosition != Vector3.zero)
+                            {
+                                Jump();
+                                returnVal = 0;
+                            }
+                        
                         }
                         else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
 
