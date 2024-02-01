@@ -95,24 +95,28 @@ public class Agent : KeyWindable
 
         // Get the collection of path nodes in the scene
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Path");
-        GameObject obj = objs[0];
-        float dist = Vector3.Distance(transform.position, obj.transform.position);
-        float tempDist = 0;
-        foreach (GameObject node in objs)
+        if (objs.Count > 0)
         {
-            tempDist = Vector3.Distance(transform.position, node.transform.position);
-            if (Vector3.Distance(transform.position, node.transform.position) < dist)
+            GameObject obj = objs[0];
+            float dist = Vector3.Distance(transform.position, obj.transform.position);
+            float tempDist = 0;
+            foreach (GameObject node in objs)
             {
-                obj = node;
-                dist = tempDist;
+                tempDist = Vector3.Distance(transform.position, node.transform.position);
+                if (Vector3.Distance(transform.position, node.transform.position) < dist)
+                {
+                    obj = node;
+                    dist = tempDist;
+                }
             }
+
+            pathTarget = obj.GetComponent<PathNode>();
         }
+        
 
         contacts = new List<ContactPoint2D>();
         floorPts = new List<ContactPoint2D>();
         wallPts = new List<ContactPoint2D>();
-
-        pathTarget = obj.GetComponent<PathNode>();
     }
 
     // Update is called once per frame
