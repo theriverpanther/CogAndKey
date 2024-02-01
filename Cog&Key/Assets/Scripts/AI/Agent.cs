@@ -350,7 +350,7 @@ public class Agent : KeyWindable
                                         lostTimer = 0;
                                         isLost = false;
                                     }
-                                    else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
+                                    else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? 1 : -1;
                                     // Still end up stopping at the edge
                                     // This will also run them off the edge
                                     // Is this a garbage collection issue?
@@ -374,7 +374,7 @@ public class Agent : KeyWindable
                                             Debug.Log(gameObject.name + " can't reach next point at " + pathTarget.transform.position + ".");
                                         }
                                         // Turn the way that is opposite of the edge the agent is at
-                                        returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
+                                        returnVal = floorPts[0].point.x < transform.position.x ? 1 : -1;
                                     }
                                 }
                             }
@@ -387,7 +387,7 @@ public class Agent : KeyWindable
                             }
                         
                         }
-                        else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
+                        else returnVal = floorPts[0].point.x < transform.position.x ? 1 : -1;
 
                     }
                 }
@@ -398,7 +398,8 @@ public class Agent : KeyWindable
                 {
                     if (wallPts[0].point.y - transform.position.y >= distToGround -.1f)
                     {
-                        returnVal = wallPts[0].point.x < transform.position.x ? -1 : 1;
+                        returnVal = wallPts[0].point.x < transform.position.x ? 1 : -1;
+                        Debug.Log("inner");
                     }
                     else
                     {
