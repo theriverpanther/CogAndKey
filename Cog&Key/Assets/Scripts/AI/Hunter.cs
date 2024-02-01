@@ -104,7 +104,7 @@ public class Hunter : Agent
             // patrol
             // for now just deal with edge detection
             EdgeDetectMovement(!fast, true);
-            if(!isLost)
+            if (!isLost && pathTarget != null)
             {
                 Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
                 if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > 2) StartCoroutine(TurnDelay());
