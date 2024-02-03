@@ -121,7 +121,7 @@ public class KeyScript : MonoBehaviour
     public void Equip() {
         SetState(State.PlayerHeld);
         PlayerInput.Instance.SelectedKey = Type;
-        PlayerInput.Instance.EquippedKeys[Type] = true;
+        player.GetComponent<PlayerScript>().EquippedKeys[Type] = true;
         if(keyUI != null) {
             keyUI.UpdateKeyUI(Type);
         }

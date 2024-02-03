@@ -37,6 +37,18 @@ public class PlayerScript : MonoBehaviour
     private Animator playerAnimation;
 
     public State CurrentState { get; private set; }
+    public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
+    public static PlayerScript CurrentPlayer { get; private set; }
+
+    private void Awake()
+    {
+        CurrentPlayer = this;
+        EquippedKeys = new Dictionary<KeyState, bool>() {
+            { KeyState.Lock, false },
+            { KeyState.Fast, false },
+            { KeyState.Reverse, false }
+        };
+    }
 
     void Start()
     {
@@ -63,7 +75,7 @@ public class PlayerScript : MonoBehaviour
         input.Update();
         Vector2 velocity = physicsBody.velocity;
 
-        if(physicsBody.velocity.y <= 1.0f) {
+        if(physicsBody.velocity.y <= 0.5f) {
             moveLockedRight = null;
         }
 
@@ -159,7 +171,7 @@ public class PlayerScript : MonoBehaviour
                 playerAnimation.SetBool("Falling", false);
                 playerAnimation.SetBool("Wallslide", false);
 
-                if (input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
+                if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
                 }
                 else if(!onFloor) {

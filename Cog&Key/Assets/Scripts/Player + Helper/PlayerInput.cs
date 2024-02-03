@@ -53,7 +53,6 @@ public class PlayerInput
 
     public bool JumpBuffered { get { return jumpBuffer > 0; } }
     public KeyState SelectedKey { get; set; }
-    public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
 
     public PlayerScript Player { get; set; }
 
@@ -64,16 +63,12 @@ public class PlayerInput
         }
         return instance;
     } }
+
     private PlayerInput() {
         NUM_ACTIONS = Enum.GetNames(typeof(Action)).Length;
         pressedLastFrame = new bool[NUM_ACTIONS];
         pressedThisFrame = new bool[NUM_ACTIONS];
         SelectedKey = KeyState.None;
-        EquippedKeys = new Dictionary<KeyState, bool>() {
-            { KeyState.Lock, false },
-            { KeyState.Fast, false },
-            { KeyState.Reverse, false }
-        };
 
         keyBindings = new Dictionary<Action, List<ButtonControl>>();
         for(int i = 0; i < NUM_ACTIONS; i++) {
@@ -101,7 +96,7 @@ public class PlayerInput
         }
 
         foreach(KeyState keyType in KeyScript.keyToInput.Keys) {
-            if(JustPressed(KeyScript.keyToInput[keyType]) && EquippedKeys[keyType]) {
+            if(JustPressed(KeyScript.keyToInput[keyType]) && Player.EquippedKeys[keyType]) {
                 SelectedKey = keyType;
             }
         }
