@@ -62,8 +62,9 @@ public class PlayerScript : MonoBehaviour
     {
         input.Update();
         Vector2 velocity = physicsBody.velocity;
+        playerAnimation.SetFloat("velocity", physicsBody.velocity.y);
 
-        if(physicsBody.velocity.y <= 1.0f) {
+        if (physicsBody.velocity.y <= 1.0f) {
             moveLockedRight = null;
         }
 
@@ -252,8 +253,9 @@ public class PlayerScript : MonoBehaviour
         }
 
         physicsBody.velocity = velocity;
+        playerAnimation.SetFloat("velocity", physicsBody.velocity.y);
 
-        if(coyoteTime > 0) {
+        if (coyoteTime > 0) {
             coyoteTime -= Time.deltaTime;
             if(coyoteTime <= 0) {
                 CoyoteMomentum = null;
