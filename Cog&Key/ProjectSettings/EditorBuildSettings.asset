@@ -8,19 +8,19 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TItlescreen.unity
     guid: 3af3dcf683480e0438c31447e9dd2e77
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level 1.unity
     guid: fa661e545a8d29141b1beb56e0527a92
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level 2.unity
     guid: 369ec709d9cecde4491120861590a677
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level 3.unity
     guid: d7d644dac2c878449af022959504d31c
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level 4.unity
     guid: b308f3cebb16ee848811ba0506a8f8e5
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Testing/AlexaTesting.unity
     guid: c1a7c46553119bb4aae37f12cb60e1fd
   m_configObjects: {}

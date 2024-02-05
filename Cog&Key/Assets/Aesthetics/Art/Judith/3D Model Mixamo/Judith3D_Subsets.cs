@@ -31,4 +31,10 @@ public class Judith3D_Subsets : MonoBehaviour
         gameObject.GetComponent<Animator>().SetInteger("IdleVariant", 0);
 
     }
+
+    public void ForceRotationRun()
+    {
+        Debug.Log("AAAAAAAAAA");
+        transform.localRotation = new Quaternion(transform.rotation.x, 180f, transform.rotation.z, transform.rotation.w);
+    }
 }
