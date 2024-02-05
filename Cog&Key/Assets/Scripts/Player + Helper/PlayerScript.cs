@@ -104,7 +104,7 @@ public class PlayerScript : MonoBehaviour
         if(onFloor) {
             CoyoteMomentum = null;
         }
-
+        
         switch(CurrentState) {
             case State.Aerial:
                 if(physicsBody.gravityScale != FALL_GRAVITY) {

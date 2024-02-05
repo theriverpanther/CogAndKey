@@ -173,6 +173,10 @@ public class KeyScript : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
+        if(collision.isTrigger) {
+            return;
+        }
+
         if(currentState == State.Pickup && collision.gameObject.tag == "Player") {
             keyAni.SetInteger("Status", 0);
             Equip();
