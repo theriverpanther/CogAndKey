@@ -31,7 +31,7 @@ public class Agent : KeyWindable
     /// </summary>
     protected float mistakeThreshold = 0.05f;
     protected float senseCount = 2;
-    protected List<Sense> senses;
+    [SerializeField] protected List<Sense> senses = new List<Sense>(2);
     protected float attackDamage;
     protected bool flightEnabled = false;
 
@@ -43,6 +43,7 @@ public class Agent : KeyWindable
 
     protected Vector3 playerPosition = Vector3.zero;
     protected float distToGround = 0.75f;
+    protected float width = 0;
 
     protected float turnDelay = 0.5f;
     [SerializeField] protected bool processingTurn = false;
@@ -51,7 +52,7 @@ public class Agent : KeyWindable
 
     protected List<GameObject> nodes = new List<GameObject>();
     public PathNode pathTarget;
-    protected CogIndicator cog;
+    [SerializeField] protected CogIndicator cog;
 
 
     protected List<ContactPoint2D> contacts;
@@ -81,17 +82,18 @@ public class Agent : KeyWindable
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = GROUND_GRAVITY;
         scaleVal = transform.localScale;
-        senses = new List<Sense>
-        {
-            transform.GetChild(5).GetComponent<Sense>(),
-            transform.GetChild(6).GetComponent<Sense>()
-        };
+        //senses = new List<Sense>
+        //{
+        //    transform.GetChild(5).GetComponent<Sense>(),
+        //    transform.GetChild(6).GetComponent<Sense>()
+        //};
         IsGrounded();
-        distToGround = GetComponent<BoxCollider2D>().bounds.extents.y;
+        distToGround = GetComponent<BoxCollider2D>().bounds.size.y;
+        width = GetComponent<BoxCollider2D>().bounds.size.x;
 
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
         // Get a non magic number way pls
-        cog = transform.GetChild(7).GetComponent<CogIndicator>();
+        //cog = transform.GetChild(7).GetComponent<CogIndicator>();
 
         // Get the collection of path nodes in the scene
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Path");
@@ -144,7 +146,7 @@ public class Agent : KeyWindable
 
     protected virtual void BehaviorTree(float walkSpeed, bool fast)
     {
-        if(!processingTurn && !processingStop)
+        if (!processingTurn && !processingStop)
         {
             rb.velocity = new Vector2(walkSpeed * direction.x, rb.velocity.y);
         }
@@ -164,13 +166,13 @@ public class Agent : KeyWindable
     {
         const float BUFFER = 0.1f;
 
-        jumpState = (RayCheck(transform.position, BUFFER, -distToGround) || RayCheck(transform.position, -BUFFER, distToGround) ? JumpState.Grounded: JumpState.Aerial);
+        jumpState = (RayCheck(transform.position, BUFFER, -width / 2, distToGround) || RayCheck(transform.position, -BUFFER, width / 2, distToGround) ? JumpState.Grounded: JumpState.Aerial);
     }
 
-    protected bool RayCheck(Vector3 position, float buffer, float halfRadius)
+    protected bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight)
     {
-        RaycastHit2D ray = Physics2D.Raycast(new Vector3(position.x - halfRadius + buffer, position.y - halfRadius, 0), Vector2.down, 10);
-        return ray.collider != null && ray.distance < halfRadius + buffer;
+        RaycastHit2D ray = Physics2D.Raycast(new Vector3(position.x - halfWidth + buffer, position.y - halfHeight, 0), Vector2.down, 10);
+        return ray.collider != null && ray.distance < halfHeight + buffer;
     }
 
     protected List<Vector2> ValidJumps()
@@ -245,6 +247,15 @@ public class Agent : KeyWindable
         StartCoroutine(MoveDelay());
     }
 
+    protected void EdgeDetectMovement(bool detectFloorEdges, bool detectWalls)
+    {
+        int tempDir = EdgeDetect(detectFloorEdges, detectWalls);
+        if (tempDir != direction.x && tempDir != 0)
+        {
+            StartCoroutine(TurnDelay());
+        }
+    }
+
     #region Edge Detection
     protected void OnCollisionEnter2D(Collision2D collision)
     {
@@ -307,7 +318,7 @@ public class Agent : KeyWindable
                 {
                     floorPts.Add(contact);
                 }
-                if (Mathf.Abs(contact.point.x - transform.position.x) <= .1f + distToGround)
+                if (Mathf.Abs(contact.point.x - transform.position.x) <= .1f + width)
                 {
                     wallPts.Add(contact);
                 }
@@ -329,8 +340,8 @@ public class Agent : KeyWindable
 
                     if (sqrDist <= minLedgeSize)
                     {
-                        bool leftRayCheck = RayCheck(transform.position, 0.1f, -distToGround);
-                        bool rightRayCheck = RayCheck(transform.position, -0.1f, distToGround);
+                        bool leftRayCheck = RayCheck(transform.position, 0.1f, -width / 2, distToGround);
+                        bool rightRayCheck = RayCheck(transform.position, -0.1f, width / 2, distToGround);
                         if (pathTarget != null)
                         {
                             float xDistToTarget = Mathf.Abs(transform.position.x - pathTarget.transform.position.x);
@@ -495,10 +506,10 @@ public class Agent : KeyWindable
             }
         }
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(new Vector3(transform.position.x - distToGround + 0.2f, transform.position.y - distToGround, 0), .125f);
-        Gizmos.DrawWireSphere(new Vector3(transform.position.x + distToGround - 0.2f, transform.position.y - distToGround, 0), .125f);
+        Gizmos.DrawWireSphere(new Vector3(transform.position.x - width / 2 + 0.2f, transform.position.y - distToGround, 0), .125f);
+        Gizmos.DrawWireSphere(new Vector3(transform.position.x + width / 2 - 0.2f, transform.position.y - distToGround, 0), .125f);
 
-        Gizmos.DrawRay(new Vector3(transform.position.x - distToGround + 0.2f, transform.position.y - distToGround, 0), Vector2.down);
-        Gizmos.DrawRay(new Vector3(transform.position.x + distToGround - 0.2f, transform.position.y - distToGround, 0), Vector2.down);
+        Gizmos.DrawRay(new Vector3(transform.position.x - width / 2 + 0.2f, transform.position.y - distToGround, 0), Vector2.down);
+        Gizmos.DrawRay(new Vector3(transform.position.x + width / 2 - 0.2f, transform.position.y - distToGround, 0), Vector2.down);
     }
 }

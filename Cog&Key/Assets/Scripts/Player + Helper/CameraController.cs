@@ -29,38 +29,48 @@ public class CameraController : MonoBehaviour
 
     public static CameraController Instance { get; private set; }
 
-    public Vector2 Dimensions { get {
-        Vector2 dimensions = new Vector2();
-        dimensions.y = GetComponent<Camera>().orthographicSize * 2;
-        dimensions.x = dimensions.y * 16f/9f; // 16/9 aspect ratio
-        return dimensions;
-    } }
+    public Vector2 Dimensions
+    {
+        get
+        {
+            Vector2 dimensions = new Vector2();
+            dimensions.y = GetComponent<Camera>().orthographicSize * 2;
+            dimensions.x = dimensions.y * 16f / 9f; // 16/9 aspect ratio
+            return dimensions;
+        }
+    }
 
-    void Awake() {
+    void Awake()
+    {
         Instance = this;
         player = GameObject.FindWithTag("Player").GetComponent<PlayerScript>();
         fixedZ = transform.position.z;
-        if(LevelData.Instance != null) {
+        if (LevelData.Instance != null)
+        {
             SetInitialPosition();
         }
 
         playerWindow = new Rect(-WINDOW_X_LIMIT, -3f, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 
-    void FixedUpdate() {
+    void FixedUpdate()
+    {
         Vector3 newPosition = transform.position;
         Vector3 playerRelativeToCenter = player.transform.position - transform.position;
 
         // manage horizontal
         float? movingX = null;
-        if(playerRelativeToCenter.x < playerWindow.xMin) {
+        if (playerRelativeToCenter.x < playerWindow.xMin)
+        {
             movingX = playerWindow.xMin;
         }
-        else if(playerRelativeToCenter.x > playerWindow.xMax) {
+        else if (playerRelativeToCenter.x > playerWindow.xMax)
+        {
             movingX = playerWindow.xMax;
         }
 
-        if(movingX.HasValue) {
+        if (movingX.HasValue)
+        {
             newPosition.x += (playerRelativeToCenter.x - movingX.Value) * HORIZONTAL_MOVE_RATE * Time.timeScale;
         }
 
@@ -70,14 +80,17 @@ public class CameraController : MonoBehaviour
         float aerialExtension = aerial ? AERIAL_WINDOW_EXTENSION : 0f;
         float minBound = Mathf.Max(playerWindow.yMin - aerialExtension, -WINDOW_Y_LIMIT);
         float maxBound = Mathf.Min(playerWindow.yMax + aerialExtension, WINDOW_Y_LIMIT);
-        if(playerRelativeToCenter.y < minBound) {
+        if (playerRelativeToCenter.y < minBound)
+        {
             movingY = minBound;
         }
-        else if(playerRelativeToCenter.y > maxBound) {
+        else if (playerRelativeToCenter.y > maxBound)
+        {
             movingY = maxBound;
         }
 
-        if(movingY.HasValue) {
+        if (movingY.HasValue)
+        {
             newPosition.y += (playerRelativeToCenter.y - movingY.Value) * (aerial ? AERIAL_VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE) * Time.timeScale;
         }
 
@@ -96,7 +109,8 @@ public class CameraController : MonoBehaviour
         newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = newPosition;
 
-         if(visibleWindow != null) {
+        if (visibleWindow != null)
+        {
             // REMOVE FOR FINAL VERSION
             //visibleWindow.transform.position = transform.position + (Vector3)playerWindow.center + new Vector3(0, 0, -fixedZ);
             //visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
@@ -106,7 +120,8 @@ public class CameraController : MonoBehaviour
     }
 
     // called by LevelData.cs Start() after generating the level bounds
-    public void SetInitialPosition() {
+    public void SetInitialPosition()
+    {
         transform.position = player.transform.position - (Vector3)playerWindow.center + new Vector3(0, 0, fixedZ);
     }
 }

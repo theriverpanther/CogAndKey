@@ -71,14 +71,7 @@ public class Hunter : Agent
         //}
     }
 
-    private void EdgeDetectMovement(bool detectFloorEdges, bool detectWalls)
-    {
-        int tempDir = EdgeDetect(detectFloorEdges, detectWalls);
-        if (tempDir != direction.x && tempDir != 0)
-        {
-            StartCoroutine(TurnDelay());
-        }
-    }
+    
 
     protected override void BehaviorTree(float walkSpeed, bool fast)
     {
