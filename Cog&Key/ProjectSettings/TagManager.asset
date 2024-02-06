@@ -12,7 +12,7 @@ TagManager:
   - Helper
   - Node
   - Agent
-  - Path
+  - Not Physics
   layers:
   - Default
   - TransparentFX
@@ -20,13 +20,13 @@ TagManager:
   - Ground
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Key Trigger
+  - Key
+  - KeyVisual
+  - Helper
   - Player
-  - 
-  - 
+  - PlayerVisual
+  - HelperConnectionPoint
   - 
   - 
   - 

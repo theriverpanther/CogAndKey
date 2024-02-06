@@ -621,7 +621,7 @@ GameObject:
   - component: {fileID: 8040336077339182211}
   m_Layer: 2
   m_Name: Sight
-  m_TagString: Untagged
+  m_TagString: Not Physics
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

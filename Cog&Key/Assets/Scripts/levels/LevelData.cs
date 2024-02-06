@@ -6,23 +6,29 @@ using UnityEngine.SceneManagement;
 // one of these scripts should exist per level. Does not delete when the level is reloaded, but deletes when going to a new level
 public class LevelData : MonoBehaviour
 {
-    private static LevelData instance;
-    public static LevelData Instance { get { return instance; } }
+    public static LevelData Instance { get; private set; }
+    [SerializeField] private GameObject LevelBoundary;
+    private Rect levelBounds;
 
     private string levelName;
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
     [SerializeField] private List<LevelBoundScript> levelAreas = new List<LevelBoundScript>();
+    private Dictionary<KeyState, bool> checkpointKeys; // saves keys that are claimed before a checkpoint
     private List<Rect> cameraZones;
 
     public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
     public List<Rect> CameraZones { get { return cameraZones; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
-    public float XMin { get; private set; }
-    public float XMax { get; private set; }
-    public float YMin { get; private set; }
-
-    public List<KeyState> StartingKeys;
+    public float XMin { get { return levelBounds.xMin; } }
+    public float XMax { get { return levelBounds.xMax; } }
+    public float YMin { get { return levelBounds.yMin; } }
+    public float YMax { get { return levelBounds.yMax; } }
+    //public float XMin { get { return float.MinValue; } }
+    //public float XMax { get { return float.MaxValue; } }
+    //public float YMin { get { return -100; } }
+    //public float YMax { get { return float.MaxValue; } }
+    public int DeathsSinceCheckpoint { get; private set; }
 
     // needs CameraScript Awake() to run first
     void Start() {
@@ -32,46 +38,51 @@ public class LevelData : MonoBehaviour
         GameObject[] bounds = GameObject.FindGameObjectsWithTag("LevelBound");
 
         // delete duplicates
-        if(instance != null) {
+        if(Instance != null) {
             foreach(GameObject checkpoint in checkpoints) {
-                if(!instance.checkpoints.Contains(checkpoint)) {
+                if(!Instance.checkpoints.Contains(checkpoint)) {
                     Destroy(checkpoint);
                     
                 }
             }
 
             foreach(GameObject bound in bounds) {
-                if(!instance.levelAreas.Contains(bound.GetComponent<LevelBoundScript>())) {
+                if(!Instance.levelAreas.Contains(bound.GetComponent<LevelBoundScript>())) {
                     Destroy(bound);
                 }
             }
             Destroy(gameObject);
             return;
         }
-        
+
         // set up the single instance
-        instance = this;
+        Instance = this;
         levelName = SceneManager.GetActiveScene().name;
         DontDestroyOnLoad(gameObject);
         SceneManager.activeSceneChanged += CheckNextLevel;
 
         // store the level's boundaries and checkpoints
+        Vector2 boundMid = LevelBoundary.transform.position;
+        Vector2 boundDims = LevelBoundary.transform.lossyScale;
+        levelBounds = new Rect(boundMid - boundDims / 2f, boundDims);
+        LevelBoundary.SetActive(false);
+
         foreach(GameObject checkpoint in checkpoints) {
             checkpoint.transform.SetParent(null, true);
             DontDestroyOnLoad(checkpoint);
         }
 
-        XMin = float.MaxValue;
-        XMax = float.MinValue;
-        YMin = float.MaxValue;
+        //XMin = float.MaxValue;
+        //XMax = float.MinValue;
+        //YMin = float.MaxValue;
         foreach(GameObject bound in bounds) {
             LevelBoundScript boundScript = bound.GetComponent<LevelBoundScript>();
             if(boundScript != null) {
                 boundScript.Area = new Rect(bound.transform.position - bound.transform.lossyScale / 2, bound.transform.lossyScale);
                 levelAreas.Add(boundScript);
-                XMin = Mathf.Min(XMin, boundScript.Area.xMin);
-                XMax = Mathf.Max(XMax, boundScript.Area.xMax);
-                YMin = Mathf.Min(YMin, boundScript.Area.yMin);
+                //XMin = Mathf.Min(XMin, boundScript.Area.xMin);
+                //XMax = Mathf.Max(XMax, boundScript.Area.xMax);
+                //YMin = Mathf.Min(YMin, boundScript.Area.yMin);
                 bound.GetComponent<SpriteRenderer>().enabled = false;
                 bound.transform.SetParent(null, true);
                 DontDestroyOnLoad(bound);
@@ -79,10 +90,16 @@ public class LevelData : MonoBehaviour
         }
 
         GenerateCameraZones();
-        CameraScript.Instance.SetInitialPosition();
+        CameraScript.Instance?.SetInitialPosition();
+        CameraController.Instance?.SetInitialPosition();
 
         // equip the player with the starting keys
-        EquipStartKeys();
+        checkpointKeys = new Dictionary<KeyState, bool>();
+        checkpointKeys[KeyState.Fast] = false;
+        checkpointKeys[KeyState.Lock] = false;
+        checkpointKeys[KeyState.Reverse] = false;
+
+        EquipCheckpointKeys();
     }
 
     // called when the scene changes, deletes the instance if it is no longer the correct level
@@ -92,7 +109,8 @@ public class LevelData : MonoBehaviour
             SceneManager.sceneLoaded += NewLevelLoaded;
         } else {
             // level restarted
-            EquipStartKeys();
+            DeathsSinceCheckpoint++;
+            EquipCheckpointKeys();
         }
     }
 
@@ -111,7 +129,7 @@ public class LevelData : MonoBehaviour
         levelAreas.Clear();
 
         Destroy(gameObject);
-        instance = null;
+        Instance = null;
         SceneManager.sceneLoaded -= NewLevelLoaded;
     }
 
@@ -127,25 +145,21 @@ public class LevelData : MonoBehaviour
 
         currentCheckpoint = checkpoint;
         currentCheckpoint.SetAsCheckpoint(true);
+        DeathsSinceCheckpoint = 0;
 
         // save keys acquired since the last checkpoint
-        PlayerScript player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
-        if(!StartingKeys.Contains(KeyState.Fast) && player.FastKey != null) {
-            StartingKeys.Add(KeyState.Fast);
-        }
-        if(!StartingKeys.Contains(KeyState.Lock) && player.LockKey != null) {
-            StartingKeys.Add(KeyState.Lock);
-        }
-        if(!StartingKeys.Contains(KeyState.Reverse) && player.ReverseKey != null) {
-            StartingKeys.Add(KeyState.Reverse);
+        foreach(KeyState keyType in new KeyState[3] { KeyState.Fast, KeyState.Lock, KeyState.Reverse }) {
+            if(PlayerInput.Instance.EquippedKeys[keyType]) {
+                checkpointKeys[keyType] = true;
+            }
         }
     }
 
-    private void EquipStartKeys() {
+    private void EquipCheckpointKeys() {
         GameObject[] keys = GameObject.FindGameObjectsWithTag("Key");
         foreach(GameObject key in keys) {
             KeyScript keyScript = key.GetComponent<KeyScript>();
-            if(StartingKeys.Contains(keyScript.Type)) {
+            if(checkpointKeys[keyScript.Type]) {
                 keyScript.Equip();
             }
         }
@@ -154,6 +168,9 @@ public class LevelData : MonoBehaviour
     // uses the level bounds to determine where the camera is allowed to be centered
     private void GenerateCameraZones() {
         cameraZones = new List<Rect>();
+        if(CameraScript.Instance == null) {
+            return;
+        }
         Vector2 cameraDims = CameraScript.Instance.Dimensions;
 
         // add areas in the middle of each level boundary
@@ -201,12 +218,13 @@ public class LevelData : MonoBehaviour
         cameraZones.AddRange(addedZones);
     }
 
+    // Note to future self: delete this awful function
     private bool AreZonesOppositeDirection(LevelBoundScript one, LevelBoundScript other)
     {
-        bool hasUp = one.AreaType == CamerBoundType.Up || other.AreaType == CamerBoundType.Up;
-        bool hasDown = one.AreaType == CamerBoundType.Down || other.AreaType == CamerBoundType.Down;
-        bool hasLeft = one.AreaType == CamerBoundType.Left || other.AreaType == CamerBoundType.Left;
-        bool hasRight = one.AreaType == CamerBoundType.Right || other.AreaType == CamerBoundType.Right;
+        bool hasUp = one.AreaType == CameraBoundType.Up || other.AreaType == CameraBoundType.Up;
+        bool hasDown = one.AreaType == CameraBoundType.Down || other.AreaType == CameraBoundType.Down;
+        bool hasLeft = one.AreaType == CameraBoundType.Left || other.AreaType == CameraBoundType.Left;
+        bool hasRight = one.AreaType == CameraBoundType.Right || other.AreaType == CameraBoundType.Right;
         return hasUp && hasDown || hasLeft && hasRight;
     }
 }

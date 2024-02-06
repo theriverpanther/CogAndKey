@@ -9,18 +9,15 @@ EditorBuildSettings:
     path: Assets/Scenes/TItlescreen.unity
     guid: 3af3dcf683480e0438c31447e9dd2e77
   - enabled: 1
-    path: Assets/Scenes/LVL1.unity
-    guid: 22f3102da6acd8849a798074bf49bb3b
+    path: Assets/Scenes/Level 1.unity
+    guid: fa661e545a8d29141b1beb56e0527a92
   - enabled: 1
-    path: Assets/Scenes/LVL2.unity
-    guid: e2faf89dc4a7bcf49b5f9f79e47f022d
+    path: Assets/Scenes/Level 2.unity
+    guid: 369ec709d9cecde4491120861590a677
   - enabled: 1
-    path: Assets/Scenes/LVL3.unity
-    guid: 31eb106a0c7db8f44b8efce9c726026e
+    path: Assets/Scenes/Level 3.unity
+    guid: d7d644dac2c878449af022959504d31c
   - enabled: 1
-    path: Assets/Scenes/LVL4.unity
-    guid: 94b655e2e858d304180878c1933c98fe
-  - enabled: 1
-    path: Assets/Scenes/Conveyor Lair.unity
-    guid: 9619a4060f2c3c349b0a63adcbf3ce43
+    path: Assets/Scenes/Level 4.unity
+    guid: b308f3cebb16ee848811ba0506a8f8e5
   m_configObjects: {}

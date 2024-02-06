@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using Unity.VisualScripting;
+//using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class Agent : MonoBehaviour, IKeyWindable
@@ -82,20 +85,29 @@ public class Agent : MonoBehaviour, IKeyWindable
 
         // Get the collection of path nodes in the scene
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Path");
-        GameObject obj = objs[0];
-        float dist = Vector3.Distance(transform.position, obj.transform.position);
-        float tempDist = 0;
-        foreach (GameObject node in objs)
+        if (objs.Length > 0)
         {
-            tempDist = Vector3.Distance(transform.position, node.transform.position);
-            if (Vector3.Distance(transform.position, node.transform.position) < dist)
+            GameObject obj = objs[0];
+            float dist = Vector3.Distance(transform.position, obj.transform.position);
+            float tempDist = 0;
+            foreach (GameObject node in objs)
             {
-                obj = node;
-                dist = tempDist;
+                tempDist = Vector3.Distance(transform.position, node.transform.position);
+                if (Vector3.Distance(transform.position, node.transform.position) < dist)
+                {
+                    obj = node;
+                    dist = tempDist;
+                }
             }
+
+            pathTarget = obj.GetComponent<PathNode>();
         }
+        
 
         pathTarget = obj.GetComponent<PathNode>();
+        contacts = new List<ContactPoint2D>();
+        floorPts = new List<ContactPoint2D>();
+        wallPts = new List<ContactPoint2D>();
     }
 
     // Update is called once per frame
@@ -257,48 +269,84 @@ public class Agent : MonoBehaviour, IKeyWindable
         int returnVal = 0;
         foreach (GameObject obj in collidingObjs)
         {
-            if(obj.GetComponent<BoxCollider2D>() != null)
-            {
-                if (detectWalls && transform.position.y > obj.transform.position.y - obj.GetComponent<BoxCollider2D>().bounds.size.y / 2 &&
-                transform.position.y < obj.transform.position.y + obj.GetComponent<BoxCollider2D>().bounds.size.y / 2)
-                {
-                    returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
-                }
-                else if (detectFloorEdges && transform.position.x + GetComponent<BoxCollider2D>().bounds.size.x / 2 > obj.transform.position.x + obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
-                {
-                    jumpState = JumpState.Grounded;
-                    returnVal = -1;
-                }
-                else if (detectFloorEdges && transform.position.x - GetComponent<BoxCollider2D>().bounds.size.x / 2 < obj.transform.position.x - obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
-                {
-                    jumpState = JumpState.Grounded;
-                    returnVal = 1;
-                }
-            }
-            else
-            {
                 // If the agent is stuck at a wall, search for a node to move towards
                 if(detectWalls && !processingTurn)
                 {
-                    foreach(GameObject node in nodes)
-                    {
-                        if(Mathf.Sign((node.transform.position - transform.position).x) == Mathf.Sign(direction.x) &&
-                            Vector2.Distance(node.transform.position, transform.position) <= 0.25f && 
-                            Physics2D.Raycast(transform.position, node.transform.position, 0.6f))
+                        bool leftRayCheck = RayCheck(transform.position, 0.1f, -distToGround);
+                        bool rightRayCheck = RayCheck(transform.position, -0.1f, distToGround);
+                        if (pathTarget != null)
                         {
-                            Debug.DrawLine(node.transform.position, transform.position, Color.red, 2f);
-                            // Turn
-                            returnVal = transform.position.x > node.transform.position.x ? 1 : -1;
-                            break;
+                            float xDistToTarget = Mathf.Abs(transform.position.x - pathTarget.transform.position.x);
+                            float sqrDistToTarget = Vector3.SqrMagnitude(transform.position - pathTarget.transform.position);
+                            if (xDistToTarget < 20f)
+                            {
+                                RaycastHit2D results;
+                                results = Physics2D.Raycast(transform.position, (pathTarget.transform.position - transform.position).normalized, 5f);
+                                if (results.collider != null)
+                                {
+                                    //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                    Vector3 point = results.collider.transform.position;
+                                    if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
+                                    {
+                                        if (pathTarget.transform.position.y > transform.position.y) Jump();
+                                        returnVal = 0;
+                                        lostTimer = 0;
+                                        isLost = false;
+                                    }
+                                    else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? 1 : -1;
+                                    // Still end up stopping at the edge
+                                    // This will also run them off the edge
+                                    // Is this a garbage collection issue?
+                                }
+                                else
+                                {
+                                    //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                    if (sqrDistToTarget <= 64f)
+                                    {
+                                        if (transform.position.y < pathTarget.transform.position.y) Jump();
+                                        returnVal = 0;
+                                        lostTimer = 0;
+                                        isLost = false;
+                                    }
+                                    else
+                                    {
+                                        lostTimer += Time.deltaTime;
+                                        if (lostTimer >= confusionTime)
+                                        {
+                                            isLost = true;
+                                            Debug.Log(gameObject.name + " can't reach next point at " + pathTarget.transform.position + ".");
+                                        }
+                                        // Turn the way that is opposite of the edge the agent is at
+                                        returnVal = floorPts[0].point.x < transform.position.x ? 1 : -1;
+                                    }
+                                }
+                            }
+                        
+                            
+                            if (PlayerPosition != Vector3.zero)
+                            {
+                                Jump();
+                                returnVal = 0;
+                            }
+                        
                         }
-                    }
+                        else returnVal = floorPts[0].point.x < transform.position.x ? 1 : -1;
+
                 }
                 // If the collision is against a node, that means that the agent is at a ledge, so turn around
-                if(detectFloorEdges && obj.tag == "Node" && !processingTurn)
+                if(detectFloorEdges && !processingTurn)
                 {
-                    returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
+                    if (wallPts[0].point.y - transform.position.y >= distToGround -.1f)
+                    {
+                        returnVal = wallPts[0].point.x < transform.position.x ? 1 : -1;
+                        Debug.Log("inner");
+                    }
+                    else
+                    {
+                        Jump();
+                    }
                 }
-            }
+        
         }
 
         return returnVal;

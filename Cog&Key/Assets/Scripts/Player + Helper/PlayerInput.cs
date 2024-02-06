@@ -25,7 +25,8 @@ public class PlayerInput
     // contain a spot for each Action, index matches enum int value
     private bool[] pressedLastFrame;
     private bool[] pressedThisFrame;
-    private bool mouseClicked;
+    private bool mousePressedLastFrame;
+    private bool mousePressedThisFrame;
 
     // used to detect when a controller is plugged in or unplugged
     private Gamepad currentGP;
@@ -37,14 +38,37 @@ public class PlayerInput
     public string ControllerName { get { return controllerName; } }
 
     private Dictionary<Action, List<ButtonControl>> keyBindings;
+    private Dictionary<Action, Vector2> throwDirectionToVector = new Dictionary<Action, Vector2>() {
+        { Action.ThrowUp, Vector2.up },
+        { Action.ThrowDown, Vector2.down },
+        { Action.ThrowLeft, Vector2.left },
+        { Action.ThrowRight , Vector2.right}
+    };
     private float jumpBuffer;
 
     public bool JumpBuffered { get { return jumpBuffer > 0; } }
+    public KeyState SelectedKey { get; set; }
+    public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
 
-    public PlayerInput() {
+    public PlayerScript Player { get; set; }
+
+    private static PlayerInput instance;
+    public static PlayerInput Instance { get {  
+        if(instance == null) {
+            instance = new PlayerInput();
+        }
+        return instance;
+    } }
+    private PlayerInput() {
         NUM_ACTIONS = Enum.GetNames(typeof(Action)).Length;
         pressedLastFrame = new bool[NUM_ACTIONS];
         pressedThisFrame = new bool[NUM_ACTIONS];
+        SelectedKey = KeyState.None;
+        EquippedKeys = new Dictionary<KeyState, bool>() {
+            { KeyState.Lock, false },
+            { KeyState.Fast, false },
+            { KeyState.Reverse, false }
+        };
 
         keyBindings = new Dictionary<Action, List<ButtonControl>>();
         for(int i = 0; i < NUM_ACTIONS; i++) {
@@ -53,7 +77,7 @@ public class PlayerInput
         ConstructKeyBindings();
     }
 
-    // should be called once per frame
+    // must be called once per frame
     public void Update() {
         if(Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse) {
             ConstructKeyBindings();
@@ -71,10 +95,14 @@ public class PlayerInput
             }
         }
 
-        mouseClicked = false;
-        if(currentMouse != null && currentMouse.leftButton.isPressed) {
-            mouseClicked = true;
+        foreach(KeyState keyType in KeyScript.keyToInput.Keys) {
+            if(JustPressed(KeyScript.keyToInput[keyType]) && EquippedKeys[keyType]) {
+                SelectedKey = keyType;
+            }
         }
+
+        mousePressedLastFrame = mousePressedThisFrame;
+        mousePressedThisFrame = currentMouse != null && currentMouse.leftButton.isPressed;
 
         // manage jump buffer
         if(JustPressed(Action.Jump)) {
@@ -83,6 +111,45 @@ public class PlayerInput
         else if(jumpBuffer > 0) {
             jumpBuffer -= Time.deltaTime;
         }
+    }
+
+    // if the player is input a throw this frame, returns the direction the player is attempting to throw the key this frame
+    public Vector2? GetThrowDirection(KeyState key) {
+        if(JustPressed(KeyScript.keyToInput[key])) {
+            // when pressing the controller button, use the left stick for the direction and default to the player's facing direction
+            Vector2 result = Player.gameObject.transform.localScale.x > 0 ? Vector2.right : Vector2.left;
+            if(IsPressed(Action.Up)) {
+                result = Vector2.up;
+            }
+            else if(IsPressed(Action.Down)) {
+                result = Vector2.down;
+            }
+            return result;
+        }
+
+        if(key != SelectedKey) {
+            return null;
+        }
+
+        if(MouseJustClicked()) {
+            // throw in the direction the mouse is relative to the player's position
+            Vector3 mouseDir = GetMouseWorldPosition() - Player.transform.position;
+            if(Mathf.Abs(mouseDir.x) > Mathf.Abs(mouseDir.y)) {
+                mouseDir.y = 0;
+            } else {
+                mouseDir.x = 0;
+            }
+            return mouseDir.normalized;
+        }
+
+        Action[] throwDirections = new Action[4] { Action.ThrowUp, Action.ThrowDown, Action.ThrowLeft, Action.ThrowRight };
+        foreach(Action throwDirection in throwDirections) {
+            if(JustPressed(throwDirection)) {
+                return throwDirectionToVector[throwDirection];
+            }
+        }
+
+        return null;
     }
 
     public bool IsPressed(Action action) {
@@ -135,8 +202,8 @@ public class PlayerInput
         }
     }
 
-    public bool MouseClicked() {
-        return mouseClicked;
+    public bool MouseJustClicked() {
+        return mousePressedThisFrame && !mousePressedLastFrame;
     }
 
     // should not be called if there is no mouse

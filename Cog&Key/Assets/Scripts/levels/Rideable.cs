@@ -62,8 +62,8 @@ public abstract class Rideable : MonoBehaviour
     private bool PressedTowardsMiddle(GameObject rider) {
         PlayerScript player = rider.GetComponent<PlayerScript>();
         if(player != null) {
-            return (rider.transform.position.x < transform.position.x && player.Input.IsPressed(PlayerInput.Action.Right))
-                || (rider.transform.position.x > transform.position.x && player.Input.IsPressed(PlayerInput.Action.Left));
+            return (rider.transform.position.x < transform.position.x && PlayerInput.Instance.IsPressed(PlayerInput.Action.Right))
+                || (rider.transform.position.x > transform.position.x && PlayerInput.Instance.IsPressed(PlayerInput.Action.Left));
         }
 
         return true;
