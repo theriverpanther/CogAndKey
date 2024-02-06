@@ -50,7 +50,9 @@ public class KeyScript : MonoBehaviour
         visual = transform.GetChild(0).gameObject;
         keyAni = visual.GetComponent<Animator>();
         boxCollider = GetComponent<Collider2D>();
+    }
 
+    void Start() {
         if (StartEquipped) {
             Equip();
         }
