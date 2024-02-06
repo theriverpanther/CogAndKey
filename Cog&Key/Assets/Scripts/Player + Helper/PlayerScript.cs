@@ -109,20 +109,24 @@ public class PlayerScript : MonoBehaviour
                 
                 Direction adjWallDir = GetAdjacentWallDireciton();
 
-                if(velocity.y < 0) {
+                if (velocity.y < 0)
+                {
                     SetAnimation("Falling");
                 }
 
                 // cling to walls
-                if(velocity.y < CLING_VELOCITY && 
+                if (velocity.y < CLING_VELOCITY && 
                     (adjWallDir == Direction.Left && input.IsPressed(PlayerInput.Action.Left) || adjWallDir == Direction.Right && input.IsPressed(PlayerInput.Action.Right))
                 ) {
                     velocity.y = CLING_VELOCITY;
                     SetAnimation("Wallslide");
                 }
 
+
+
+
                 // wall jump
-                if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
+                if (adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
                     physicsBody.gravityScale = JUMP_GRAVITY;
                     bool boosted = false;
                     const float WALL_JUMP_SPEED = 11f;
