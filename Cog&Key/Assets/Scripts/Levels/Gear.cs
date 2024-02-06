@@ -61,7 +61,7 @@ public class Gear : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.Rotate(Vector3.forward * (speed * dir) * Time.deltaTime, Space.Self);
+        transform.Rotate(Vector3.forward * (speed * dir) * Time.deltaTime, Space.);
         Debug.Log("Rotating.. " + speed);
     }
 
