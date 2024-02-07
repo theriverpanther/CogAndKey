@@ -22,6 +22,10 @@ public class PlayerInput
         FastKey,
         LockKey,
         ReverseKey,
+        SelectFast,
+        SelectLock,
+        SelectReverse,
+        Recall,
         Pause
     }
 
@@ -30,8 +34,6 @@ public class PlayerInput
     // contain a spot for each Action, index matches enum int value
     private bool[] pressedLastFrame;
     private bool[] pressedThisFrame;
-    private bool mousePressedLastFrame;
-    private bool mousePressedThisFrame;
 
     // used to detect when a controller is plugged in or unplugged
     private Gamepad currentGP;
@@ -49,12 +51,27 @@ public class PlayerInput
         { Action.ThrowLeft, Vector2.left },
         { Action.ThrowRight , Vector2.right}
     };
+    private Dictionary<KeyState, Action> keyToSelector = new Dictionary<KeyState, Action>() {
+        { KeyState.Fast, Action.SelectFast },
+        { KeyState.Lock, Action.SelectLock },
+        { KeyState.Reverse, Action.SelectReverse }
+    };
     private float jumpBuffer;
 
     public bool JumpBuffered { get { return jumpBuffer > 0; } }
     public KeyState SelectedKey { get; set; }
 
     public PlayerScript Player { get; set; }
+
+    private bool locked;
+    public bool Locked { set {
+        locked = value;
+        if(locked) { 
+            ClearKeybindings();
+        } else { 
+            ConstructKeyBindings();
+        }    
+    } }
 
     private static PlayerInput instance;
     public static PlayerInput Instance { get {  
@@ -79,7 +96,7 @@ public class PlayerInput
 
     // must be called once per frame
     public void Update() {
-        if(Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse) {
+        if(!locked && (Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse)) {
             ConstructKeyBindings();
         }
 
@@ -96,13 +113,10 @@ public class PlayerInput
         }
 
         foreach(KeyState keyType in KeyScript.keyToInput.Keys) {
-            if(JustPressed(KeyScript.keyToInput[keyType]) && Player.EquippedKeys[keyType]) {
+            if((JustPressed(KeyScript.keyToInput[keyType]) || JustPressed(keyToSelector[keyType])) && Player.EquippedKeys[keyType]) {
                 SelectedKey = keyType;
             }
         }
-
-        mousePressedLastFrame = mousePressedThisFrame;
-        mousePressedThisFrame = currentMouse != null && currentMouse.leftButton.isPressed;
 
         // manage jump buffer
         if(JustPressed(Action.Jump)) {
@@ -168,12 +182,10 @@ public class PlayerInput
 
         controllerName = Input.GetJoystickNames().Length > 0 ? Input.GetJoystickNames()[0] : null;
 
-        for(int i = 0; i < NUM_ACTIONS; i++) {
-            keyBindings[(Action)i].Clear();
-        }
+        ClearKeybindings();
 
         // add gamepad bindings
-        if(currentGP != null) {
+        if (currentGP != null) {
             keyBindings[Action.Jump].AddRange(new List<ButtonControl>() { currentGP.aButton });
             keyBindings[Action.Right].AddRange(new List<ButtonControl>() { currentGP.leftStick.right, currentGP.dpad.right });
             keyBindings[Action.Left].AddRange(new List<ButtonControl>() { currentGP.leftStick.left, currentGP.dpad.left });
@@ -200,20 +212,27 @@ public class PlayerInput
             keyBindings[Action.ThrowDown].AddRange(new List<ButtonControl>() { currentKB.downArrowKey });
             keyBindings[Action.ThrowLeft].AddRange(new List<ButtonControl>() { currentKB.leftArrowKey });
             keyBindings[Action.ThrowRight].AddRange(new List<ButtonControl>() { currentKB.rightArrowKey });
-            keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentKB.digit1Key, currentKB.numpad1Key, currentKB.zKey });
-            keyBindings[Action.LockKey].AddRange(new List<ButtonControl>() { currentKB.digit2Key, currentKB.numpad2Key, currentKB.xKey });
-            keyBindings[Action.ReverseKey].AddRange(new List<ButtonControl>() { currentKB.digit3Key, currentKB.numpad3Key, currentKB.cKey });
+            keyBindings[Action.SelectFast].AddRange(new List<ButtonControl>() { currentKB.digit1Key, currentKB.numpad1Key, currentKB.zKey });
+            keyBindings[Action.SelectLock].AddRange(new List<ButtonControl>() { currentKB.digit2Key, currentKB.numpad2Key, currentKB.xKey });
+            keyBindings[Action.SelectReverse].AddRange(new List<ButtonControl>() { currentKB.digit3Key, currentKB.numpad3Key, currentKB.cKey });
             keyBindings[Action.Pause].AddRange(new List<ButtonControl>() { currentKB.escapeKey });
         }
 
         // add mouse input
         if(currentMouse != null) {
             //keyBindings[Action.FastKey].AddRange(new List<ButtonControl>() { currentMouse.leftButton });
+            keyBindings[Action.Recall].AddRange(new List<ButtonControl>() { currentMouse.rightButton });
+        }
+    }
+
+    private void ClearKeybindings() {
+        for(int i = 0; i < NUM_ACTIONS; i++) {
+            keyBindings[(Action)i].Clear();
         }
     }
 
     public bool MouseJustClicked() {
-        return mousePressedThisFrame && !mousePressedLastFrame;
+        return !locked && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
     }
 
     // should not be called if there is no mouse
