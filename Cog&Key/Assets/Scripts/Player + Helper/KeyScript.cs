@@ -94,8 +94,8 @@ public class KeyScript : MonoBehaviour
         }
         else if(currentState == State.Attached) {
             if(PlayerInput.Instance.JustPressed(keyToInput[Type])
-                || Mathf.Abs(player.transform.position.y - transform.position.y) > 12f 
-                || Mathf.Abs(player.transform.position.x - transform.position.x) > 12f
+                || Mathf.Abs(player.transform.position.y - transform.position.y) > 16f 
+                || Mathf.Abs(player.transform.position.x - transform.position.x) > 16f
             ) {
                 Detach();
             }
