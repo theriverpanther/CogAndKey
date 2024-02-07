@@ -34,7 +34,7 @@ public abstract class Rideable : KeyWindable
     // add riders when they collide
     private void OnCollisionEnter2D(Collision2D collision) {
         Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
-        if(rb != null && !riders.Contains(collision.gameObject)) {
+        if(rb != null && !rb.isKinematic && !riders.Contains(collision.gameObject)) {
             if(OnSide(collision.gameObject) && !PressedTowardsMiddle(collision.gameObject)) {
                 // don't attached riders on the side that aren't pressed against it
                 attachedNonRiders.Add(collision.gameObject);
