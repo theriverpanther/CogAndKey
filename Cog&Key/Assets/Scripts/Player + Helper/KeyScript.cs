@@ -105,6 +105,7 @@ public class KeyScript : MonoBehaviour
     public void SetState(State keyState) {
         currentState = keyState;
         transform.SetParent(null);
+        boxCollider.enabled = true;
 
         switch(currentState) {
             case State.PlayerHeld:
@@ -113,6 +114,9 @@ public class KeyScript : MonoBehaviour
             case State.Attacking:
                 SetActive(true);
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+                break;
+            case State.Attached:
+                boxCollider.enabled = false; // disable collider because triggers are sent to the parent
                 break;
         }
 
