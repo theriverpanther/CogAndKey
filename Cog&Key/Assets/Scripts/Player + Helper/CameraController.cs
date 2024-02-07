@@ -81,6 +81,12 @@ public class CameraController : MonoBehaviour
             newPosition.y += (playerRelativeToCenter.y - movingY.Value) * (aerial ? AERIAL_VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE) * Time.timeScale;
         }
 
+        Vector2 cameraSize = Dimensions;
+        LevelData level = LevelData.Instance;
+        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + cameraSize.x / 2f, level.XMax - cameraSize.x / 2f);
+        newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + cameraSize.y / 2f, level.YMax - cameraSize.y / 2f);
+        transform.position = newPosition;
+
         // move the camera window away from the direction the player is going
         Vector3 displacement = newPosition - transform.position;
         Vector2 windowCenter = playerWindow.center;
@@ -90,12 +96,7 @@ public class CameraController : MonoBehaviour
         windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT - aerialExtension, WINDOW_CENTER_Y_LIMIT + aerialExtension);
         playerWindow.center = windowCenter;
 
-        Vector2 cameraSize = Dimensions;
-        LevelData level = LevelData.Instance;
-        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
-        newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
-        transform.position = newPosition;
-
+        // draw player window
          if(visibleWindow != null) {
             // REMOVE FOR FINAL VERSION
             //visibleWindow.transform.position = transform.position + (Vector3)playerWindow.center + new Vector3(0, 0, -fixedZ);
