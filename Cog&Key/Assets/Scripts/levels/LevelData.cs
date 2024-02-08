@@ -149,7 +149,7 @@ public class LevelData : MonoBehaviour
 
         // save keys acquired since the last checkpoint
         foreach(KeyState keyType in new KeyState[3] { KeyState.Fast, KeyState.Lock, KeyState.Reverse }) {
-            if(PlayerInput.Instance.EquippedKeys[keyType]) {
+            if(PlayerScript.CurrentPlayer.EquippedKeys[keyType]) {
                 checkpointKeys[keyType] = true;
             }
         }

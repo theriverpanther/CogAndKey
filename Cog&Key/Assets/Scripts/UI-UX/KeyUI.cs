@@ -25,7 +25,7 @@ public class KeyUI : MonoBehaviour
     public void ShowCollectedKeys()
     {
         foreach(KeyState keyType in new KeyState[3] { KeyState.Fast, KeyState.Lock, KeyState.Reverse }) {
-            if(PlayerInput.Instance.EquippedKeys[keyType]) {
+            if(PlayerScript.CurrentPlayer.GetComponent<PlayerScript>().EquippedKeys[keyType]) {
                 keyDictionary[keyType].SetActive(true);
             }
         }
