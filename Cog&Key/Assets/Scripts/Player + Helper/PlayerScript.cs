@@ -37,6 +37,7 @@ public class PlayerScript : MonoBehaviour
     private Animator playerAnimation;
 
     public State CurrentState { get; private set; }
+    public bool OnSurface { get; private set; }
     public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
     public static PlayerScript CurrentPlayer { get; private set; }
 
@@ -72,6 +73,7 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        OnSurface = false;
         input.Update();
         Vector2 velocity = physicsBody.velocity;
 
@@ -103,6 +105,7 @@ public class PlayerScript : MonoBehaviour
         bool onFloor = IsOnFloor(out floorNorm, out floorObject);
         if(onFloor) {
             CoyoteMomentum = null;
+            OnSurface = true;
         }
         
         switch(CurrentState) {
@@ -119,6 +122,9 @@ public class PlayerScript : MonoBehaviour
                 }
                 
                 Direction adjWallDir = GetAdjacentWallDireciton();
+                if(adjWallDir != Direction.None) {
+                    OnSurface = true;
+                }
 
                 if(velocity.y < 0) {
                     SetAnimation("Falling");

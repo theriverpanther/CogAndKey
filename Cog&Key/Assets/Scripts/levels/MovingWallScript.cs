@@ -13,6 +13,7 @@ public class MovingWallScript : Rideable
 
     private List<Vector2> pathPoints;
     private int nextPointIndex;
+    private float freezeTime;
     private bool forward; // false: moving backwards through the path
     private Vector2 bufferedMomentum;
     private float momentumBufferTime;
@@ -42,6 +43,11 @@ public class MovingWallScript : Rideable
 
     void FixedUpdate()
     {
+        if(freezeTime > 0) {
+            freezeTime -= (InsertedKeyType == KeyState.Fast ? 2 : 1) * Time.deltaTime;
+            return;
+        }
+
         if(InsertedKeyType == KeyState.Lock) {
             return;
         }
@@ -56,6 +62,7 @@ public class MovingWallScript : Rideable
             transform.position = target;
             bufferedMomentum = BecomeMomentum(pathPoints[nextPointIndex] - (Vector2)startPosition);
             momentumBufferTime = 0.2f;
+            freezeTime = 0.05f;
             NextWaypoint();
 
             // apply vertical bump when changing from upward to down and going fast

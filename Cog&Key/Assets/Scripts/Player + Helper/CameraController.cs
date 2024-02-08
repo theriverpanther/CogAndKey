@@ -24,8 +24,6 @@ public class CameraController : MonoBehaviour
     private PlayerScript player;
     private float fixedZ;
     private Rect playerWindow;
-    private float topAirExtension;
-    private float bottomAirExtension;
 
     public static CameraController Instance { get; private set; }
 
@@ -66,7 +64,7 @@ public class CameraController : MonoBehaviour
         }
 
         // manage vertical
-        bool aerial = player.CurrentState == PlayerScript.State.Aerial;
+        bool aerial = !player.OnSurface;
         float? movingY = null;
         float aerialExtension = aerial ? AERIAL_WINDOW_EXTENSION : 0f;
         float minBound = Mathf.Max(playerWindow.yMin - aerialExtension, -WINDOW_Y_LIMIT);
