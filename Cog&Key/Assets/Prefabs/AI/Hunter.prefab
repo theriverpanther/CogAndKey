@@ -481,9 +481,13 @@ MonoBehaviour:
   jumpSpeed: 13
   fastScalar: 2
   collidingObjs: []
+  direction: {x: 0, y: 0}
+  processingTurn: 0
+  processingStop: 0
   pathTarget: {fileID: 0}
   minLedgeSize: 0.5
   ledgeSize: 0
+  isLost: 0
   idleColor: {r: 0, g: 0.3019608, b: 0.2509804, a: 1}
   huntColor: {r: 0.84705883, g: 0.105882354, b: 0.3764706, a: 1}
 --- !u!61 &2698930125854928055
