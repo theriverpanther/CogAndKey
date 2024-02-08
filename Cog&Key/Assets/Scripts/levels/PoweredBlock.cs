@@ -69,6 +69,7 @@ public class PoweredBlock : Rideable
     protected override void OnKeyRemoved(KeyState removedKey) {
         if(removedKey == KeyState.Lock) {
             physBod.isKinematic = true;
+            physBod.velocity = Vector3.zero;
         }
     }
 }

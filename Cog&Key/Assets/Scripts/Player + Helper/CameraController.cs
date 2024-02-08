@@ -48,6 +48,7 @@ public class CameraController : MonoBehaviour
     }
 
     void FixedUpdate() {
+        Vector3 startPosition = transform.position;
         Vector3 newPosition = transform.position;
         Vector3 playerRelativeToCenter = player.transform.position - transform.position;
 
@@ -81,8 +82,15 @@ public class CameraController : MonoBehaviour
             newPosition.y += (playerRelativeToCenter.y - movingY.Value) * (aerial ? AERIAL_VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE) * Time.timeScale;
         }
 
+        // move the camera to the new position
+        Vector2 cameraSize = Dimensions;
+        LevelData level = LevelData.Instance;
+        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
+        newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
+        transform.position = newPosition;
+
         // move the camera window away from the direction the player is going
-        Vector3 displacement = newPosition - transform.position;
+        Vector3 displacement = newPosition - startPosition;
         Vector2 windowCenter = playerWindow.center;
         windowCenter.x += -displacement.x * WINDOW_X_SHIFT_RATE;
         windowCenter.y += -displacement.y * (aerial ? AERIAL_WINDOW_Y_SHIFT_RATE : WINDOW_Y_SHIFT_RATE);
@@ -90,11 +98,7 @@ public class CameraController : MonoBehaviour
         windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT - aerialExtension, WINDOW_CENTER_Y_LIMIT + aerialExtension);
         playerWindow.center = windowCenter;
 
-        Vector2 cameraSize = Dimensions;
-        LevelData level = LevelData.Instance;
-        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
-        newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
-        transform.position = newPosition;
+        
 
          if(visibleWindow != null) {
             // REMOVE FOR FINAL VERSION
