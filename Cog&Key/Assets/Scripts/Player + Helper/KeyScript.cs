@@ -50,7 +50,9 @@ public class KeyScript : MonoBehaviour
         visual = transform.GetChild(0).gameObject;
         keyAni = visual.GetComponent<Animator>();
         boxCollider = GetComponent<Collider2D>();
+    }
 
+    void Start() {
         if (StartEquipped) {
             Equip();
         }
@@ -91,9 +93,9 @@ public class KeyScript : MonoBehaviour
             }
         }
         else if(currentState == State.Attached) {
-            if(PlayerInput.Instance.JustPressed(keyToInput[Type])
-                || Mathf.Abs(player.transform.position.y - transform.position.y) > 12f 
-                || Mathf.Abs(player.transform.position.x - transform.position.x) > 12f
+            if(PlayerInput.Instance.JustPressed(keyToInput[Type]) || PlayerInput.Instance.JustPressed(PlayerInput.Action.Recall)
+                || Mathf.Abs(player.transform.position.y - transform.position.y) > 16f 
+                || Mathf.Abs(player.transform.position.x - transform.position.x) > 16f
             ) {
                 Detach();
             }
@@ -103,6 +105,7 @@ public class KeyScript : MonoBehaviour
     public void SetState(State keyState) {
         currentState = keyState;
         transform.SetParent(null);
+        boxCollider.enabled = true;
 
         switch(currentState) {
             case State.PlayerHeld:
@@ -111,6 +114,9 @@ public class KeyScript : MonoBehaviour
             case State.Attacking:
                 SetActive(true);
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+                break;
+            case State.Attached:
+                boxCollider.enabled = false; // disable collider because triggers are sent to the parent
                 break;
         }
 
@@ -121,7 +127,7 @@ public class KeyScript : MonoBehaviour
     public void Equip() {
         SetState(State.PlayerHeld);
         PlayerInput.Instance.SelectedKey = Type;
-        PlayerInput.Instance.EquippedKeys[Type] = true;
+        player.GetComponent<PlayerScript>().EquippedKeys[Type] = true;
         if(keyUI != null) {
             keyUI.UpdateKeyUI(Type);
         }
@@ -173,6 +179,10 @@ public class KeyScript : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
+        if(collision.isTrigger) {
+            return;
+        }
+
         if(currentState == State.Pickup && collision.gameObject.tag == "Player") {
             keyAni.SetInteger("Status", 0);
             Equip();
