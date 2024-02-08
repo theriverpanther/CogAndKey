@@ -76,13 +76,13 @@ public class Hunter : Agent
     protected override void BehaviorTree(float walkSpeed, bool fast)
     {
         bool playerSensed = false;
-        foreach(Sense s in senses)
+        foreach (Sense s in senses)
         {
             if (s.collidedPlayer)
             {
                 playerSensed = true;
                 playerPosition = player.transform.position;
-            }  
+            }
         }
 
         float sqrDist = SquareDistance(playerPosition, direction);
@@ -121,7 +121,7 @@ public class Hunter : Agent
             {
                 Jump();
             }
-            if(playerPosition.y > transform.position.y + distToGround * 5)
+            if(playerPosition.y > transform.position.y + halfHeight * 5)
             {
                 if(playerSensed || wallDetected) Jump();
             }
@@ -138,42 +138,6 @@ public class Hunter : Agent
             {
                 huntTimer = 0f;
             }
-            //List<Vector2> jumps = new List<Vector2>();
-            //jumps = ValidJumps();
-
-            //if (IsPointOnJump(playerPosition.x, playerPosition.y, mistakeThreshold))
-            //{
-            //    Jump();
-            //}
-            //else if(jumps.Count > 0)
-            //{
-            //    float closestDist = float.MaxValue;
-            //    Vector2 node = Vector2.zero;
-            //    float jumpSqrDist = 0f;
-            //    foreach (Vector2 v in jumps)
-            //    {
-            //        jumpSqrDist = Mathf.Pow(v.x - transform.position.x, 2) + Mathf.Pow(v.y - transform.position.y, 2);
-            //        if (jumpSqrDist < closestDist)
-            //        {
-            //            closestDist = jumpSqrDist;
-            //            node = v;
-            //        }
-            //    }
-            //    if (closestDist != float.MaxValue)
-            //    {
-            //        Vector3 directionToNode = ((Vector3)node - transform.position).normalized;
-            //        if (directionToNode.x != direction.x) 
-            //        {
-            //            StartCoroutine(TurnDelay());
-            //            Jump();
-            //        }
-
-            //    }
-            //}
-
-
-            // TODO
-            // NEED TO ACCOUNT FOR LOWER BOUNDS AKA FALLING OFF INTO DEATH
         }
         else
         {

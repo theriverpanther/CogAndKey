@@ -13,6 +13,7 @@ TagManager:
   - Node
   - Agent
   - Path
+  - Not Physics
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - Player
   - PlayerVisual
   - HelperConnectionPoint
-  - 
+  - AI
   - 
   - 
   - 
