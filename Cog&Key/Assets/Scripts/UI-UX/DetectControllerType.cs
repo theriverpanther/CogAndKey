@@ -36,8 +36,24 @@ public class DetectControllerType : MonoBehaviour
 
     string current;
 
+    public string Current
+    {
+        get { return current; }
+    }
+
     // Start is called before the first frame update
     void Start()
+    {
+        PopulateDictionary();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    void PopulateDictionary()
     {
         current = getControllerType();
 
@@ -73,12 +89,6 @@ public class DetectControllerType : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private string getControllerType()
     {
         Gamepad gamepad = Gamepad.current;
@@ -95,7 +105,7 @@ public class DetectControllerType : MonoBehaviour
             }
             else
             {
-                current = "OTHER";
+                current = "other";
             }
         }
         else if (Keyboard.current != null || Mouse.current != null)
@@ -109,7 +119,16 @@ public class DetectControllerType : MonoBehaviour
     public Texture2D ReturnImage(string mapping, bool specific = false)
     {
         Texture2D texture = null;
-        if(!specific)
+        Debug.Log("Trying to get an image one min with " + mapping + " " + current);
+
+        current = getControllerType();
+
+        if(xboxPairsDictionary == null)
+        {
+            PopulateDictionary();
+        }
+
+        if (!specific)
         {
             switch (current)
             {

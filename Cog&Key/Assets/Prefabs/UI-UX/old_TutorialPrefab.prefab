@@ -212,7 +212,7 @@ GameObject:
   - component: {fileID: 1551441341641457307}
   - component: {fileID: 7990767031584715730}
   m_Layer: 2
-  m_Name: TutorialPrefab
+  m_Name: old_TutorialPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
