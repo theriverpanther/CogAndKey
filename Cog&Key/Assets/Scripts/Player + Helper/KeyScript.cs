@@ -5,6 +5,10 @@ using UnityEngine;
 // keys can be pickups in the world, an ability for the player to use, or attached to a level element
 public class KeyScript : MonoBehaviour
 {
+    [SerializeField] private bool StartEquipped;
+    [SerializeField] private KeyWindable StartAttachedTo;
+    [SerializeField] private KeyState type;
+
     public enum State {
         Pickup,
         PlayerHeld,
@@ -33,9 +37,7 @@ public class KeyScript : MonoBehaviour
     private KeyUI keyUI;
     private GameObject visual;
     private Collider2D boxCollider;
-
-    [SerializeField] private bool StartEquipped;
-    [SerializeField] private KeyState type;
+    private bool attachedPickup;
     public KeyState Type { get { return type; } }
 
     public bool Attached { get { return currentState == State.Attached; } }
@@ -50,6 +52,11 @@ public class KeyScript : MonoBehaviour
         visual = transform.GetChild(0).gameObject;
         keyAni = visual.GetComponent<Animator>();
         boxCollider = GetComponent<Collider2D>();
+
+        if(StartAttachedTo != null) {
+            attachedPickup = true;
+            AttachTo(StartAttachedTo);
+        }
     }
 
     void Start() {
@@ -92,7 +99,7 @@ public class KeyScript : MonoBehaviour
                 SetState(State.PlayerHeld);
             }
         }
-        else if(currentState == State.Attached) {
+        else if(currentState == State.Attached && !attachedPickup) {
             if(PlayerInput.Instance.JustPressed(keyToInput[Type]) || PlayerInput.Instance.JustPressed(PlayerInput.Action.Recall)
                 || Mathf.Abs(player.transform.position.y - transform.position.y) > 16f 
                 || Mathf.Abs(player.transform.position.x - transform.position.x) > 16f
@@ -116,7 +123,7 @@ public class KeyScript : MonoBehaviour
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
                 break;
             case State.Attached:
-                boxCollider.enabled = false; // disable collider because triggers are sent to the parent
+                boxCollider.enabled = attachedPickup; // disable collider because triggers are sent to the parent
                 break;
         }
 
@@ -125,6 +132,10 @@ public class KeyScript : MonoBehaviour
 
     // gives the player possession of a key pickup, turning it into an ability
     public void Equip() {
+        if(attachedPickup) {
+            Detach();
+            attachedPickup = false;
+        }
         SetState(State.PlayerHeld);
         PlayerInput.Instance.SelectedKey = Type;
         player.GetComponent<PlayerScript>().EquippedKeys[Type] = true;
@@ -183,7 +194,8 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
-        if(currentState == State.Pickup && collision.gameObject.tag == "Player") {
+        if((currentState == State.Pickup || attachedPickup) && collision.gameObject.tag == "Player") {
+            Debug.Log("collided with player");
             keyAni.SetInteger("Status", 0);
             Equip();
             return;
@@ -191,13 +203,7 @@ public class KeyScript : MonoBehaviour
 
         KeyWindable windable = collision.gameObject.GetComponent<KeyWindable>();
         if(currentState == State.Attacking && windable != null) {
-            insertTarget = windable;
-            insertTarget.InsertKey(this);
-            
-            keyAni.SetInteger("Status", (int)windable.InsertedKeyType);
-
-            SetState(State.Attached);
-            transform.SetParent(collision.gameObject.transform);
+            AttachTo(windable);
             return;
         }
 
@@ -210,5 +216,15 @@ public class KeyScript : MonoBehaviour
     private void SetActive(bool active) {
         visual.SetActive(active);
         boxCollider.enabled = active;
+    }
+
+    private void AttachTo(KeyWindable windable) {
+        insertTarget = windable;
+        insertTarget.InsertKey(this);
+
+        keyAni.SetInteger("Status", (int)windable.InsertedKeyType);
+
+        SetState(State.Attached);
+        transform.SetParent(windable.gameObject.transform);
     }
 }
