@@ -13,21 +13,13 @@ public class LevelData : MonoBehaviour
     private string levelName;
     private CheckpointScript currentCheckpoint;
     private List<GameObject> checkpoints;
-    [SerializeField] private List<LevelBoundScript> levelAreas = new List<LevelBoundScript>();
     private Dictionary<KeyState, bool> checkpointKeys; // saves keys that are claimed before a checkpoint
-    private List<Rect> cameraZones;
 
-    public List<LevelBoundScript> LevelAreas { get { return levelAreas; } }
-    public List<Rect> CameraZones { get { return cameraZones; } }
     public Vector2? RespawnPoint { get { return (currentCheckpoint == null ? null : currentCheckpoint.transform.position); } }
     public float XMin { get { return levelBounds.xMin; } }
     public float XMax { get { return levelBounds.xMax; } }
     public float YMin { get { return levelBounds.yMin; } }
     public float YMax { get { return levelBounds.yMax; } }
-    //public float XMin { get { return float.MinValue; } }
-    //public float XMax { get { return float.MaxValue; } }
-    //public float YMin { get { return -100; } }
-    //public float YMax { get { return float.MaxValue; } }
     public int DeathsSinceCheckpoint { get; private set; }
 
     // needs CameraScript Awake() to run first
@@ -43,12 +35,6 @@ public class LevelData : MonoBehaviour
                 if(!Instance.checkpoints.Contains(checkpoint)) {
                     Destroy(checkpoint);
                     
-                }
-            }
-
-            foreach(GameObject bound in bounds) {
-                if(!Instance.levelAreas.Contains(bound.GetComponent<LevelBoundScript>())) {
-                    Destroy(bound);
                 }
             }
             Destroy(gameObject);
@@ -72,25 +58,6 @@ public class LevelData : MonoBehaviour
             DontDestroyOnLoad(checkpoint);
         }
 
-        //XMin = float.MaxValue;
-        //XMax = float.MinValue;
-        //YMin = float.MaxValue;
-        foreach(GameObject bound in bounds) {
-            LevelBoundScript boundScript = bound.GetComponent<LevelBoundScript>();
-            if(boundScript != null) {
-                boundScript.Area = new Rect(bound.transform.position - bound.transform.lossyScale / 2, bound.transform.lossyScale);
-                levelAreas.Add(boundScript);
-                //XMin = Mathf.Min(XMin, boundScript.Area.xMin);
-                //XMax = Mathf.Max(XMax, boundScript.Area.xMax);
-                //YMin = Mathf.Min(YMin, boundScript.Area.yMin);
-                bound.GetComponent<SpriteRenderer>().enabled = false;
-                bound.transform.SetParent(null, true);
-                DontDestroyOnLoad(bound);
-            }
-        }
-
-        GenerateCameraZones();
-        CameraScript.Instance?.SetInitialPosition();
         CameraController.Instance?.SetInitialPosition();
 
         // equip the player with the starting keys
@@ -120,13 +87,6 @@ public class LevelData : MonoBehaviour
             Destroy(checkpoint);
         }
         checkpoints.Clear();
-
-        foreach (LevelBoundScript bound in levelAreas)
-        {
-            // Unity warns against this but needs to be done or it won't be cleaned before Start is called
-            DestroyImmediate(bound.gameObject);
-        }
-        levelAreas.Clear();
 
         Destroy(gameObject);
         Instance = null;
@@ -163,68 +123,5 @@ public class LevelData : MonoBehaviour
                 keyScript.Equip();
             }
         }
-    }
-
-    // uses the level bounds to determine where the camera is allowed to be centered
-    private void GenerateCameraZones() {
-        cameraZones = new List<Rect>();
-        if(CameraScript.Instance == null) {
-            return;
-        }
-        Vector2 cameraDims = CameraScript.Instance.Dimensions;
-
-        // add areas in the middle of each level boundary
-        foreach(LevelBoundScript levelBound in levelAreas) {
-            Rect middleZone = new Rect(levelBound.Area.xMin + cameraDims.x/2, levelBound.Area.yMin + cameraDims.y/2, levelBound.Area.width - cameraDims.x, levelBound.Area.height - cameraDims.y);
-            if(middleZone.yMin > middleZone.yMax) {
-                
-                middleZone = new Rect(middleZone.x, (middleZone.yMax + middleZone.yMin) / 2, middleZone.width, 0);
-            }
-            if(middleZone.xMin > middleZone.xMax) {
-                middleZone = new Rect((middleZone.xMax + middleZone.xMin) / 2, middleZone.y, 0, middleZone.height);
-            }
-            cameraZones.Add(middleZone);
-        }
-
-        // add areas connecting adjacent boundaries together
-        List<Rect> addedZones = new List<Rect>();
-        for(int i = 0; i < levelAreas.Count; i++) {
-            // find which level bounds are adjacent to this one
-            Rect bufferedArea = levelAreas[i].Area.MakeExpanded(0.5f);
-            for(int j = i + 1; j < levelAreas.Count; j++) {
-                if(bufferedArea.Overlaps(levelAreas[j].Area) && !AreZonesOppositeDirection(levelAreas[i], levelAreas[j])) {
-                    // add a camera zone connecting these zones together
-                    const float BUFFER = 0.1f;
-                    if(cameraZones[i].yMax + BUFFER > cameraZones[j].yMin - BUFFER && cameraZones[i].yMin - BUFFER < cameraZones[j].yMax + BUFFER) {
-                        // horizontally adjacent
-                        float yMax = Mathf.Min(cameraZones[i].yMax, cameraZones[j].yMax);
-                        float yMin = Mathf.Max(cameraZones[i].yMin, cameraZones[j].yMin);
-                        float xMax = Mathf.Max(cameraZones[i].xMin, cameraZones[j].xMin);
-                        float xMin = Mathf.Min(cameraZones[i].xMax, cameraZones[j].xMax);
-                        addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
-                    }
-                    else if(cameraZones[i].xMax > cameraZones[j].xMin && cameraZones[i].xMin < cameraZones[j].xMax) {
-                        // vertically adjacent
-                        float xMax = Mathf.Min(cameraZones[i].xMax, cameraZones[j].xMax);
-                        float xMin = Mathf.Max(cameraZones[i].xMin, cameraZones[j].xMin);
-                        float yMax = Mathf.Max(cameraZones[i].yMin, cameraZones[j].yMin);
-                        float yMin = Mathf.Min(cameraZones[i].yMax, cameraZones[j].yMax);
-                        addedZones.Add(new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
-                    }
-                }
-            }
-        }
-
-        cameraZones.AddRange(addedZones);
-    }
-
-    // Note to future self: delete this awful function
-    private bool AreZonesOppositeDirection(LevelBoundScript one, LevelBoundScript other)
-    {
-        bool hasUp = one.AreaType == CameraBoundType.Up || other.AreaType == CameraBoundType.Up;
-        bool hasDown = one.AreaType == CameraBoundType.Down || other.AreaType == CameraBoundType.Down;
-        bool hasLeft = one.AreaType == CameraBoundType.Left || other.AreaType == CameraBoundType.Left;
-        bool hasRight = one.AreaType == CameraBoundType.Right || other.AreaType == CameraBoundType.Right;
-        return hasUp && hasDown || hasLeft && hasRight;
     }
 }
