@@ -38,6 +38,7 @@ public class PlayerScript : MonoBehaviour
 
     public State CurrentState { get; private set; }
     public bool OnSurface { get; private set; }
+    public bool HasWallJumped { get; private set; }
     public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
     public static PlayerScript CurrentPlayer { get; private set; }
 
@@ -139,6 +140,7 @@ public class PlayerScript : MonoBehaviour
 
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
+                    HasWallJumped = true;
                     physicsBody.gravityScale = JUMP_GRAVITY;
                     bool boosted = false;
                     const float WALL_JUMP_SPEED = 11f;
@@ -173,6 +175,7 @@ public class PlayerScript : MonoBehaviour
                 break;
 
             case State.Grounded:
+                HasWallJumped = false;
                 playerAnimation.SetBool("Falling", false);
                 playerAnimation.SetBool("Wallslide", false);
 

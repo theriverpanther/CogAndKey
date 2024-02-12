@@ -8,15 +8,13 @@ public class CameraController : MonoBehaviour
 
     private const float WINDOW_WIDTH = 4f;
     private const float WINDOW_HEIGHT = 2f;
-    //private const float AERIAL_WINDOW_EXTENSION = 3.5f;
     private const float WINDOW_X_LIMIT = 9f;
     private const float WINDOW_Y_LIMIT = 5f;
     private const float WINDOW_X_SHIFT_RATE = 0.5f;
     private const float WINDOW_Y_SHIFT_RATE = 0.3f;
-    private const float AERIAL_WINDOW_Y_SHIFT_RATE = 0.8f;
+    
     private const float HORIZONTAL_MOVE_RATE = 0.1f;
     private const float VERTICAL_MOVE_RATE = 0.05f;
-    private const float AERIAL_VERTICAL_MOVE_RATE = 0.12f;
 
     private const float WINDOW_CENTER_X_LIMIT = WINDOW_X_LIMIT - WINDOW_WIDTH / 2f;
     private const float WINDOW_CENTER_Y_LIMIT = WINDOW_Y_LIMIT - WINDOW_HEIGHT / 2f;
@@ -65,10 +63,9 @@ public class CameraController : MonoBehaviour
 
         // manage vertical
         bool aerial = !player.OnSurface;
-        float aerialExtension = 0f;//aerial ? AERIAL_WINDOW_EXTENSION : 0f;
-        float minBound = Mathf.Max(playerWindow.yMin - aerialExtension, -WINDOW_Y_LIMIT);
-        float maxBound = Mathf.Min(playerWindow.yMax + aerialExtension, WINDOW_Y_LIMIT);
-        if(player.OnSurface) {
+        float minBound = Mathf.Max(playerWindow.yMin, -WINDOW_Y_LIMIT);
+        float maxBound = Mathf.Min(playerWindow.yMax, WINDOW_Y_LIMIT);
+        if(player.OnSurface || player.HasWallJumped) {
             float? movingY = null;
             
             if(playerRelativeToCenter.y < minBound) {
@@ -79,7 +76,7 @@ public class CameraController : MonoBehaviour
             }
 
             if(movingY.HasValue) {
-                newPosition.y += (playerRelativeToCenter.y - movingY.Value) * (aerial ? AERIAL_VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE) * Time.timeScale;
+                newPosition.y += (playerRelativeToCenter.y - movingY.Value) * VERTICAL_MOVE_RATE * Time.timeScale;
             }
         }
 
@@ -98,9 +95,9 @@ public class CameraController : MonoBehaviour
         Vector3 displacement = newPosition - startPosition;
         Vector2 windowCenter = playerWindow.center;
         windowCenter.x += -displacement.x * WINDOW_X_SHIFT_RATE;
-        windowCenter.y += -displacement.y * (aerial ? AERIAL_WINDOW_Y_SHIFT_RATE : WINDOW_Y_SHIFT_RATE);
+        windowCenter.y += -displacement.y * WINDOW_Y_SHIFT_RATE;
         windowCenter.x = Mathf.Clamp(windowCenter.x, -WINDOW_CENTER_X_LIMIT, WINDOW_CENTER_X_LIMIT);
-        windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT - aerialExtension, WINDOW_CENTER_Y_LIMIT + aerialExtension);
+        windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT, WINDOW_CENTER_Y_LIMIT);
         playerWindow.center = windowCenter;
 
          if(visibleWindow != null) {
