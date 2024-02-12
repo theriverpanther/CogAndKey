@@ -8,14 +8,14 @@ public class CameraController : MonoBehaviour
 
     private const float WINDOW_WIDTH = 4f;
     private const float WINDOW_HEIGHT = 2f;
-    private const float AERIAL_WINDOW_EXTENSION = 3.5f;
-    private const float WINDOW_X_LIMIT = 8f;
+    //private const float AERIAL_WINDOW_EXTENSION = 3.5f;
+    private const float WINDOW_X_LIMIT = 9f;
     private const float WINDOW_Y_LIMIT = 5f;
-    private const float WINDOW_X_SHIFT_RATE = 0.7f;
+    private const float WINDOW_X_SHIFT_RATE = 0.5f;
     private const float WINDOW_Y_SHIFT_RATE = 0.3f;
     private const float AERIAL_WINDOW_Y_SHIFT_RATE = 0.8f;
     private const float HORIZONTAL_MOVE_RATE = 0.1f;
-    private const float VERTICAL_MOVE_RATE = 0.1f;
+    private const float VERTICAL_MOVE_RATE = 0.05f;
     private const float AERIAL_VERTICAL_MOVE_RATE = 0.12f;
 
     private const float WINDOW_CENTER_X_LIMIT = WINDOW_X_LIMIT - WINDOW_WIDTH / 2f;
@@ -65,26 +65,33 @@ public class CameraController : MonoBehaviour
 
         // manage vertical
         bool aerial = !player.OnSurface;
-        float? movingY = null;
-        float aerialExtension = aerial ? AERIAL_WINDOW_EXTENSION : 0f;
+        float aerialExtension = 0f;//aerial ? AERIAL_WINDOW_EXTENSION : 0f;
         float minBound = Mathf.Max(playerWindow.yMin - aerialExtension, -WINDOW_Y_LIMIT);
         float maxBound = Mathf.Min(playerWindow.yMax + aerialExtension, WINDOW_Y_LIMIT);
-        if(playerRelativeToCenter.y < minBound) {
-            movingY = minBound;
-        }
-        else if(playerRelativeToCenter.y > maxBound) {
-            movingY = maxBound;
+        if(player.OnSurface) {
+            float? movingY = null;
+            
+            if(playerRelativeToCenter.y < minBound) {
+                movingY = minBound;
+            }
+            else if(playerRelativeToCenter.y > maxBound) {
+                movingY = maxBound;
+            }
+
+            if(movingY.HasValue) {
+                newPosition.y += (playerRelativeToCenter.y - movingY.Value) * (aerial ? AERIAL_VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE) * Time.timeScale;
+            }
         }
 
-        if(movingY.HasValue) {
-            newPosition.y += (playerRelativeToCenter.y - movingY.Value) * (aerial ? AERIAL_VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE) * Time.timeScale;
-        }
+        // scroll upward when wall jumping up, but not aerial otherwise
+
+        // scroll downward when falling downward
 
         // move the camera to the new position
         Vector2 cameraSize = Dimensions;
         LevelData level = LevelData.Instance;
-        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
-        newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
+        //newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
+        //newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = newPosition;
 
         // move the camera window away from the direction the player is going
@@ -96,15 +103,13 @@ public class CameraController : MonoBehaviour
         windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT - aerialExtension, WINDOW_CENTER_Y_LIMIT + aerialExtension);
         playerWindow.center = windowCenter;
 
-        
-
          if(visibleWindow != null) {
             // REMOVE FOR FINAL VERSION
             //visibleWindow.transform.position = transform.position + (Vector3)playerWindow.center + new Vector3(0, 0, -fixedZ);
             //visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
             visibleWindow.transform.position = new Vector3(transform.position.x + playerWindow.center.x, transform.position.y + (maxBound + minBound) / 2f, 0);
             visibleWindow.transform.localScale = new Vector3(playerWindow.width, maxBound - minBound, 1f);
-        }
+         }
     }
 
     // called by LevelData.cs Start() after generating the level bounds

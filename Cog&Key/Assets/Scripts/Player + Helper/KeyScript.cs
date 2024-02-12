@@ -195,7 +195,6 @@ public class KeyScript : MonoBehaviour
         }
 
         if((currentState == State.Pickup || attachedPickup) && collision.gameObject.tag == "Player") {
-            Debug.Log("collided with player");
             keyAni.SetInteger("Status", 0);
             Equip();
             return;
