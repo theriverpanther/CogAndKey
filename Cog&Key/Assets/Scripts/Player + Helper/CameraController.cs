@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
     private const float WINDOW_X_LIMIT = 9f;
     private const float WINDOW_Y_LIMIT = 5f;
     private const float WINDOW_X_SHIFT_RATE = 0.5f;
-    private const float WINDOW_Y_SHIFT_RATE = 0.3f;
+    private const float WINDOW_Y_SHIFT_RATE = 0.5f;
     
     private const float HORIZONTAL_MOVE_RATE = 0.1f;
     private const float VERTICAL_MOVE_RATE = 0.05f;
@@ -62,17 +62,14 @@ public class CameraController : MonoBehaviour
         }
 
         // manage vertical
-        bool aerial = !player.OnSurface;
-        float minBound = Mathf.Max(playerWindow.yMin, -WINDOW_Y_LIMIT);
-        float maxBound = Mathf.Min(playerWindow.yMax, WINDOW_Y_LIMIT);
-        if(player.OnSurface || player.HasWallJumped) {
+        if(player.CurrentState == PlayerScript.State.Grounded || player.HasWallJumped || playerRelativeToCenter.y < playerWindow.yMin) {
             float? movingY = null;
             
-            if(playerRelativeToCenter.y < minBound) {
-                movingY = minBound;
+            if(playerRelativeToCenter.y < playerWindow.yMin) {
+                movingY = playerWindow.yMin;
             }
-            else if(playerRelativeToCenter.y > maxBound) {
-                movingY = maxBound;
+            else if(playerRelativeToCenter.y > playerWindow.yMax) {
+                movingY = playerWindow.yMax;
             }
 
             if(movingY.HasValue) {
@@ -102,10 +99,8 @@ public class CameraController : MonoBehaviour
 
          if(visibleWindow != null) {
             // REMOVE FOR FINAL VERSION
-            //visibleWindow.transform.position = transform.position + (Vector3)playerWindow.center + new Vector3(0, 0, -fixedZ);
-            //visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
-            visibleWindow.transform.position = new Vector3(transform.position.x + playerWindow.center.x, transform.position.y + (maxBound + minBound) / 2f, 0);
-            visibleWindow.transform.localScale = new Vector3(playerWindow.width, maxBound - minBound, 1f);
+            visibleWindow.transform.position = new Vector3(transform.position.x + playerWindow.center.x, transform.position.y + playerWindow.center.y, 0);
+            visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
          }
     }
 
