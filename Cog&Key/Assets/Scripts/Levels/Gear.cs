@@ -36,9 +36,15 @@ public class Gear : MonoBehaviour
     List<Material> copperVariations;
     Material selectedMaterial;
 
+    public string sortingLayerName = string.Empty; //initialization before the methods
+    public int orderInLayer = 0;
+    public Renderer MyRenderer;
+
     // Start is called before the first frame update
     void Start()
     {
+
+
         attachedTo = transform.root.gameObject;
         Debug.Log("Attached to: " + attachedTo.name);
 
@@ -56,6 +62,8 @@ public class Gear : MonoBehaviour
         }
 
         gearChosen.GetComponent<MeshRenderer>().material = selectedMaterial;
+        MyRenderer = gearChosen.GetComponent<Renderer>();
+        SetSortingLayer();
     }
 
     // Update is called once per frame
@@ -95,6 +103,15 @@ public class Gear : MonoBehaviour
                 selectedMaterial = copperVariations[Random.Range(0, copperVariations.Count)];
                 Debug.Log("Random copper indicated");
                 break;
+        }
+    }
+
+    void SetSortingLayer()
+    {
+        if (sortingLayerName != string.Empty)
+        {
+            MyRenderer.sortingLayerName = sortingLayerName;
+            MyRenderer.sortingOrder = orderInLayer;
         }
     }
 }

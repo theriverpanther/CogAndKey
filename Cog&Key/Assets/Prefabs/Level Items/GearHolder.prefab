@@ -96,6 +96,14 @@ PrefabInstance:
       propertyPath: copperType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6852980308910593981, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
+      propertyPath: orderInLayer
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6852980308910593981, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
+      propertyPath: sortingLayerName
+      value: UI-UXOverlay Behind
+      objectReference: {fileID: 0}
     - target: {fileID: 8665481099766302413, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
       propertyPath: m_IsActive
       value: 0
