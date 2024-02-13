@@ -67,6 +67,9 @@ public class Agent : KeyWindable
     protected float confusionTime = 5f;
     protected float lostTimer = 0f;
 
+    protected float maxHuntTime = 2f;
+    protected float huntTimer = 0f;
+
     #endregion
 
     #region Properties
@@ -336,8 +339,10 @@ public class Agent : KeyWindable
                 }
             }
 
+            // Custom Sort based on agent -> pill based on orientation
             floorPts.Sort((i, j) => { return i.point.x < j.point.x ? -1 : 1; });
             wallPts.Sort((i,j) => { return i.point.y < j.point.y ? 1 : -1; });
+            // Change ray checks based on aligned axis
 
             float sqrDist = 0f;
             ledgeSize = 0f;

@@ -15,8 +15,7 @@ public class Hunter : Agent
     private GameObject player;
     private SpriteRenderer huntSignifier;
 
-    private float maxHuntTime = 2f;
-    private float huntTimer = 0f;
+
 
     // Start is called before the first frame update
     protected override void Start()
