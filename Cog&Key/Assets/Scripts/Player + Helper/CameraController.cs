@@ -112,7 +112,9 @@ public class CameraController : MonoBehaviour
         // move the camera to the new position
         Vector2 cameraSize = Dimensions;
         LevelData level = LevelData.Instance;
-        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
+        newPosition.x = Mathf.Clamp(newPosition.x, player.transform.position.x - WINDOW_X_LIMIT, player.transform.position.x + WINDOW_X_LIMIT); // keep player within view
+        newPosition.y = Mathf.Clamp(newPosition.y, player.transform.position.y - WINDOW_Y_LIMIT, player.transform.position.y + WINDOW_Y_LIMIT);
+        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f); // do not look beyond the level bounds
         newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = newPosition;
 
