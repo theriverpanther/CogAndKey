@@ -17,9 +17,14 @@ public class CameraController : MonoBehaviour
     private const float WINDOW_CENTER_X_LIMIT = WINDOW_X_LIMIT - WINDOW_WIDTH / 2f;
     private const float WINDOW_CENTER_Y_LIMIT = WINDOW_Y_LIMIT - WINDOW_HEIGHT / 2f;
 
+    private const float FOCUS_OUTER_RADIUS = 12.0f;
+    private const float FOCUS_INNER_RADIUS = 8.0f;
+    private const float FOCUS_MAX_RATIO = 0.5f;
+
     private PlayerScript player;
     private float fixedZ;
     private Rect playerWindow;
+    private List<Vector2> focusPoints;
 
     public static CameraController Instance { get; private set; }
 
@@ -39,39 +44,68 @@ public class CameraController : MonoBehaviour
         }
 
         playerWindow = new Rect(-WINDOW_X_LIMIT, -3f, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        focusPoints = new List<Vector2>();
+        GameObject[] focusPointList = GameObject.FindGameObjectsWithTag("Focus Point");
+        foreach(GameObject focusPoint in focusPointList) {
+            focusPoints.Add(focusPoint.transform.position);
+            Destroy(focusPoint);
+        }
     }
 
     void FixedUpdate() {
         Vector3 startPosition = transform.position;
         Vector3 newPosition = transform.position;
-        Vector3 playerRelativeToCenter = player.transform.position - transform.position;
+
+        Vector2 followPoint = player.transform.position;
+
+        // check if there is a nearby focus point
+        Vector2? focus = null;
+        float focusDist = 0f;
+        foreach(Vector2 focusPoint in focusPoints) {
+            focusDist = Vector2.Distance(player.transform.position, focusPoint);
+            if(focusDist <= FOCUS_OUTER_RADIUS) {
+                focus = focusPoint;
+            }
+        }
+        
+        if(focus.HasValue) {
+            float ratio = FOCUS_MAX_RATIO;
+            if(focusDist > FOCUS_INNER_RADIUS) {
+                float multiplier = (FOCUS_OUTER_RADIUS - focusDist) / (FOCUS_OUTER_RADIUS - FOCUS_INNER_RADIUS);
+                ratio *= multiplier;
+            }
+            followPoint = ratio * focus.Value + (1 - ratio) * (Vector2)player.transform.position; // focus on the average of the focus point and the player
+        }
+
+        Vector2 followRelativeToCenter = followPoint - (Vector2)transform.position;
 
         // manage horizontal
         float? movingX = null;
-        if(playerRelativeToCenter.x < playerWindow.xMin) {
+        if(followRelativeToCenter.x < playerWindow.xMin) {
             movingX = playerWindow.xMin;
         }
-        else if(playerRelativeToCenter.x > playerWindow.xMax) {
+        else if(followRelativeToCenter.x > playerWindow.xMax) {
             movingX = playerWindow.xMax;
         }
 
         if(movingX.HasValue) {
-            newPosition.x += (playerRelativeToCenter.x - movingX.Value) * HORIZONTAL_MOVE_RATE * Time.timeScale;
+            newPosition.x += (followRelativeToCenter.x - movingX.Value) * HORIZONTAL_MOVE_RATE * Time.timeScale;
         }
 
         // manage vertical
-        if(player.CurrentState == PlayerScript.State.Grounded || player.HasWallJumped || playerRelativeToCenter.y < playerWindow.yMin) {
+        if(player.CurrentState == PlayerScript.State.Grounded || player.HasWallJumped || followRelativeToCenter.y < playerWindow.yMin) {
             float? movingY = null;
             
-            if(playerRelativeToCenter.y < playerWindow.yMin) {
+            if(followRelativeToCenter.y < playerWindow.yMin) {
                 movingY = playerWindow.yMin;
             }
-            else if(playerRelativeToCenter.y > playerWindow.yMax) {
+            else if(followRelativeToCenter.y > playerWindow.yMax) {
                 movingY = playerWindow.yMax;
             }
 
             if(movingY.HasValue) {
-                newPosition.y += (playerRelativeToCenter.y - movingY.Value) * VERTICAL_MOVE_RATE * Time.timeScale;
+                newPosition.y += (followRelativeToCenter.y - movingY.Value) * VERTICAL_MOVE_RATE * Time.timeScale;
             }
         }
 
