@@ -10,9 +10,7 @@ public class CameraController : MonoBehaviour
     private const float WINDOW_HEIGHT = 2f;
     private const float WINDOW_X_LIMIT = 9f;
     private const float WINDOW_Y_LIMIT = 5f;
-    private const float WINDOW_X_SHIFT_RATE = 0.5f;
-    private const float WINDOW_Y_SHIFT_RATE = 0.5f;
-    
+
     private const float HORIZONTAL_MOVE_RATE = 0.1f;
     private const float VERTICAL_MOVE_RATE = 0.05f;
 
@@ -77,22 +75,24 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        // scroll upward when wall jumping up, but not aerial otherwise
-
-        // scroll downward when falling downward
-
         // move the camera to the new position
         Vector2 cameraSize = Dimensions;
         LevelData level = LevelData.Instance;
-        //newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
-        //newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
+        newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f);
+        newPosition.y = Mathf.Clamp(newPosition.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = newPosition;
 
         // move the camera window away from the direction the player is going
         Vector3 displacement = newPosition - startPosition;
         Vector2 windowCenter = playerWindow.center;
-        windowCenter.x += -displacement.x * WINDOW_X_SHIFT_RATE;
-        windowCenter.y += -displacement.y * WINDOW_Y_SHIFT_RATE;
+        float xTarget = -Mathf.Sign(displacement.x) * WINDOW_CENTER_X_LIMIT;
+        float yTarget = -Mathf.Sign(displacement.y) * WINDOW_CENTER_Y_LIMIT;
+        const float MIN_MULT = 0.3f;
+        const float MAX_MULT = 0.8f;
+        float xMultiplier = Mathf.Abs(xTarget - windowCenter.x) / (2f * WINDOW_CENTER_X_LIMIT) * (1.0f + MIN_MULT - MAX_MULT) + MIN_MULT;
+        float yMultiplier = Mathf.Abs(yTarget - windowCenter.y) / (2f * WINDOW_CENTER_Y_LIMIT) * (1.0f + MIN_MULT - MAX_MULT) + MIN_MULT;
+        windowCenter.x += -displacement.x * xMultiplier;
+        windowCenter.y += -displacement.y * yMultiplier;
         windowCenter.x = Mathf.Clamp(windowCenter.x, -WINDOW_CENTER_X_LIMIT, WINDOW_CENTER_X_LIMIT);
         windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT, WINDOW_CENTER_Y_LIMIT);
         playerWindow.center = windowCenter;
