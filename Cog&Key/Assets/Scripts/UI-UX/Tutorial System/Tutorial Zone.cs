@@ -5,6 +5,7 @@ using UnityEngine;
 public class TutorialZone : MonoBehaviour
 {
     // Start is called before the first frame update
+    [SerializeField]
     private int attempts;
 
     [SerializeField]
@@ -26,14 +27,16 @@ public class TutorialZone : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(attempts == showAfterAttempts - 1)
+        if (collision.gameObject.tag == "Player")
+        {
+            attempts++;
+        }
+
+        if (attempts == showAfterAttempts)
         {
             showThisZone.SetActive(true);
         }
 
-        if(collision.gameObject.tag == "Player")
-        {
-            attempts++;
-        }
+
     }
 }
