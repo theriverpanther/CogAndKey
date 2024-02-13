@@ -20,6 +20,14 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3055616292520604455, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3055616292520604455, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1594806245
+      objectReference: {fileID: 0}
     - target: {fileID: 3620713396818469456, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_Name
       value: Door
@@ -93,3 +101,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f0344e23c70bc49a82108e87865338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RequireAll: 1
