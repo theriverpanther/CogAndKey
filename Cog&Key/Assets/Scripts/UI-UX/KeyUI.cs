@@ -19,6 +19,10 @@ public class KeyUI : MonoBehaviour
 
         UpdateDictionary();
 
+    }
+
+    public void Start()
+    {
         ShowCollectedKeys();
     }
 
