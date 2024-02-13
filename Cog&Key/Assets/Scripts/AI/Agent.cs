@@ -179,7 +179,7 @@ public class Agent : KeyWindable
         //jumpState = (RayCheck(transform.position, BUFFER, -halfWidth, halfHeight) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight) ? JumpState.Grounded: JumpState.Aerial);
         if(floorPts!=null)
         {
-            jumpState = floorPts.Count >= 2 ? JumpState.Grounded : JumpState.Aerial;
+            jumpState = floorPts.Count >= 2 && ledgeSize > minLedgeSize / 2 ? JumpState.Grounded : JumpState.Aerial;
         } 
     }
 
@@ -264,6 +264,7 @@ public class Agent : KeyWindable
     protected void EdgeDetectMovement(bool detectFloorEdges, bool detectWalls)
     {
         int tempDir = EdgeDetect(detectFloorEdges, detectWalls);
+
         if (tempDir != direction.x && tempDir != 0)
         {
             StartCoroutine(TurnDelay());
@@ -373,7 +374,7 @@ public class Agent : KeyWindable
                                     Vector3 point = results.collider.transform.position;
                                     if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
                                     {
-                                        if (pathTarget.transform.position.y > transform.position.y) Jump();
+                                        if (pathTarget.transform.position.y > transform.position.y) Debug.Log("Jump");//Jump();
                                         returnVal = 0;
                                         lostTimer = 0;
                                         isLost = false;
@@ -388,7 +389,7 @@ public class Agent : KeyWindable
                                     //Debug.DrawLine(transform.position, pathTarget.transform.position);
                                     if (sqrDistToTarget <= 64f)
                                     {
-                                        if (transform.position.y < pathTarget.transform.position.y) Jump();
+                                        if (transform.position.y < pathTarget.transform.position.y) Debug.Log("Jump");//Jump();
                                         returnVal = 0;
                                         lostTimer = 0;
                                         isLost = false;
@@ -423,7 +424,7 @@ public class Agent : KeyWindable
                             
                             else if (PlayerPosition != Vector3.zero)
                             {
-                                if(Mathf.Abs(rb.velocity.x) > 0) Jump();
+                                if(Mathf.Abs(rb.velocity.x) > 0) Debug.Log("Jump"); //Jump();
                                 returnVal = 0;
                             }
 
@@ -447,7 +448,7 @@ public class Agent : KeyWindable
                         }
                         else
                         {
-                            if(Mathf.Abs(rb.velocity.x) > 0) Jump();
+                            if (Mathf.Abs(rb.velocity.x) > 0) Debug.Log("Jump"); //Jump();
                         }
                     }
                     else
@@ -459,7 +460,7 @@ public class Agent : KeyWindable
                             if (a.Direction != direction || movementSpeed > a.Speed)
                             {
                                 // If its a small enough object, jump over it.
-                                if (wallPts[0].collider.transform.position.y < wallPts[0].point.y && Mathf.Abs(rb.velocity.x) > 0) Jump();
+                                if (wallPts[0].collider.transform.position.y < wallPts[0].point.y && Mathf.Abs(rb.velocity.x) > 0) Debug.Log("Jump");//Jump();
                             }
 
                         }
@@ -544,11 +545,18 @@ public class Agent : KeyWindable
     {
         if (contacts != null)
         {
-            GetComponent<BoxCollider2D>().GetContacts(contacts);
+            
 
-            Gizmos.color = Color.white;
+            Gizmos.color = Color.blue;
 
-            foreach (ContactPoint2D contact in contacts)
+            foreach (ContactPoint2D contact in floorPts)
+            {
+                Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
+            }
+
+            Gizmos.color = Color.green;
+
+            foreach (ContactPoint2D contact in wallPts)
             {
                 Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
             }

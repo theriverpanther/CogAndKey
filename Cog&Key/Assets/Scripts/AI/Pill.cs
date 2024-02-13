@@ -15,13 +15,63 @@ public class Pill : Agent
     private float stunDuration = 2;
     private float stunTimer = 0;
 
+    [SerializeField] private float coyoteTime = 0.4f;
+    [SerializeField] private float fallGravity = 0.25f;
+    private bool isFalling = false;
+    
+    private enum Ground
+    {
+        Bottom, Left, Top, Right
+    }
+
+    [SerializeField] private Ground groundState;
+
+    private bool rotating = false;
+    private float rotateTimer = 0;
+
     protected override void Start()
     {
         base.Start();
+        rb.MoveRotation(180);
     }
 
     protected override void Update()
     {
+        //switch(transform.rotation.z)
+        //{
+        //    case 0:
+        //        groundState = Ground.Bottom;
+        //        break;
+        //    case 360:
+        //        groundState = Ground.Bottom;
+        //        break;
+
+        //    case 90:
+        //        groundState = Ground.Right;
+        //        break;
+        //    case -270:
+        //        groundState = Ground.Right;
+        //        break;
+
+        //    case 180:
+        //        groundState = Ground.Top;
+        //        break;
+        //    case -180:
+        //        groundState = Ground.Top;
+        //        break;
+
+        //    case 270:
+        //        groundState = Ground.Left;
+        //        break;
+        //    case -90:
+        //        groundState = Ground.Left;
+        //        break;
+        //}
+        if(Mathf.Abs(transform.rotation.z) > 360)
+        {
+            transform.eulerAngles = new Vector3(0, 0, transform.rotation.z % 360);
+        }
+
         switch (InsertedKeyType)
         {
             case KeyState.None:
@@ -52,8 +102,46 @@ public class Pill : Agent
             default:
                 break;
         }
-        if (wallPts.Count > 0 && floorPts.Count <= 2) rb.gravityScale = 0;
-        else rb.gravityScale = GROUND_GRAVITY;
+
+
+        if (jumpState == JumpState.Aerial)
+        {
+            //transform.rotation = Quaternion.Lerp(transform.rotation, groundState = ? Quaternion.LookRotation(Vector3.zero) : Quaternion.LookRotation(Vector2.right * direction.x), rotateTimer);
+            rotateTimer += Time.deltaTime;
+        }
+        else
+        {
+            rotateTimer = 0;
+            if (Mathf.Abs(transform.rotation.z) > 45)
+                transform.eulerAngles = Vector2.right * Mathf.Sign(transform.rotation.z);
+            else
+                transform.eulerAngles = Vector3.zero;
+
+        }
+
+        if(!isFalling)
+        {
+            if (groundState != Ground.Bottom && jumpState == JumpState.Grounded)
+            {
+                if (groundState == Ground.Top) rb.gravityScale = -GROUND_GRAVITY;
+                else rb.gravityScale = 0;
+            }
+            else rb.gravityScale = GROUND_GRAVITY;
+        }
+        
+
+        if (floorPts.Count > 0 && groundState == Ground.Bottom && floorPts[0].point.y > transform.position.y)
+        {
+            Fall();
+        }
+
+
+        if(Input.GetKeyDown(KeyCode.V))
+        {
+            groundState = Ground.Bottom;
+            Fall();
+        }
+
         base.Update();
     }
 
@@ -64,9 +152,14 @@ public class Pill : Agent
         bool playerSensed = false;
         // Check only sense[0] if in normal orientation
         // Check both [0] and [1] if on a wall or ceiling
-        foreach (Sense s in senses)
+        if (senses[0].collidedPlayer)
         {
-            if (s.collidedPlayer)
+            playerSensed = true;
+            playerPosition = player.transform.position;
+        }
+        if (transform.rotation.z != 0)
+        {
+            if (senses[1].collidedPlayer)
             {
                 playerSensed = true;
                 playerPosition = player.transform.position;
@@ -87,16 +180,28 @@ public class Pill : Agent
             if (!isLost && pathTarget != null)
             {
                 Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
-                if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > 2) StartCoroutine(TurnDelay());
+                if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > minLedgeSize && (groundState == Ground.Bottom || groundState == Ground.Top)) StartCoroutine(TurnDelay());
             }
         }
+
+        if (transform.rotation.z != 0)
+        {
+            if (playerSensed)
+            {
+                if ((transform.position.x - playerPosition.x) < distThreshold)
+                {
+                    Jump();
+                }
+            }
+        }
+
         else if (sqrDist > distThreshold * distThreshold)
         {
             // try to chase the player
             float tempX = (playerPosition - transform.position).x;
             if (Mathf.Sign(tempX) != Mathf.Sign(direction.x) && !processingTurn)
             {
-                StartCoroutine(TurnDelay());
+                if (groundState == Ground.Bottom || groundState == Ground.Top) StartCoroutine(TurnDelay());
             }
             wallDetected = EdgeDetect(false, true) != 0;
             // If there's a wall in front and the player is above it, try to jump
@@ -104,11 +209,11 @@ public class Pill : Agent
             // instead of jumping to meet, turn around
             if (wallDetected && playerSensed)
             {
-                Jump();
+                //Jump();
             }
             if (playerPosition.y > transform.position.y + halfHeight * 5)
             {
-                if (playerSensed || wallDetected) Jump();
+                if (playerSensed || wallDetected) Debug.Log("Jump"); //Jump();
             }
             if (!playerSensed)
             {
@@ -136,11 +241,33 @@ public class Pill : Agent
             return;
         }
 
-        base.BehaviorTree(walkSpeed, fast);
+
+        if (!processingTurn && !processingStop)
+        {
+            if(groundState == Ground.Bottom || groundState == Ground.Top)
+            {
+                rb.velocity = new Vector2(walkSpeed * direction.x, rb.velocity.y);
+            }
+            else
+            {
+                rb.velocity = new Vector2(rb.velocity.x, walkSpeed * direction.y);
+            }
+        }
     }
 
     private void Fall()
     {
+        if(!isFalling) StartCoroutine(CoyoteFall());
+    }
 
+    IEnumerator CoyoteFall()
+    {
+        isFalling = true;
+        rb.gravityScale = fallGravity;
+        yield return new WaitForSeconds(coyoteTime);
+        rb.gravityScale = GROUND_GRAVITY;
+        //yield return new WaitUntil(() => floorPts.Count == 0);
+        isFalling = false;
+        yield return null;
     }
 }
