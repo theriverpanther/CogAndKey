@@ -375,24 +375,13 @@ public class PlayerScript : MonoBehaviour
         const float BUFFER = 0.2f;
 
         RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(left, top, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(left, mid, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(left, bottom, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
-
         RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(right, top, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(right, mid, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
-        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(right, bottom, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
 
-        if(leftTop.collider != null && leftTop.distance < BUFFER 
-            || leftMid.collider != null && leftMid.distance < BUFFER 
-            || leftBot.collider != null && leftBot.distance < BUFFER
-        ) {
+        if(leftTop.collider != null && leftTop.distance < BUFFER) {
             return Direction.Left;
         }
 
-        if(rightTop.collider != null && rightTop.distance < BUFFER 
-            || rightMid.collider != null && rightMid.distance < BUFFER 
-            || rightBot.collider != null && rightBot.distance < BUFFER
-        ) {
+        if(rightTop.collider != null && rightTop.distance < BUFFER) {
             return Direction.Right;
         }
 
