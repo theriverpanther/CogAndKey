@@ -19,6 +19,9 @@ public class ButtonShowcase : MonoBehaviour
 
     DetectControllerType detectControllerType;
 
+    [SerializeField]
+    public GameObject hideOther;
+
     private Animator ani;
     private void Start()
     {
@@ -72,11 +75,4 @@ public class ButtonShowcase : MonoBehaviour
         }
     }
 
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

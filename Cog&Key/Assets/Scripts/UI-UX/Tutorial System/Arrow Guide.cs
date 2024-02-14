@@ -37,19 +37,20 @@ public class ArrowGuide : MonoBehaviour
             currentPath[index].SetActive(true);
             currentPath[index].GetComponent<Animator>().SetBool("Fade", true);
 
-            if(currentPath[index].transform.childCount > 0)
-            {
-                foreach(Transform childInner in currentPath[index].transform)
-                {
-                    childInner.gameObject.SetActive(true);
 
-                    if(childInner.GetComponent<Animator>() != null)
-                    {
-                        childInner.GetComponent<Animator>().SetBool("Fade", true);
-                    }
+            //if(currentPath[index].transform.childCount > 0)
+            //{
+            //    foreach(Transform childInner in currentPath[index].transform)
+            //    {
+            //        childInner.gameObject.SetActive(true);
+
+            //        if(childInner.GetComponent<Animator>() != null)
+            //        {
+            //            childInner.GetComponent<Animator>().SetBool("Fade", true);
+            //        }
                     
-                }
-            }
+            //    }
+            //}
 
             index++;
             yield return new WaitForSeconds(waitInBetweenSpeed);
@@ -57,57 +58,24 @@ public class ArrowGuide : MonoBehaviour
 
         foreach (GameObject child in currentPath)
         {
-            child.GetComponent<Animator>().SetBool("Fade", false);
+                child.GetComponent<Animator>().SetBool("Fade", false);
 
-            if (child.transform.childCount > 0)
-            {
-                foreach (Transform childInner in child.transform)
-                {
-                    childInner.gameObject.SetActive(false);
-                    if (childInner.GetComponent<Animator>() != null)
-                    {
-                        childInner.GetComponent<Animator>().SetBool("Fade", false);
-                    }
-                }
-            }
+                //if (child.transform.childCount > 0)
+                //{
+                //    foreach (Transform childInner in child.transform)
+                //    {
+                //        childInner.gameObject.SetActive(false);
+                //        if (childInner.GetComponent<Animator>() != null)
+                //        {
+                //            childInner.GetComponent<Animator>().SetBool("Fade", false);
+                //        }
+                //    }
+                //}
 
             yield return new WaitForSeconds(waitInBetweenSpeed);
             child.SetActive(false);
         }
 
         StartCoroutine(displayPath());
-    }
-
-    void hideAllInOrderSlowly()
-    {
-        foreach(GameObject child in currentPath)
-        {
-            child.GetComponent<Animator>().SetBool("Fade", false);
-        }
-    }
-
-    void hideAllInOrderForce()
-    {
-        foreach (GameObject child in currentPath)
-        {
-            child.GetComponent<Animator>().SetTrigger("Default");
-            child.GetComponent<Animator>().SetBool("Fade", false);
-
-            if (child.transform.childCount > 0)
-            {
-                foreach (Transform childInner in transform)
-                {
-
-                    child.GetComponent<Animator>().SetTrigger("Default");
-                    if (childInner.GetComponent<Animator>() != null)
-                    {
-                        childInner.GetComponent<Animator>().SetBool("Fade", false);
-                    }
-                    childInner.gameObject.SetActive(false);
-                }
-            }
-
-            child.SetActive(false);
-        }
     }
 }

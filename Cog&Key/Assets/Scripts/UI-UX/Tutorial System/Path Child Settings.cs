@@ -18,10 +18,23 @@ public class PathChildSettings : MonoBehaviour
     [SerializeField]
     Directional direction;
 
+    [SerializeField]
+    GameObject hideOther;
+
     // Start is called before the first frame update
     void Start()
     {
         ChangeDirection();
+
+        if(hideOther != null)
+        {
+            if(hideOther.GetComponent<Animator>() != null && hideOther.active)
+            {
+                hideOther.GetComponent<Animator>().SetBool("Fade", false);
+            }
+
+            hideOther.SetActive(false);        
+        }
     }
 
     // Update is called once per frame
