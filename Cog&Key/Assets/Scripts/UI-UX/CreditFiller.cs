@@ -19,51 +19,34 @@ public class CreditFiller : MonoBehaviour
     public List<NameAndPosition> nameAndPosition;
     private Dictionary<string, string> namePosDictionary;
 
-    [SerializeField]
-    private TextMeshProUGUI nameText, positionText;
+    private GameObject namePosObj;
 
-    private bool startedCredits = false;
+    RectTransform rectT;
 
     void Start()
     {
+        rectT = GetComponent<RectTransform>();
         namePosDictionary = new Dictionary<string, string>();
+        namePosObj = gameObject.transform.GetChild(1).gameObject;
+        namePosObj.SetActive(false);
         foreach (NameAndPosition person in nameAndPosition)
         {
             namePosDictionary[person.name] = person.position;
+            GameObject namePos = Instantiate(namePosObj, transform);
+            updateNamePos(person.name, person.position, namePos);
+            namePos.SetActive(true);
         }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!startedCredits)
-        {
-            StartCoroutine(ReadNames());
-        }
     }
 
-    void updateNamePos(string name, string position)
+    void updateNamePos(string name, string position, GameObject obj)
     {
-        nameText.text = name;
-        positionText.text = position;   
-    }
-
-    IEnumerator ReadNames()
-    {
-        int index = 0;
-        startedCredits = true;
-        while (index < nameAndPosition.Count && startedCredits)
-        {
-            updateNamePos(nameAndPosition[index].name, nameAndPosition[index].position);
-            yield return new WaitForSeconds(3f);
-            index++;
-        }
-        startedCredits = false;
-        yield return null;
-    }
-
-    public void EndCreditsEarly()
-    {
-        startedCredits = false;
+        obj.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = name;
+        obj.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = position;
     }
 }

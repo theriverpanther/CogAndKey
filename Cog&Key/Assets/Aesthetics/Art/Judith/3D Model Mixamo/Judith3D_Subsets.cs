@@ -19,7 +19,7 @@ public class Judith3D_Subsets : MonoBehaviour
     public void RandomChanceArmSwing()
     {
         int randomArmSwing = Random.Range(0, 4);
-        Debug.Log("Arm swing? " + randomArmSwing);
+        //Debug.Log("Arm swing? " + randomArmSwing);
         if(randomArmSwing < 2)
         {
             gameObject.GetComponent<Animator>().SetInteger("IdleVariant", 1);
@@ -30,5 +30,11 @@ public class Judith3D_Subsets : MonoBehaviour
     {
         gameObject.GetComponent<Animator>().SetInteger("IdleVariant", 0);
 
+    }
+
+    public void ForceRotationRun()
+    {
+        //Debug.Log("AAAAAAAAAA");
+        transform.localRotation = new Quaternion(transform.rotation.x, 180f, transform.rotation.z, transform.rotation.w);
     }
 }

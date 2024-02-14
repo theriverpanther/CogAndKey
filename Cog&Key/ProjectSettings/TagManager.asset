@@ -14,6 +14,7 @@ TagManager:
   - Agent
   - Not Physics
   - Focus Point
+  - Path
   layers:
   - Default
   - TransparentFX
@@ -28,7 +29,7 @@ TagManager:
   - Player
   - PlayerVisual
   - HelperConnectionPoint
-  - 
+  - Gear
   - 
   - 
   - 
@@ -54,11 +55,20 @@ TagManager:
   - name: Background
     uniqueID: 3172701027
     locked: 0
+  - name: UI-UXOverlay Behind
+    uniqueID: 2465925889
+    locked: 0
   - name: Midground
     uniqueID: 1376984927
     locked: 0
-  - name: Helper
-    uniqueID: 3227944715
+  - name: Lights
+    uniqueID: 277210163
+    locked: 0
+  - name: Enemy
+    uniqueID: 600093741
+    locked: 0
+  - name: Objects
+    uniqueID: 1594806245
     locked: 0
   - name: Player
     uniqueID: 1011476109

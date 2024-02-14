@@ -76,6 +76,7 @@ public class PlayerScript : MonoBehaviour
         OnSurface = false;
         input.Update();
         Vector2 velocity = physicsBody.velocity;
+        playerAnimation.SetFloat("velocity", physicsBody.velocity.y);
 
         if(physicsBody.velocity.y <= 0.5f) {
             moveLockedRight = null;
@@ -126,17 +127,21 @@ public class PlayerScript : MonoBehaviour
                     OnSurface = true;
                 }
 
-                if(velocity.y < 0) {
+                if (velocity.y < 0)
+                {
                     SetAnimation("Falling");
                 }
 
                 // cling to walls
-                if(velocity.y < CLING_VELOCITY && 
+                if (velocity.y < CLING_VELOCITY && 
                     (adjWallDir == Direction.Left && input.IsPressed(PlayerInput.Action.Left) || adjWallDir == Direction.Right && input.IsPressed(PlayerInput.Action.Right))
                 ) {
                     velocity.y = CLING_VELOCITY;
                     SetAnimation("Wallslide");
                 }
+
+
+
 
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
@@ -272,8 +277,9 @@ public class PlayerScript : MonoBehaviour
         }
 
         physicsBody.velocity = velocity;
+        playerAnimation.SetFloat("velocity", physicsBody.velocity.y);
 
-        if(coyoteTime > 0) {
+        if (coyoteTime > 0) {
             coyoteTime -= Time.deltaTime;
             if(coyoteTime <= 0) {
                 CoyoteMomentum = null;

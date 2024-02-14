@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1314985615790818644}
   - component: {fileID: 3748412832073563459}
   - component: {fileID: 3689282094989724371}
+  - component: {fileID: 8147505152353547841}
+  - component: {fileID: 3384391191873897296}
   m_Layer: 5
   m_Name: KeyToPress
   m_TagString: Untagged
@@ -75,6 +77,135 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8147505152353547841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201812220187674193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 355b5a27dd14a7147898e8755eaad7b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapping: 
+  specific: 0
+  animated: 0
+  scale: 0
+--- !u!114 &3384391191873897296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201812220187674193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba9dfce5e071fbf4186a9ee681eb3dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xboxPairs:
+  - key: Jump_UP
+    imagePair: {fileID: 2800000, guid: c7cbc93eeea571e4d9ce6e26f14f0f64, type: 3}
+  - key: Jump_DOWN
+    imagePair: {fileID: 2800000, guid: d2cdd509d4b77c54098a789f834074ed, type: 3}
+  - key: Reverse_UP
+    imagePair: {fileID: 2800000, guid: d447626880667264e9bf346266a8d8e7, type: 3}
+  - key: Reverse_DOWN
+    imagePair: {fileID: 2800000, guid: 5898d56c6047cbd459195fbbfbb72d3f, type: 3}
+  - key: Fast_UP
+    imagePair: {fileID: 2800000, guid: 0a28412e79e0f8c4b80aecc18a1cc5b3, type: 3}
+  - key: Fast_DOWN
+    imagePair: {fileID: 2800000, guid: b6ebefb1287440e40aa76004b56584d5, type: 3}
+  - key: Lock_UP
+    imagePair: {fileID: 2800000, guid: 8a9c36ac6564fac498b62ffc4074aa2c, type: 3}
+  - key: Lock_DOWN
+    imagePair: {fileID: 2800000, guid: c319bb524f7a35f45a3dee2e258abcf7, type: 3}
+  playstationPairs:
+  - key: Jump_UP
+    imagePair: {fileID: 2800000, guid: 6c9e17f7065f40144a2e3c9ed2c3a6a1, type: 3}
+  - key: Jump_DOWN
+    imagePair: {fileID: 2800000, guid: 5b37837431d340e48a777b4526e4ab5a, type: 3}
+  - key: Reverse_UP
+    imagePair: {fileID: 2800000, guid: 1fea07e5148cf6645a250dc61402a1db, type: 3}
+  - key: Reverse_DOWN
+    imagePair: {fileID: 2800000, guid: 83f1fd21d25ace04089d5105b67384cc, type: 3}
+  - key: Fast_UP
+    imagePair: {fileID: 2800000, guid: d861e277c23306243a9aef1b8c811d10, type: 3}
+  - key: Fast_DOWN
+    imagePair: {fileID: 2800000, guid: 5ad6bc9da1dce0546b8b856a3ed0ab0d, type: 3}
+  - key: Lock_UP
+    imagePair: {fileID: 2800000, guid: d132ebdd55a764b42beb2575785416f9, type: 3}
+  - key: Lock_DOWN
+    imagePair: {fileID: 2800000, guid: 9f4223981f8495e4984ecbdf69670dc9, type: 3}
+  keyboardPairs:
+  - key: Jump_UP
+    imagePair: {fileID: 2800000, guid: e0de54a09341f8e4a9aca3cf7731702d, type: 3}
+  - key: Jump_DOWN
+    imagePair: {fileID: 2800000, guid: 3e8f96b7740128140b5ffbf923752820, type: 3}
+  - key: Reverse_UP
+    imagePair: {fileID: 2800000, guid: 4b36d849d844ab34c8e6a1ba0e6d4c4f, type: 3}
+  - key: Reverse_DOWN
+    imagePair: {fileID: 2800000, guid: bf567006a515fa145a12b89da6a3b9fe, type: 3}
+  - key: Fast_UP
+    imagePair: {fileID: 2800000, guid: b2cd389e2e9c2df4db22ac6e9ac3bde9, type: 3}
+  - key: Fast_DOWN
+    imagePair: {fileID: 2800000, guid: 2ebfdaa780a2fe84fabd0c42473d27cc, type: 3}
+  - key: Lock_UP
+    imagePair: {fileID: 2800000, guid: 9e857c824d96a7443bc192d0022e6ef2, type: 3}
+  - key: Lock_DOWN
+    imagePair: {fileID: 2800000, guid: 13bc58bdd14e1fa41b97592bf9f895ea, type: 3}
+  - key: StickL_UP
+    imagePair: {fileID: 2800000, guid: 931c1a994f209a645bd5dd5e1dfb8d34, type: 3}
+  - key: StickL_DOWN
+    imagePair: {fileID: 2800000, guid: 92f562d8a7e2430469c5ace5e2ec3f92, type: 3}
+  - key: StickL_LEFT
+    imagePair: {fileID: 2800000, guid: 63426faf518e9aa48a3458bea7b957d5, type: 3}
+  - key: StickL_RIGHT
+    imagePair: {fileID: 2800000, guid: 7a46a9e473f779b40a42a926921a2dd5, type: 3}
+  - key: StickR_UP
+    imagePair: {fileID: 2800000, guid: 39fde0c80519c0341a789fa042acdd6c, type: 3}
+  - key: StickR_DOWN
+    imagePair: {fileID: 2800000, guid: 2d71fc060485e034e8be5b6f61327c89, type: 3}
+  - key: StickR_LEFT
+    imagePair: {fileID: 2800000, guid: 998f6a393047b50469a5bc5ba751a2ed, type: 3}
+  - key: StickR_RIGHT
+    imagePair: {fileID: 2800000, guid: 79be4c7570d8b7844a6955de77cf0b31, type: 3}
+  otherPairs:
+  - key: Jump_UP
+    imagePair: {fileID: 2800000, guid: 20bc6b1e1df116140823b0b804b4ce14, type: 3}
+  - key: Jump_DOWN
+    imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
+  - key: Reverse_UP
+    imagePair: {fileID: 2800000, guid: 9c44845f458054d4d93d91af99e04862, type: 3}
+  - key: Reverse_DOWN
+    imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
+  - key: Fast_UP
+    imagePair: {fileID: 2800000, guid: 443b83fdfb25fac4c9099d1df5640fa4, type: 3}
+  - key: Fast_DOWN
+    imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
+  - key: Lock_UP
+    imagePair: {fileID: 2800000, guid: 8665f7dfe656b674e9a0bff1c8f932f8, type: 3}
+  - key: Lock_DOWN
+    imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
+  genPairs:
+  - key: StickL_MIDDLE
+    imagePair: {fileID: 2800000, guid: 038c48ad2049071459a418b1adbc568c, type: 3}
+  - key: StickL_PRESS
+    imagePair: {fileID: 2800000, guid: ae5577aa5092a7046ae7c65d6e3e4e13, type: 3}
+  - key: StickL_LEFT
+    imagePair: {fileID: 2800000, guid: d8f728bbcad81eb42ad7979be8bec3d0, type: 3}
+  - key: StickL_RIGHT
+    imagePair: {fileID: 2800000, guid: 86ea7bd2564be064dbe73c3a5ce5eab1, type: 3}
+  - key: StickR_MIDDLE
+    imagePair: {fileID: 2800000, guid: 807bf927253a7a844aead97ae78c7cab, type: 3}
+  - key: StickR_PRESS
+    imagePair: {fileID: 2800000, guid: e64e3441fb715494792dfd5b25a4da6c, type: 3}
+  - key: StickR_LEFT
+    imagePair: {fileID: 2800000, guid: df783610ae761a14f8e2d531b4c7f49b, type: 3}
+  - key: StickR_RIGHT
+    imagePair: {fileID: 2800000, guid: f9b21236f5b9ea240baf2885e8dd1517, type: 3}
 --- !u!1 &1777258764903648534
 GameObject:
   m_ObjectHideFlags: 0
