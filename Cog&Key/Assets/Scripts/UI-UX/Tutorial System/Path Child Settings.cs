@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
@@ -9,7 +8,8 @@ enum Directional
     Right,
     Left,
     Up,
-    Down
+    Down,
+    Custom
 }
 
 public class PathChildSettings : MonoBehaviour
@@ -46,6 +46,9 @@ public class PathChildSettings : MonoBehaviour
                 break;
             case Directional.Down:
                 transform.localRotation = Quaternion.Euler(0, 0, 270f);
+                break;
+            case Directional.Custom:
+                //do nothing
                 break;
         }
     }

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Wall Jump
+  m_Controller: {fileID: 9100000, guid: ccc672efbdb5d7b43883c475d9126a27, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 090799f782e8d5148a3d56690718c74a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: d2fceed6e1b18784dbb84f186fc48cb5, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: cd75620ccf2f8a1429dafff8ca8bb996, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 05509f8e91b15b4489ecac44a813a554, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 5e9a15d0d887ae041a15411f98610245, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 33f9849318a6a3f45b4bf286c8a021de, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 447ac7b1923e2054faef1a2f5aee2dcb, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 05509f8e91b15b4489ecac44a813a554, type: 2}

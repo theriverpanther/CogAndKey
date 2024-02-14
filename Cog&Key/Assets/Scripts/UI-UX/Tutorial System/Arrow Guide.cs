@@ -42,7 +42,12 @@ public class ArrowGuide : MonoBehaviour
                 foreach(Transform childInner in currentPath[index].transform)
                 {
                     childInner.gameObject.SetActive(true);
-                    childInner.GetComponent<Animator>().SetBool("Fade", true);
+
+                    if(childInner.GetComponent<Animator>() != null)
+                    {
+                        childInner.GetComponent<Animator>().SetBool("Fade", true);
+                    }
+                    
                 }
             }
 
@@ -59,7 +64,10 @@ public class ArrowGuide : MonoBehaviour
                 foreach (Transform childInner in child.transform)
                 {
                     childInner.gameObject.SetActive(false);
-                    childInner.GetComponent<Animator>().SetBool("Fade", false);
+                    if (childInner.GetComponent<Animator>() != null)
+                    {
+                        childInner.GetComponent<Animator>().SetBool("Fade", false);
+                    }
                 }
             }
 
@@ -91,7 +99,10 @@ public class ArrowGuide : MonoBehaviour
                 {
 
                     child.GetComponent<Animator>().SetTrigger("Default");
-                    childInner.GetComponent<Animator>().SetBool("Fade", false);
+                    if (childInner.GetComponent<Animator>() != null)
+                    {
+                        childInner.GetComponent<Animator>().SetBool("Fade", false);
+                    }
                     childInner.gameObject.SetActive(false);
                 }
             }
