@@ -374,7 +374,7 @@ public class Agent : KeyWindable
                                     Vector3 point = results.collider.transform.position;
                                     if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
                                     {
-                                        if (pathTarget.transform.position.y > transform.position.y) Debug.Log("Jump");//Jump();
+                                        if (pathTarget.transform.position.y > transform.position.y) Jump();
                                         returnVal = 0;
                                         lostTimer = 0;
                                         isLost = false;
@@ -389,7 +389,7 @@ public class Agent : KeyWindable
                                     //Debug.DrawLine(transform.position, pathTarget.transform.position);
                                     if (sqrDistToTarget <= 64f)
                                     {
-                                        if (transform.position.y < pathTarget.transform.position.y) Debug.Log("Jump");//Jump();
+                                        if (transform.position.y < pathTarget.transform.position.y) Jump();
                                         returnVal = 0;
                                         lostTimer = 0;
                                         isLost = false;
@@ -424,7 +424,7 @@ public class Agent : KeyWindable
                             
                             else if (PlayerPosition != Vector3.zero)
                             {
-                                if(Mathf.Abs(rb.velocity.x) > 0) Debug.Log("Jump"); //Jump();
+                                if(Mathf.Abs(rb.velocity.x) > 0) Jump();
                                 returnVal = 0;
                             }
 
@@ -438,33 +438,34 @@ public class Agent : KeyWindable
             }
             if (detectWalls)
             {
-                if (wallPts.Count > 2)
+                if (wallPts.Count >= 2)
                 {
-                    if (wallPts[0].collider.tag == "Ground" && wallPts[1].collider.tag == "Ground")
+                    if (wallPts[0].point.y - transform.position.y >= halfHeight - .1f)
                     {
-                        if (wallPts[0].point.y - transform.position.y >= halfHeight - .1f)
-                        {
-                            returnVal = wallPts[0].point.x < transform.position.x ? 1 : -1;
-                        }
-                        else
-                        {
-                            if (Mathf.Abs(rb.velocity.x) > 0) Debug.Log("Jump"); //Jump();
-                        }
+                        returnVal = wallPts[0].point.x < transform.position.x ? 1 : -1;
                     }
-                    else
+                    else if (wallPts[0].point.y - wallPts[1].point.y >= halfHeight - 0.1f)
                     {
-                        // Left in case we re add agent on agent collision
-                        if (wallPts[1].collider.tag == "Agent")
-                        {
-                            Agent a = wallPts[0].collider.GetComponent<Agent>();
-                            if (a.Direction != direction || movementSpeed > a.Speed)
-                            {
-                                // If its a small enough object, jump over it.
-                                if (wallPts[0].collider.transform.position.y < wallPts[0].point.y && Mathf.Abs(rb.velocity.x) > 0) Debug.Log("Jump");//Jump();
-                            }
+                        if (Mathf.Abs(rb.velocity.x) > 0) Jump();
+                    }
+                    //if (wallPts[0].collider.tag == "Ground")
+                    //{
+                        
+                    //}
+                    //else
+                    //{
+                    //    // Left in case we re add agent on agent collision
+                    //    if (wallPts[1].collider.tag == "Agent")
+                    //    {
+                    //        Agent a = wallPts[0].collider.GetComponent<Agent>();
+                    //        if (a.Direction != direction || movementSpeed > a.Speed)
+                    //        {
+                    //            // If its a small enough object, jump over it.
+                    //            if (wallPts[0].collider.transform.position.y < wallPts[0].point.y && Mathf.Abs(rb.velocity.x) > 0) Jump();//Jump();
+                    //        }
 
-                        }
-                    }
+                    //    }
+                    //}
                 }
             }
         }
