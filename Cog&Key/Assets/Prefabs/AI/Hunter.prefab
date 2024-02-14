@@ -480,11 +480,13 @@ MonoBehaviour:
   movementSpeed: 5
   jumpSpeed: 13
   fastScalar: 2
+  senses: []
   collidingObjs: []
   direction: {x: 0, y: 0}
   processingTurn: 0
   processingStop: 0
   pathTarget: {fileID: 0}
+  cog: {fileID: 167945127803113576}
   minLedgeSize: 0.5
   ledgeSize: 0
   isLost: 0
@@ -1216,6 +1218,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
+--- !u!114 &167945127803113576 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2854482435423603044, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
+  m_PrefabInstance: {fileID: 2722849916093356300}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3f9e99c7b6d36a4c9d4568b472c6489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &5000237061706334048 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6966479903630681708, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
