@@ -37,7 +37,7 @@ public class FanScript : KeyWindable
                 rangeMultiplier = 0;
             }
             float force = MAX_BASE_FORCE * Mathf.Sqrt(rangeMultiplier);
-            physBod.AddForce(keyToMultiplier[InsertedKeyType] * force * direction);
+            physBod.AddForce(keyToMultiplier[InsertedKeyType] * force * direction * 250f * Time.deltaTime);
         }
 
         // TEMP VISUAL EFFECT
