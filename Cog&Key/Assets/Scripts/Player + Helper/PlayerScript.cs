@@ -37,7 +37,6 @@ public class PlayerScript : MonoBehaviour
     private Animator playerAnimation;
 
     public State CurrentState { get; private set; }
-    public bool OnSurface { get; private set; }
     public bool HasWallJumped { get; private set; }
     public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
     public static PlayerScript CurrentPlayer { get; private set; }
@@ -73,7 +72,6 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        OnSurface = false;
         input.Update();
         Vector2 velocity = physicsBody.velocity;
         playerAnimation.SetFloat("velocity", physicsBody.velocity.y);
@@ -106,7 +104,6 @@ public class PlayerScript : MonoBehaviour
         bool onFloor = IsOnFloor(out floorNorm, out floorObject);
         if(onFloor) {
             CoyoteMomentum = null;
-            OnSurface = true;
         }
         
         switch(CurrentState) {
@@ -122,10 +119,8 @@ public class PlayerScript : MonoBehaviour
                     }
                 }
                 
-                Direction adjWallDir = GetAdjacentWallDireciton();
-                if(adjWallDir != Direction.None) {
-                    OnSurface = true;
-                }
+                bool topAgainstWall = false;
+                Direction adjWallDir = GetAdjacentWallDireciton(out topAgainstWall);
 
                 if (velocity.y < 0)
                 {
@@ -133,14 +128,12 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 // cling to walls
-                if (velocity.y < CLING_VELOCITY && 
+                if (velocity.y < CLING_VELOCITY && topAgainstWall &&
                     (adjWallDir == Direction.Left && input.IsPressed(PlayerInput.Action.Left) || adjWallDir == Direction.Right && input.IsPressed(PlayerInput.Action.Right))
                 ) {
                     velocity.y = CLING_VELOCITY;
                     SetAnimation("Wallslide");
                 }
-
-
 
 
                 // wall jump
@@ -371,7 +364,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     // checks if the player's left and right sides are against any surfaces. Returns Direction.None for no wall, and left or right if there is a wall
-    private Direction GetAdjacentWallDireciton() {
+    private Direction GetAdjacentWallDireciton(out bool topAdjacent) {
         float left = transform.position.x - colliderHalfSize.x;
         float right = transform.position.x + colliderHalfSize.x;
         float top = transform.position.y + colliderHalfSize.y;
@@ -383,11 +376,26 @@ public class PlayerScript : MonoBehaviour
         RaycastHit2D leftTop = Physics2D.Raycast(new Vector3(left, top, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
         RaycastHit2D rightTop = Physics2D.Raycast(new Vector3(right, top, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
 
+        RaycastHit2D leftBot = Physics2D.Raycast(new Vector3(left, bottom, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D rightBot = Physics2D.Raycast(new Vector3(right, bottom, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D leftMid = Physics2D.Raycast(new Vector3(left, mid, 0), Vector2.left, 10, LayerMask.NameToLayer("Player"));
+        RaycastHit2D rightMid = Physics2D.Raycast(new Vector3(right, mid, 0), Vector2.right, 10, LayerMask.NameToLayer("Player"));
+
+        topAdjacent = true;
         if(leftTop.collider != null && leftTop.distance < BUFFER) {
             return Direction.Left;
         }
 
         if(rightTop.collider != null && rightTop.distance < BUFFER) {
+            return Direction.Right;
+        }
+
+        topAdjacent = false;
+        if(leftBot.collider != null && leftBot.distance < BUFFER || leftMid.collider != null && leftMid.distance < BUFFER) {
+            return Direction.Left;
+        }
+
+        if(rightBot.collider != null && rightBot.distance < BUFFER || rightMid.collider != null && rightMid.distance < BUFFER) {
             return Direction.Right;
         }
 

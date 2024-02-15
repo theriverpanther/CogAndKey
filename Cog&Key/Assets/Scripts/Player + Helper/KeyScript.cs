@@ -52,16 +52,16 @@ public class KeyScript : MonoBehaviour
         visual = transform.GetChild(0).gameObject;
         keyAni = visual.GetComponent<Animator>();
         boxCollider = GetComponent<Collider2D>();
-
-        if(StartAttachedTo != null) {
-            attachedPickup = true;
-            AttachTo(StartAttachedTo);
-        }
     }
 
     void Start() {
-        if (StartEquipped) {
+        if(StartEquipped) {
             Equip();
+        }
+
+        if(StartAttachedTo != null && currentState == State.Pickup) {
+            attachedPickup = true;
+            AttachTo(StartAttachedTo);
         }
     }
 

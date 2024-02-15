@@ -66,6 +66,7 @@ public class CameraController : MonoBehaviour
             focusDist = Vector2.Distance(player.transform.position, focusPoint);
             if(focusDist <= FOCUS_OUTER_RADIUS) {
                 focus = focusPoint;
+                break;
             }
         }
         
@@ -142,6 +143,10 @@ public class CameraController : MonoBehaviour
 
     // called by LevelData.cs Start() after generating the level bounds
     public void SetInitialPosition() {
-        transform.position = player.transform.position - (Vector3)playerWindow.center + new Vector3(0, 0, fixedZ);
+        LevelData level = LevelData.Instance;
+        Vector3 startingPos = player.transform.position - (Vector3)playerWindow.center + new Vector3(0, 0, fixedZ);
+        startingPos.x = Mathf.Clamp(startingPos.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f); // do not look beyond the level bounds
+        startingPos.y = Mathf.Clamp(startingPos.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
+        transform.position = startingPos;
     }
 }

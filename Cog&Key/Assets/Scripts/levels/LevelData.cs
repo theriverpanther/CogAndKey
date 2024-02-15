@@ -22,7 +22,7 @@ public class LevelData : MonoBehaviour
     public float YMax { get { return levelBounds.yMax; } }
     public int DeathsSinceCheckpoint { get; private set; }
 
-    // needs CameraScript Awake() to run first
+    // needs CameraController Awake() to run first
     void Start() {
         Physics2D.queriesHitTriggers = false; // prevent raycasts from hitting triggers
 
