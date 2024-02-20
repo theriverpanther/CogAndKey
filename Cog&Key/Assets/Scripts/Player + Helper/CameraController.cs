@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private GameObject visibleWindow;
 
     private const float WINDOW_WIDTH = 4f;
-    private const float WINDOW_HEIGHT = 2f;
+    private const float WINDOW_HEIGHT = 1.5f;
     private const float WINDOW_X_LIMIT = 9f;
     private const float WINDOW_Y_LIMIT = 5f;
 
@@ -91,7 +92,11 @@ public class CameraController : MonoBehaviour
         }
 
         if(movingX.HasValue) {
-            newPosition.x += (followRelativeToCenter.x - movingX.Value) * HORIZONTAL_MOVE_RATE * Time.timeScale;
+            float change = (followRelativeToCenter.x - movingX.Value) * HORIZONTAL_MOVE_RATE * Time.timeScale;
+            if(Mathf.Abs(change) < 0.01f) {
+                change = 0;
+            }
+            newPosition.x += change;
         }
 
         // manage vertical
@@ -106,7 +111,15 @@ public class CameraController : MonoBehaviour
             }
 
             if(movingY.HasValue) {
-                newPosition.y += (followRelativeToCenter.y - movingY.Value) * VERTICAL_MOVE_RATE * Time.timeScale;
+                float moveRate = VERTICAL_MOVE_RATE;
+                if(followRelativeToCenter.y < playerWindow.yMin) {
+                    moveRate *= 3f;
+                }
+                float change = (followRelativeToCenter.y - movingY.Value) * moveRate * Time.timeScale;
+                if(Mathf.Abs(change) < 0.01f) {
+                    change = 0;
+                }
+                newPosition.y += change;
             }
         }
 
