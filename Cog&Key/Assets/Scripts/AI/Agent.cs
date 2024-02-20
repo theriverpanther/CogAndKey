@@ -211,6 +211,7 @@ public class Agent : KeyWindable
         return calcY > y - threshold && calcY < y + threshold;
     }
 
+    // turning animations go here
     protected IEnumerator TurnDelay()
     {   
         if (!processingTurn && !processingStop)
@@ -240,6 +241,7 @@ public class Agent : KeyWindable
         yield return null;
     }
 
+    //potential idle animations go here? change via level design for stop delay @ liam
     protected IEnumerator MoveDelay()
     {
         if(!processingStop && !processingTurn)
@@ -282,7 +284,9 @@ public class Agent : KeyWindable
         PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
         if (player != null)
         {
-            player.Die();
+            if (senses[0].collidedPlayer) Debug.Log("Animate");// Animation Here
+            // insert animation attack here???? maybe??? 
+            else player.Die();
         }
 
         //if (collision.gameObject.name == "Spikes")

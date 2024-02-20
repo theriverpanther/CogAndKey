@@ -876,7 +876,7 @@ PrefabInstance:
     - target: {fileID: 3689282094989724371, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 3d4b77f1bd4b0fb4cbdaed7bef309bc4, type: 3}
+      objectReference: {fileID: 21300000, guid: 8678b7f5ee0e1e0438d1cc45c64adab9, type: 3}
     - target: {fileID: 7017874409755928630, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -987,10 +987,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: KeyFillerUI
       objectReference: {fileID: 0}
-    - target: {fileID: 3689282094989724371, guid: 0813a2780923d204381e70eede23affc, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 6b1047377f1e815409db06572df01f31, type: 3}
     - target: {fileID: 7017874409755928630, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1105,6 +1101,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: KeyFillerUI
       objectReference: {fileID: 0}
+    - target: {fileID: 3689282094989724371, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1d955ce94a947104591403bd57f9f688, type: 3}
     - target: {fileID: 7017874409755928630, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

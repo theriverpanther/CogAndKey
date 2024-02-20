@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3748412832073563459}
   - component: {fileID: 3689282094989724371}
   - component: {fileID: 8147505152353547841}
+  - component: {fileID: 397280445863575283}
   - component: {fileID: 3384391191873897296}
   m_Layer: 5
   m_Name: KeyToPress
@@ -67,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fd53cc4a25805cc4280b7f655821de13, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 07a8531994123fa468e953642db345cc, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -93,6 +94,120 @@ MonoBehaviour:
   specific: 0
   animated: 0
   scale: 0
+  hideOther: {fileID: 0}
+--- !u!114 &397280445863575283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201812220187674193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba9dfce5e071fbf4186a9ee681eb3dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xboxPairs:
+  - key: Jump_UP
+    imagePair: {fileID: 2800000, guid: d5254e3096027bc478e8190748901974, type: 3}
+  - key: Jump_DOWN
+    imagePair: {fileID: 2800000, guid: b889bff0dadeedf4ca3f8c7c10e1da24, type: 3}
+  - key: Reverse_UP
+    imagePair: {fileID: 2800000, guid: 1d955ce94a947104591403bd57f9f688, type: 3}
+  - key: Reverse_DOWN
+    imagePair: {fileID: 2800000, guid: 4b37584add5eb674b8c0c1a7355690ec, type: 3}
+  - key: Fast_UP
+    imagePair: {fileID: 2800000, guid: 8678b7f5ee0e1e0438d1cc45c64adab9, type: 3}
+  - key: Fast_DOWN
+    imagePair: {fileID: 2800000, guid: b66a46ae584e2ba4f8317dc88a2b311e, type: 3}
+  - key: Lock_UP
+    imagePair: {fileID: 2800000, guid: 07a8531994123fa468e953642db345cc, type: 3}
+  - key: Lock_DOWN
+    imagePair: {fileID: 2800000, guid: ac0a072dcae815040b9d18604302caf3, type: 3}
+  playstationPairs:
+  - key: Jump_UP
+    imagePair: {fileID: 2800000, guid: 768371d09b7aa1e4489a8cbdd68419be, type: 3}
+  - key: Jump_DOWN
+    imagePair: {fileID: 2800000, guid: ed012033272032f4592c7b49aa8d0d06, type: 3}
+  - key: Reverse_UP
+    imagePair: {fileID: 2800000, guid: 1fea07e5148cf6645a250dc61402a1db, type: 3}
+  - key: Reverse_DOWN
+    imagePair: {fileID: 2800000, guid: 83f1fd21d25ace04089d5105b67384cc, type: 3}
+  - key: Fast_UP
+    imagePair: {fileID: 2800000, guid: a03f7d16bbf201a4b957da71996b0dfe, type: 3}
+  - key: Fast_DOWN
+    imagePair: {fileID: 2800000, guid: 842065d918a061443a50070c4ce34aea, type: 3}
+  - key: Lock_UP
+    imagePair: {fileID: 2800000, guid: 87cc76cf13e07c048978abf74bbd9b57, type: 3}
+  - key: Lock_DOWN
+    imagePair: {fileID: 2800000, guid: e1e85ebf8ba47c142989c56cadf41549, type: 3}
+  keyboardPairs:
+  - key: Jump_UP
+    imagePair: {fileID: 2800000, guid: e0de54a09341f8e4a9aca3cf7731702d, type: 3}
+  - key: Jump_DOWN
+    imagePair: {fileID: 2800000, guid: 3e8f96b7740128140b5ffbf923752820, type: 3}
+  - key: Reverse_UP
+    imagePair: {fileID: 2800000, guid: 4b36d849d844ab34c8e6a1ba0e6d4c4f, type: 3}
+  - key: Reverse_DOWN
+    imagePair: {fileID: 2800000, guid: bf567006a515fa145a12b89da6a3b9fe, type: 3}
+  - key: Fast_UP
+    imagePair: {fileID: 2800000, guid: b2cd389e2e9c2df4db22ac6e9ac3bde9, type: 3}
+  - key: Fast_DOWN
+    imagePair: {fileID: 2800000, guid: 2ebfdaa780a2fe84fabd0c42473d27cc, type: 3}
+  - key: Lock_UP
+    imagePair: {fileID: 2800000, guid: 9e857c824d96a7443bc192d0022e6ef2, type: 3}
+  - key: Lock_DOWN
+    imagePair: {fileID: 2800000, guid: 13bc58bdd14e1fa41b97592bf9f895ea, type: 3}
+  - key: StickL_UP
+    imagePair: {fileID: 2800000, guid: 931c1a994f209a645bd5dd5e1dfb8d34, type: 3}
+  - key: StickL_DOWN
+    imagePair: {fileID: 2800000, guid: 92f562d8a7e2430469c5ace5e2ec3f92, type: 3}
+  - key: StickL_LEFT
+    imagePair: {fileID: 2800000, guid: 63426faf518e9aa48a3458bea7b957d5, type: 3}
+  - key: StickL_RIGHT
+    imagePair: {fileID: 2800000, guid: 7a46a9e473f779b40a42a926921a2dd5, type: 3}
+  - key: StickR_UP
+    imagePair: {fileID: 2800000, guid: 39fde0c80519c0341a789fa042acdd6c, type: 3}
+  - key: StickR_DOWN
+    imagePair: {fileID: 2800000, guid: 2d71fc060485e034e8be5b6f61327c89, type: 3}
+  - key: StickR_LEFT
+    imagePair: {fileID: 2800000, guid: 998f6a393047b50469a5bc5ba751a2ed, type: 3}
+  - key: StickR_RIGHT
+    imagePair: {fileID: 2800000, guid: 79be4c7570d8b7844a6955de77cf0b31, type: 3}
+  otherPairs:
+  - key: Jump_UP
+    imagePair: {fileID: 2800000, guid: 20bc6b1e1df116140823b0b804b4ce14, type: 3}
+  - key: Jump_DOWN
+    imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
+  - key: Reverse_UP
+    imagePair: {fileID: 2800000, guid: 9c44845f458054d4d93d91af99e04862, type: 3}
+  - key: Reverse_DOWN
+    imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
+  - key: Fast_UP
+    imagePair: {fileID: 2800000, guid: 443b83fdfb25fac4c9099d1df5640fa4, type: 3}
+  - key: Fast_DOWN
+    imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
+  - key: Lock_UP
+    imagePair: {fileID: 2800000, guid: 8665f7dfe656b674e9a0bff1c8f932f8, type: 3}
+  - key: Lock_DOWN
+    imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
+  genPairs:
+  - key: StickL_MIDDLE
+    imagePair: {fileID: 2800000, guid: 038c48ad2049071459a418b1adbc568c, type: 3}
+  - key: StickL_PRESS
+    imagePair: {fileID: 2800000, guid: ae5577aa5092a7046ae7c65d6e3e4e13, type: 3}
+  - key: StickL_LEFT
+    imagePair: {fileID: 2800000, guid: d8f728bbcad81eb42ad7979be8bec3d0, type: 3}
+  - key: StickL_RIGHT
+    imagePair: {fileID: 2800000, guid: 86ea7bd2564be064dbe73c3a5ce5eab1, type: 3}
+  - key: StickR_MIDDLE
+    imagePair: {fileID: 2800000, guid: 807bf927253a7a844aead97ae78c7cab, type: 3}
+  - key: StickR_PRESS
+    imagePair: {fileID: 2800000, guid: e64e3441fb715494792dfd5b25a4da6c, type: 3}
+  - key: StickR_LEFT
+    imagePair: {fileID: 2800000, guid: df783610ae761a14f8e2d531b4c7f49b, type: 3}
+  - key: StickR_RIGHT
+    imagePair: {fileID: 2800000, guid: f9b21236f5b9ea240baf2885e8dd1517, type: 3}
 --- !u!114 &3384391191873897296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,6 +332,7 @@ GameObject:
   - component: {fileID: 7017874409755928630}
   - component: {fileID: 3393183894799637135}
   - component: {fileID: 90509306475760250}
+  - component: {fileID: 2739145118074230142}
   m_Layer: 5
   m_Name: KeyFillerUI
   m_TagString: Untagged
@@ -283,6 +399,32 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2739145118074230142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777258764903648534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 7
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 1
 --- !u!1 &8498504673818197640
 GameObject:
   m_ObjectHideFlags: 0
