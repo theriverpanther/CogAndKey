@@ -46,7 +46,7 @@ public class Agent : KeyWindable
     protected float halfHeight = 0.75f;
     protected float halfWidth = 0;
 
-    protected float turnDelay = 0.5f;
+    protected float turnDelay = 2f;
     [SerializeField] protected bool processingTurn = false;
     protected float stopDelay = 0.5f;
     [SerializeField] protected bool processingStop = false;
@@ -145,7 +145,7 @@ public class Agent : KeyWindable
                 Destroy(gameObject);
             }
         }
-        cog.fast = InsertedKeyType == KeyState.Fast;
+        //cog.fast = InsertedKeyType == KeyState.Fast;
 
         if(transform.position.y + halfHeight < LevelData.Instance.YMin)
         {
@@ -213,7 +213,10 @@ public class Agent : KeyWindable
 
     // turning animations go here
     protected IEnumerator TurnDelay()
-    {   
+    {
+        GameObject animationtag = FindChildWithTag(gameObject, "AgentAnimator");
+        Debug.Log("Found child: " + animationtag);
+
         if (!processingTurn && !processingStop)
         {
             processingTurn = true;
@@ -224,6 +227,10 @@ public class Agent : KeyWindable
             // Idle anim
             yield return new WaitForSeconds(turnDelay);
 
+            if (animationtag != null)
+            {
+                animationtag.GetComponent<Animator>().SetBool("Walking", false);
+            }
 
             transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
             // Set values back to how they used to be for a frame to prevent stunlocking
@@ -237,8 +244,29 @@ public class Agent : KeyWindable
             processingTurn = false;
             //Debug.Log("Coroutine End");
         }
-        
+
+        if (animationtag != null)
+        {
+            animationtag.GetComponent<Animator>().SetBool("Walking", true);
+        }
+
         yield return null;
+    }
+
+    GameObject FindChildWithTag(GameObject parent, string tag)
+    {
+        GameObject child = null;
+
+        foreach (Transform transform in parent.transform)
+        {
+            if (transform.CompareTag(tag))
+            {
+                child = transform.gameObject;
+                break;
+            }
+        }
+
+        return child;
     }
 
     //potential idle animations go here? change via level design for stop delay @ liam

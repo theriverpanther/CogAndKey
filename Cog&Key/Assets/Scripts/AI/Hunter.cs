@@ -10,12 +10,16 @@ public class Hunter : Agent
 {
     private float distThreshold = 0.2f;
     private bool wallDetected;
+    [ColorUsage(true, true)]
     [SerializeField] private Color idleColor;
+    [ColorUsage(true, true)]
     [SerializeField] private Color huntColor;
     private GameObject player;
-    private SpriteRenderer huntSignifier;
+    [SerializeField] Material signifier_mat_idle;
+    [SerializeField] Material signifier_mat_attack;
+    [SerializeField] GameObject signifier;
 
-
+    string currentStateMat = "";
 
     // Start is called before the first frame update
     protected override void Start()
@@ -24,7 +28,7 @@ public class Hunter : Agent
         direction = new Vector2(-1, 0);
         wallDetected = false;
         player = GameObject.Find("Player");
-        huntSignifier = gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
+        //huntSignifier = gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -70,7 +74,13 @@ public class Hunter : Agent
         //}
     }
 
-    
+    protected void MatSwap(Material mat)
+    {
+        Material[] materials = signifier.GetComponent<SkinnedMeshRenderer>().materials;
+        materials[1] = mat;
+        signifier.GetComponent<Renderer>().materials = materials;
+        Debug.Log("Material swapped succesfully!");
+    }
 
     protected override void BehaviorTree(float walkSpeed, bool fast)
     {
@@ -101,11 +111,22 @@ public class Hunter : Agent
                 Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
                 if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > 2) StartCoroutine(TurnDelay());
             }
-            huntSignifier.color = idleColor;
+            //huntSignifier.color = idleColor;
+            if (currentStateMat != "idle")
+            {
+                MatSwap(signifier_mat_idle);
+            }
+            currentStateMat = "idle";
         }
         else if (sqrDist > distThreshold * distThreshold)
         {
-            huntSignifier.color = huntColor;
+            //huntSignifier.color = huntColor;
+            if(currentStateMat != "attack")
+            {
+                MatSwap(signifier_mat_attack);
+            }
+            currentStateMat = "attack";
+
             // try to chase the player
             float tempX = (playerPosition - transform.position).x;
             if(Mathf.Sign(tempX) != Mathf.Sign(direction.x) && !processingTurn) 
