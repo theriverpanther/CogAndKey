@@ -70,6 +70,9 @@ public class Agent : KeyWindable
     protected float maxHuntTime = 2f;
     protected float huntTimer = 0f;
 
+    protected GameObject animationTag;
+    protected Animator ani;
+
     #endregion
 
     #region Properties
@@ -90,6 +93,11 @@ public class Agent : KeyWindable
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = GROUND_GRAVITY;
         scaleVal = transform.localScale;
+
+        animationTag = FindChildWithTag(gameObject, "AgentAnimator");
+        ani = animationTag.GetComponent<Animator>();
+        Debug.Log("Found child: " + animationTag);
+
         //senses = new List<Sense>
         //{
         //    transform.GetChild(5).GetComponent<Sense>(),
@@ -159,6 +167,7 @@ public class Agent : KeyWindable
         if (!processingTurn && !processingStop)
         {
             rb.velocity = new Vector2(walkSpeed * direction.x, rb.velocity.y);
+            ani.SetBool("Walking", true);
         }
     }
 
@@ -214,8 +223,6 @@ public class Agent : KeyWindable
     // turning animations go here
     protected IEnumerator TurnDelay()
     {
-        GameObject animationtag = FindChildWithTag(gameObject, "AgentAnimator");
-        Debug.Log("Found child: " + animationtag);
 
         if (!processingTurn && !processingStop)
         {
@@ -225,9 +232,9 @@ public class Agent : KeyWindable
             Vector2 tempVelocity = rb.velocity;
             rb.velocity = new Vector2(0, rb.velocity.y);
 
-            if (animationtag != null)
+            if (animationTag != null)
             {
-                animationtag.GetComponent<Animator>().SetBool("Walking", false);
+                animationTag.GetComponent<Animator>().SetBool("Walking", false);
             }
             // Idle anim
             yield return new WaitForSeconds(turnDelay);
@@ -245,15 +252,15 @@ public class Agent : KeyWindable
             Debug.Log("Coroutine End");
         }
 
-        if (animationtag != null)
+        if (animationTag != null)
         {
-            animationtag.GetComponent<Animator>().SetBool("Walking", true);
+            animationTag.GetComponent<Animator>().SetBool("Walking", true);
         }
 
         yield return null;
     }
 
-    GameObject FindChildWithTag(GameObject parent, string tag)
+    public static GameObject FindChildWithTag(GameObject parent, string tag)
     {
         GameObject child = null;
 
@@ -268,6 +275,15 @@ public class Agent : KeyWindable
 
         return child;
     }
+
+    public static void MatSwap(GameObject signifier, Material mat)
+    {
+        Material[] materials = signifier.GetComponent<SkinnedMeshRenderer>().materials;
+        materials[1] = mat;
+        signifier.GetComponent<Renderer>().materials = materials;
+        Debug.Log("Material swapped succesfully!");
+    }
+
 
     //potential idle animations go here? change via level design for stop delay @ liam
     protected IEnumerator MoveDelay()

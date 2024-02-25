@@ -28,6 +28,7 @@ public class Hunter : Agent
         direction = new Vector2(-1, 0);
         wallDetected = false;
         player = GameObject.Find("Player");
+
         //huntSignifier = gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
     }
 
@@ -74,14 +75,6 @@ public class Hunter : Agent
         //}
     }
 
-    protected void MatSwap(Material mat)
-    {
-        Material[] materials = signifier.GetComponent<SkinnedMeshRenderer>().materials;
-        materials[1] = mat;
-        signifier.GetComponent<Renderer>().materials = materials;
-        Debug.Log("Material swapped succesfully!");
-    }
-
     protected override void BehaviorTree(float walkSpeed, bool fast)
     {
         bool playerSensed = false;
@@ -108,13 +101,14 @@ public class Hunter : Agent
             EdgeDetectMovement(!fast, true);
             if (!isLost && pathTarget != null)
             {
+                
                 Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
                 if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > 2) StartCoroutine(TurnDelay());
             }
             //huntSignifier.color = idleColor;
             if (currentStateMat != "idle")
             {
-                MatSwap(signifier_mat_idle);
+                Agent.MatSwap(signifier, signifier_mat_idle);
             }
             currentStateMat = "idle";
         }
@@ -123,7 +117,7 @@ public class Hunter : Agent
             //huntSignifier.color = huntColor;
             if(currentStateMat != "attack")
             {
-                MatSwap(signifier_mat_attack);
+                Agent.MatSwap(signifier, signifier_mat_attack);
             }
             currentStateMat = "attack";
 
