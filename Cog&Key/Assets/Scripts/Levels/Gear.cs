@@ -70,7 +70,7 @@ public class Gear : MonoBehaviour
     void FixedUpdate()
     {
         transform.Rotate(Vector3.forward * (speed * dir) * Time.deltaTime, Space.Self);
-        Debug.Log("Rotating.. " + speed);
+        //Debug.Log("Rotating.. " + speed);
     }
 
     private void ChangeDirection()

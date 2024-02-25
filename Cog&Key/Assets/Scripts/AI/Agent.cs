@@ -224,13 +224,13 @@ public class Agent : KeyWindable
             direction.x = -direction.x;
             Vector2 tempVelocity = rb.velocity;
             rb.velocity = new Vector2(0, rb.velocity.y);
-            // Idle anim
-            yield return new WaitForSeconds(turnDelay);
 
             if (animationtag != null)
             {
                 animationtag.GetComponent<Animator>().SetBool("Walking", false);
             }
+            // Idle anim
+            yield return new WaitForSeconds(turnDelay);
 
             transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
             // Set values back to how they used to be for a frame to prevent stunlocking
@@ -242,7 +242,7 @@ public class Agent : KeyWindable
             if (Mathf.Abs(tempVelocity.x) > 1f) yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
             else yield return new WaitForSeconds(turnDelay);
             processingTurn = false;
-            //Debug.Log("Coroutine End");
+            Debug.Log("Coroutine End");
         }
 
         if (animationtag != null)

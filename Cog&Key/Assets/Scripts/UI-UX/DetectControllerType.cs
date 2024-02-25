@@ -119,7 +119,7 @@ public class DetectControllerType : MonoBehaviour
     public Texture2D ReturnImage(string mapping, bool specific = false)
     {
         Texture2D texture = null;
-        Debug.Log("Trying to get an image one min with " + mapping + " " + current);
+        //Debug.Log("Trying to get an image one min with " + mapping + " " + current);
 
         current = getControllerType();
 
