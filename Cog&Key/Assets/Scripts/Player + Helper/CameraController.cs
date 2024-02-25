@@ -100,7 +100,8 @@ public class CameraController : MonoBehaviour
         }
 
         // manage vertical
-        if(player.CurrentState == PlayerScript.State.Grounded || player.HasWallJumped || followRelativeToCenter.y < playerWindow.yMin) {
+        bool belowWindow = followRelativeToCenter.y < playerWindow.yMin;
+        if(player.CurrentState == PlayerScript.State.Grounded || player.HasWallJumped || belowWindow) {
             float? movingY = null;
             
             if(followRelativeToCenter.y < playerWindow.yMin) {
@@ -111,10 +112,7 @@ public class CameraController : MonoBehaviour
             }
 
             if(movingY.HasValue) {
-                float moveRate = VERTICAL_MOVE_RATE;
-                if(followRelativeToCenter.y < playerWindow.yMin) {
-                    moveRate *= 3f;
-                }
+                float moveRate = belowWindow ? 3f * VERTICAL_MOVE_RATE : VERTICAL_MOVE_RATE;
                 float change = (followRelativeToCenter.y - movingY.Value) * moveRate * Time.timeScale;
                 if(Mathf.Abs(change) < 0.01f) {
                     change = 0;
@@ -141,6 +139,9 @@ public class CameraController : MonoBehaviour
         const float MAX_MULT = 0.8f;
         float xMultiplier = Mathf.Abs(xTarget - windowCenter.x) / (2f * WINDOW_CENTER_X_LIMIT) * (1.0f + MIN_MULT - MAX_MULT) + MIN_MULT;
         float yMultiplier = Mathf.Abs(yTarget - windowCenter.y) / (2f * WINDOW_CENTER_Y_LIMIT) * (1.0f + MIN_MULT - MAX_MULT) + MIN_MULT;
+        if(belowWindow) {
+            yMultiplier += 0.2f;
+        }
         windowCenter.x += -displacement.x * xMultiplier;
         windowCenter.y += -displacement.y * yMultiplier;
         windowCenter.x = Mathf.Clamp(windowCenter.x, -WINDOW_CENTER_X_LIMIT, WINDOW_CENTER_X_LIMIT);
