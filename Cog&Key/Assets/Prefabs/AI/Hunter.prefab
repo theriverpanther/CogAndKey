@@ -52,7 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpState: 0
   movementSpeed: 5
-  jumpSpeed: 13
+  jumpSpeed: 20
   fastScalar: 2
   senses: []
   collidingObjs: []
@@ -61,7 +61,7 @@ MonoBehaviour:
   processingStop: 0
   pathTarget: {fileID: 0}
   cog: {fileID: 0}
-  minLedgeSize: 0.5
+  minLedgeSize: 2
   ledgeSize: 0
   isLost: 0
   idleColor: {r: 0.530303, g: 1, b: 0, a: 1}
