@@ -328,9 +328,18 @@ public class Agent : KeyWindable
         PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
         if (player != null)
         {
-            if (senses[0].collidedPlayer) Debug.Log("Animate");// Animation Here
-            // insert animation attack here???? maybe??? 
-            else player.Die();
+            if (animationTag != null)
+            {
+                ani.SetTrigger("Attack");
+
+                player.playerAnimation.SetBool("Dead", true);
+
+                PlayerInput.Instance.Locked = true;
+            } else
+            {
+                player.Die();
+            }
+            
         }
 
         //if (collision.gameObject.name == "Spikes")
