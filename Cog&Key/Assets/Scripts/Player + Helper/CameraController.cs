@@ -8,7 +8,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private GameObject visibleWindow;
 
     private const float WINDOW_WIDTH = 4f;
-    private const float WINDOW_HEIGHT = 1.5f;
+    private const float WINDOW_GROUND_HEIGHT = 5.0f;//1.5f;
+    private const float WINDOW_AIR_HEIGHT = 1.0f;//1.5f;
     private const float WINDOW_X_LIMIT = 9f;
     private const float WINDOW_Y_LIMIT = 5f;
 
@@ -16,7 +17,7 @@ public class CameraController : MonoBehaviour
     private const float VERTICAL_MOVE_RATE = 0.05f;
 
     private const float WINDOW_CENTER_X_LIMIT = WINDOW_X_LIMIT - WINDOW_WIDTH / 2f;
-    private const float WINDOW_CENTER_Y_LIMIT = WINDOW_Y_LIMIT - WINDOW_HEIGHT / 2f;
+    //private const float WINDOW_CENTER_Y_LIMIT = WINDOW_Y_LIMIT - WINDOW_HEIGHT / 2f;
 
     private const float FOCUS_OUTER_RADIUS = 12.0f;
     private const float FOCUS_INNER_RADIUS = 8.0f;
@@ -44,7 +45,7 @@ public class CameraController : MonoBehaviour
             SetInitialPosition();
         }
 
-        playerWindow = new Rect(-WINDOW_X_LIMIT, -3f, WINDOW_WIDTH, WINDOW_HEIGHT);
+        playerWindow = new Rect(-WINDOW_X_LIMIT, -3f, WINDOW_WIDTH, WINDOW_GROUND_HEIGHT);
 
         focusPoints = new List<Vector2>();
         GameObject[] focusPointList = GameObject.FindGameObjectsWithTag("Focus Point");
@@ -59,6 +60,11 @@ public class CameraController : MonoBehaviour
         Vector3 newPosition = transform.position;
 
         Vector2 followPoint = player.transform.position;
+
+        Vector2 startCenter = playerWindow.center;
+        playerWindow.height = player.CurrentState == PlayerScript.State.Grounded ? WINDOW_GROUND_HEIGHT : WINDOW_AIR_HEIGHT;
+        playerWindow.center = startCenter;
+        float windowCenterYLimit = WINDOW_Y_LIMIT - playerWindow.height / 2f;
 
         // check if there is a nearby focus point
         Vector2? focus = null;
@@ -100,7 +106,7 @@ public class CameraController : MonoBehaviour
         }
 
         // manage vertical
-        bool belowWindow = followRelativeToCenter.y < playerWindow.yMin;
+        bool belowWindow = followRelativeToCenter.y < playerWindow.yMin && player.Velocity.y <= 0f;
         if(player.CurrentState == PlayerScript.State.Grounded || player.HasWallJumped || belowWindow) {
             float? movingY = null;
             
@@ -134,18 +140,18 @@ public class CameraController : MonoBehaviour
         Vector3 displacement = newPosition - startPosition;
         Vector2 windowCenter = playerWindow.center;
         float xTarget = -Mathf.Sign(displacement.x) * WINDOW_CENTER_X_LIMIT;
-        float yTarget = -Mathf.Sign(displacement.y) * WINDOW_CENTER_Y_LIMIT;
+        float yTarget = -Mathf.Sign(displacement.y) * windowCenterYLimit;
         const float MIN_MULT = 0.3f;
         const float MAX_MULT = 0.8f;
         float xMultiplier = Mathf.Abs(xTarget - windowCenter.x) / (2f * WINDOW_CENTER_X_LIMIT) * (1.0f + MIN_MULT - MAX_MULT) + MIN_MULT;
-        float yMultiplier = Mathf.Abs(yTarget - windowCenter.y) / (2f * WINDOW_CENTER_Y_LIMIT) * (1.0f + MIN_MULT - MAX_MULT) + MIN_MULT;
+        float yMultiplier = Mathf.Abs(yTarget - windowCenter.y) / (2f * windowCenterYLimit) * (1.0f + MIN_MULT - MAX_MULT) + MIN_MULT;
         if(belowWindow) {
             yMultiplier += 0.2f;
         }
         windowCenter.x += -displacement.x * xMultiplier;
         windowCenter.y += -displacement.y * yMultiplier;
         windowCenter.x = Mathf.Clamp(windowCenter.x, -WINDOW_CENTER_X_LIMIT, WINDOW_CENTER_X_LIMIT);
-        windowCenter.y = Mathf.Clamp(windowCenter.y, -WINDOW_CENTER_Y_LIMIT, WINDOW_CENTER_Y_LIMIT);
+        windowCenter.y = Mathf.Clamp(windowCenter.y, -windowCenterYLimit, windowCenterYLimit);
         playerWindow.center = windowCenter;
 
          if(visibleWindow != null) {
