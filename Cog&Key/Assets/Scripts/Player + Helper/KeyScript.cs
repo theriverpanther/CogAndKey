@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 // keys can be pickups in the world, an ability for the player to use, or attached to a level element
 public class KeyScript : MonoBehaviour
@@ -203,6 +204,9 @@ public class KeyScript : MonoBehaviour
         KeyWindable windable = collision.gameObject.GetComponent<KeyWindable>();
         if(currentState == State.Attacking && windable != null) {
             AttachTo(windable);
+            if(Gamepad.current != null) {
+                PlayerInput.Instance.Rumble(0.4f, 0.2f);
+            }
             return;
         }
 

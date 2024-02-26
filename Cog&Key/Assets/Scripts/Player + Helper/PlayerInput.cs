@@ -39,7 +39,7 @@ public class PlayerInput
     private Gamepad currentGP;
     private Keyboard currentKB;
     private Mouse currentMouse;
-
+    private float rumbleTimer;
     private string controllerName;
 
     public string ControllerName { get { return controllerName; } }
@@ -98,6 +98,9 @@ public class PlayerInput
     public void Update() {
         if(!locked && (Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse)) {
             ConstructKeyBindings();
+            if(currentGP != null) {
+                currentGP.SetMotorSpeeds(0f, 0f);
+            }
         }
 
         pressedThisFrame.CopyTo(pressedLastFrame, 0);
@@ -115,6 +118,13 @@ public class PlayerInput
         foreach(KeyState keyType in KeyScript.keyToInput.Keys) {
             if((JustPressed(KeyScript.keyToInput[keyType]) || JustPressed(keyToSelector[keyType])) && Player.EquippedKeys[keyType]) {
                 SelectedKey = keyType;
+            }
+        }
+
+        if(rumbleTimer > 0) {
+            rumbleTimer -= Time.deltaTime;
+            if(rumbleTimer <= 0 && currentGP != null) {
+                currentGP.SetMotorSpeeds(0f, 0f);
             }
         }
 
@@ -172,6 +182,15 @@ public class PlayerInput
 
     public bool JustPressed(Action action) {
         return pressedThisFrame[(int)action] && !pressedLastFrame[(int)action];
+    }
+
+    public void Rumble(float intensity, float seconds) {
+        if(currentGP == null) {
+            return;
+        }
+
+        currentGP.SetMotorSpeeds(intensity, intensity);
+        rumbleTimer = seconds;
     }
 
     // called at initialization and whenever a controller is plugged in or unplugged. Constructs the keyBindings dictionary

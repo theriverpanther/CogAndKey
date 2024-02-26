@@ -74,7 +74,7 @@ public abstract class Rideable : KeyWindable
                 || (rider.transform.position.x > transform.position.x && PlayerInput.Instance.IsPressed(PlayerInput.Action.Left));
         }
 
-        return true;
+        return false;
     }
 
     // pseudo events for sub classes
