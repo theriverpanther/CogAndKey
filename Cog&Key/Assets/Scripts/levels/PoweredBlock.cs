@@ -14,6 +14,7 @@ public class PoweredBlock : Rideable
         startHeight = transform.position.y;
         physBod = GetComponent<Rigidbody2D>();
         physBod.gravityScale = 4.0f;
+        physBod.mass = 999999f;
         halfWidth = transform.localScale.x / 2f;
 
         float angle = transform.GetChild(0).transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
@@ -52,6 +53,10 @@ public class PoweredBlock : Rideable
     }
 
     protected override void OnRiderAdded(GameObject rider) {
+        if(rider.layer == LayerMask.NameToLayer("Ground")) {
+            return;
+        }
+
         rider.transform.SetParent(transform.GetChild(1), true);
     }
 

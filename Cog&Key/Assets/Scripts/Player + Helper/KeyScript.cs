@@ -98,6 +98,9 @@ public class KeyScript : MonoBehaviour
             if(Vector2.Distance(playerPos, transform.position) <= 0.5f) {
                 // use distance check instead of collision trigger so that the key gets more to the center of the player
                 SetState(State.PlayerHeld);
+                if(Gamepad.current != null) {
+                    PlayerInput.Instance.Rumble(0.2f, 0.2f);
+                }
             }
         }
         else if(currentState == State.Attached && !attachedPickup) {
@@ -205,7 +208,7 @@ public class KeyScript : MonoBehaviour
         if(currentState == State.Attacking && windable != null) {
             AttachTo(windable);
             if(Gamepad.current != null) {
-                PlayerInput.Instance.Rumble(0.4f, 0.2f);
+                PlayerInput.Instance.Rumble(0.6f, 0.1f);
             }
             return;
         }
