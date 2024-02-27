@@ -23,6 +23,7 @@ public class Agent : KeyWindable
     [SerializeField] protected float jumpSpeed = 2f;
     protected float attackSpeed;
     [SerializeField] protected float fastScalar = 3f;
+    [SerializeField] protected float stepSize = 0.1f;
 
     protected const float GROUND_GRAVITY = 7.5f;
 
@@ -180,6 +181,11 @@ public class Agent : KeyWindable
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
             jumpState = JumpState.Aerial;
         }
+    }
+
+    protected void StepUp()
+    {
+        rb.position = new Vector2(rb.position.x, rb.position.y + stepSize);
     }
 
     protected void IsGrounded()
@@ -492,26 +498,37 @@ public class Agent : KeyWindable
                         else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
 
                     }
+                    else
+                    {
+                        float maxY = float.MinValue;
+                        float minY = float.MaxValue;
+                        foreach(ContactPoint2D contact in floorPts)
+                        {
+                            if (contact.point.y < minY) minY = contact.point.y;
+                            if (contact.point.y > maxY) maxY = contact.point.y;
+                        }
+                        if (maxY - minY > 0.01f) StepUp();
+                    }
                 }
             }
             if (detectWalls)
             {
                 if (wallPts.Count >= 2)
                 {
-                    float greatest = float.MinValue;
-                    float least = float.MaxValue;
+                    float maxY = float.MinValue;
+                    float minY = float.MaxValue;
 
                     foreach(ContactPoint2D contact in wallPts)
                     {
-                        if(contact.point.y < least) least = contact.point.y;
-                        if(contact.point.y > greatest) greatest = contact.point.y;
+                        if(contact.point.y < minY) minY = contact.point.y;
+                        if(contact.point.y > maxY) maxY = contact.point.y;
                     }
 
-                    if (greatest - least >= halfHeight - .1f)
+                    if (maxY - minY >= halfHeight - .1f)
                     {
                         returnVal = wallPts[0].point.x < transform.position.x ? 1 : -1;
                     }
-                    else if (greatest - least >= halfHeight - 0.1f)
+                    else if (maxY - minY >= halfHeight - 0.1f)
                     {
                         if (Mathf.Abs(rb.velocity.x) > 0) Jump();
                     }
