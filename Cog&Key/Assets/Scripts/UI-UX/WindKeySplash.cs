@@ -51,13 +51,13 @@ public class WindKeySplash : MonoBehaviour
     {
         animator.SetBool("Fade", true);
 
-        PlayerInput.Instance.Locked = true;
+        // PlayerInput.Instance.Locked = true;
 
          yield return new WaitForSeconds(3f);
 
         animator.SetBool("Fade", false);
 
-        PlayerInput.Instance.Locked = false;
+        // PlayerInput.Instance.Locked = false;
 
         yield return null;
     }
