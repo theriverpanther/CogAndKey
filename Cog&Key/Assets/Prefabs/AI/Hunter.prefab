@@ -54,18 +54,12 @@ MonoBehaviour:
   movementSpeed: 5
   jumpSpeed: 20
   fastScalar: 2
-  senses: []
-  collidingObjs: []
   direction: {x: 0, y: 0}
+  playerPosition: {x: 0, y: 0, z: 0}
   processingTurn: 0
   processingStop: 0
   pathTarget: {fileID: 0}
-  cog: {fileID: 0}
   minLedgeSize: 2
-  ledgeSize: 0
-  isLost: 0
-  idleColor: {r: 0.530303, g: 1, b: 0, a: 1}
-  huntColor: {r: 0.8018868, g: 0.05602816, b: 0, a: 1}
   signifier_mat_idle: {fileID: 2100000, guid: bfb06bfbce404cc48ac0b23bab9e8e67, type: 2}
   signifier_mat_attack: {fileID: 2100000, guid: 0af2079cec263814eb0045ac9b9b996e, type: 2}
   signifier: {fileID: 5375331374888654306}
@@ -213,7 +207,7 @@ Transform:
   m_GameObject: {fileID: 4638306192599210149}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0.501, y: 0.67, z: 0}
+  m_LocalPosition: {x: -0.501, y: 2.089, z: 0}
   m_LocalScale: {x: 5, y: 12, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -266,7 +260,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.01704438, y: -0.5586336}
+  m_Offset: {x: 0.18, y: -0.5586336}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -277,7 +271,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.48867044, y: 1.1157652}
+  m_Size: {x: 0.575724, y: 1.1157652}
   m_EdgeRadius: 0
 --- !u!1 &7465074179890765395
 GameObject:
@@ -534,7 +528,30 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 180a587615a3b8141a3a6d2ce0041681, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5952548936307209768}
+    - targetCorrespondingSourceObject: {fileID: -516098083770646512, guid: 180a587615a3b8141a3a6d2ce0041681, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 129384224177193468}
   m_SourcePrefab: {fileID: 100100000, guid: 180a587615a3b8141a3a6d2ce0041681, type: 3}
+--- !u!1 &69343416766192626 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -516098083770646512, guid: 180a587615a3b8141a3a6d2ce0041681, type: 3}
+  m_PrefabInstance: {fileID: 8655963558083501026}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &129384224177193468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69343416766192626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3f9e99c7b6d36a4c9d4568b472c6489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spinSpeed: 2
+  fastSpinSpeed: 4
+  fast: 0
 --- !u!1 &5375331374888654306 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5568371526223589888, guid: 180a587615a3b8141a3a6d2ce0041681, type: 3}
