@@ -38,6 +38,7 @@ public class PlayerScript : MonoBehaviour
 
     public State CurrentState { get; private set; }
     public bool HasWallJumped { get; private set; }
+    public Vector2 Velocity { get { return physicsBody.velocity; } }
     public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
     public static PlayerScript CurrentPlayer { get; private set; }
 
