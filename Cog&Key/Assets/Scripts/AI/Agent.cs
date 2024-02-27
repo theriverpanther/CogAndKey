@@ -32,28 +32,28 @@ public class Agent : KeyWindable
     /// </summary>
     protected float mistakeThreshold = 0.05f;
     protected float senseCount = 2;
-    [SerializeField] protected List<Sense> senses = new List<Sense>(2);
+    protected List<Sense> senses = new List<Sense>(2);
     protected float attackDamage;
     protected bool flightEnabled = false;
 
     protected Vector3 scaleVal = Vector3.zero;
 
     [Header("Runtime Logic")]
-    [SerializeField] protected List<GameObject> collidingObjs;
+    protected List<GameObject> collidingObjs;
     [SerializeField] protected Vector2 direction = Vector2.zero;
 
-    protected Vector3 playerPosition = Vector3.zero;
+    [SerializeField] protected Vector3 playerPosition = Vector3.zero;
     protected float halfHeight = 0.75f;
     protected float halfWidth = 0;
 
-    protected float turnDelay = 2f;
+    protected float turnDelay = .5f;
     [SerializeField] protected bool processingTurn = false;
     protected float stopDelay = 0.5f;
     [SerializeField] protected bool processingStop = false;
 
     protected List<GameObject> nodes = new List<GameObject>();
     public PathNode pathTarget;
-    [SerializeField] protected CogIndicator cog;
+    protected CogIndicator cog;
 
 
     protected List<ContactPoint2D> contacts;
@@ -61,9 +61,9 @@ public class Agent : KeyWindable
     protected List<ContactPoint2D> wallPts;
 
     [SerializeField] protected float minLedgeSize = 0.1f;
-    [SerializeField] protected float ledgeSize = 0f;
+    protected float ledgeSize = 0f;
 
-    [SerializeField] protected bool isLost = false;
+    protected bool isLost = false;
     protected float confusionTime = 5f;
     protected float lostTimer = 0f;
 
@@ -93,6 +93,7 @@ public class Agent : KeyWindable
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = GROUND_GRAVITY;
         scaleVal = transform.localScale;
+        collidingObjs = new List<GameObject>(); 
 
         animationTag = FindChildWithTag(gameObject, "AgentAnimator");
         ani = animationTag.GetComponent<Animator>();
@@ -104,7 +105,7 @@ public class Agent : KeyWindable
         //    transform.GetChild(6).GetComponent<Sense>()
         //};
         IsGrounded();
-        halfHeight = GetComponent<BoxCollider2D>().bounds.size.y / 2;
+        halfHeight = GetComponent<BoxCollider2D>().bounds.extents.y / 2;
         halfWidth = GetComponent<BoxCollider2D>().bounds.size.x / 2;
 
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
@@ -185,11 +186,11 @@ public class Agent : KeyWindable
     {
         const float BUFFER = 0.1f;
 
-        //jumpState = (RayCheck(transform.position, BUFFER, -halfWidth, halfHeight) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight) ? JumpState.Grounded: JumpState.Aerial);
-        if(floorPts!=null)
-        {
-            jumpState = floorPts.Count >= 2 && ledgeSize > minLedgeSize / 2 ? JumpState.Grounded : JumpState.Aerial;
-        } 
+        jumpState = (RayCheck(transform.position, BUFFER, -halfWidth, halfHeight) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight) ? JumpState.Grounded: JumpState.Aerial);
+        //if(floorPts!=null)
+        //{
+        //    jumpState = floorPts.Count >= 2 && ledgeSize > minLedgeSize / 2 ? JumpState.Grounded : JumpState.Aerial;
+        //} 
     }
 
     protected bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight)
@@ -497,11 +498,20 @@ public class Agent : KeyWindable
             {
                 if (wallPts.Count >= 2)
                 {
-                    if (wallPts[0].point.y - transform.position.y >= halfHeight - .1f)
+                    float greatest = float.MinValue;
+                    float least = float.MaxValue;
+
+                    foreach(ContactPoint2D contact in wallPts)
+                    {
+                        if(contact.point.y < least) least = contact.point.y;
+                        if(contact.point.y > greatest) greatest = contact.point.y;
+                    }
+
+                    if (greatest - least >= halfHeight - .1f)
                     {
                         returnVal = wallPts[0].point.x < transform.position.x ? 1 : -1;
                     }
-                    else if (wallPts[0].point.y - wallPts[1].point.y >= halfHeight - 0.1f)
+                    else if (greatest - least >= halfHeight - 0.1f)
                     {
                         if (Mathf.Abs(rb.velocity.x) > 0) Jump();
                     }

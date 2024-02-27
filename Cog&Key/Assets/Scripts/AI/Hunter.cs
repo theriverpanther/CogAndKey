@@ -8,12 +8,8 @@ using UnityEngine.Timeline;
 
 public class Hunter : Agent
 {
-    private float distThreshold = 0.2f;
+    private float distThreshold = 0.01f;
     private bool wallDetected;
-    [ColorUsage(true, true)]
-    [SerializeField] private Color idleColor;
-    [ColorUsage(true, true)]
-    [SerializeField] private Color huntColor;
     private GameObject player;
     [SerializeField] Material signifier_mat_idle;
     [SerializeField] Material signifier_mat_attack;
@@ -127,14 +123,16 @@ public class Hunter : Agent
             {
                 StartCoroutine(TurnDelay());
             }
+            else if (wallDetected)
+            {
+                Jump();
+                Debug.Log("Wall D");
+            }
             wallDetected = EdgeDetect(false, true) != 0;
             // If there's a wall in front and the player is above it, try to jump
             // Player needs to be able to jump over enemy
             // instead of jumping to meet, turn around
-            if(wallDetected && playerSensed)
-            {
-                Jump();
-            }
+            
             if(playerPosition.y > transform.position.y + halfHeight * 5)
             {
                 if(playerSensed || wallDetected) Jump();
@@ -155,7 +153,6 @@ public class Hunter : Agent
         }
         else
         {
-            gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().color = huntColor;
             // stop moving, attack player
             base.BehaviorTree(0, fast);
             return;
