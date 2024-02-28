@@ -92,6 +92,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartEquipped: 0
+  StartAttachedTo: {fileID: 0}
   type: 2
 --- !u!1001 &7584298839457441549
 PrefabInstance:

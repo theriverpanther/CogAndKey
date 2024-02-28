@@ -8,14 +8,14 @@ using UnityEngine.Timeline;
 
 public class Hunter : Agent
 {
-    private float distThreshold = 0.2f;
+    private float distThreshold = 0.01f;
     private bool wallDetected;
-    [SerializeField] private Color idleColor;
-    [SerializeField] private Color huntColor;
     private GameObject player;
-    private SpriteRenderer huntSignifier;
+    [SerializeField] Material signifier_mat_idle;
+    [SerializeField] Material signifier_mat_attack;
+    [SerializeField] GameObject signifier;
 
-
+    string currentStateMat = "";
 
     // Start is called before the first frame update
     protected override void Start()
@@ -24,7 +24,8 @@ public class Hunter : Agent
         direction = new Vector2(-1, 0);
         wallDetected = false;
         player = GameObject.Find("Player");
-        huntSignifier = gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
+
+        //huntSignifier = gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -70,8 +71,6 @@ public class Hunter : Agent
         //}
     }
 
-    
-
     protected override void BehaviorTree(float walkSpeed, bool fast)
     {
         bool playerSensed = false;
@@ -98,28 +97,42 @@ public class Hunter : Agent
             EdgeDetectMovement(!fast, true);
             if (!isLost && pathTarget != null)
             {
+                
                 Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
                 if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > 2) StartCoroutine(TurnDelay());
             }
-            huntSignifier.color = idleColor;
+            //huntSignifier.color = idleColor;
+            if (currentStateMat != "idle")
+            {
+                Agent.MatSwap(signifier, signifier_mat_idle);
+            }
+            currentStateMat = "idle";
         }
         else if (sqrDist > distThreshold * distThreshold)
         {
-            huntSignifier.color = huntColor;
+            //huntSignifier.color = huntColor;
+            if(currentStateMat != "attack")
+            {
+                Agent.MatSwap(signifier, signifier_mat_attack);
+            }
+            currentStateMat = "attack";
+
             // try to chase the player
             float tempX = (playerPosition - transform.position).x;
             if(Mathf.Sign(tempX) != Mathf.Sign(direction.x) && !processingTurn) 
             {
                 StartCoroutine(TurnDelay());
             }
+            else if (wallDetected)
+            {
+                Jump();
+                Debug.Log("Wall D");
+            }
             wallDetected = EdgeDetect(false, true) != 0;
             // If there's a wall in front and the player is above it, try to jump
             // Player needs to be able to jump over enemy
             // instead of jumping to meet, turn around
-            if(wallDetected && playerSensed)
-            {
-                Jump();
-            }
+            
             if(playerPosition.y > transform.position.y + halfHeight * 5)
             {
                 if(playerSensed || wallDetected) Jump();
@@ -140,7 +153,6 @@ public class Hunter : Agent
         }
         else
         {
-            gameObject.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().color = huntColor;
             // stop moving, attack player
             base.BehaviorTree(0, fast);
             return;

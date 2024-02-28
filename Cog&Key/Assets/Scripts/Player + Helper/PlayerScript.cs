@@ -34,7 +34,7 @@ public class PlayerScript : MonoBehaviour
     private HelperCreature helperScript;
 
     [SerializeField]
-    private Animator playerAnimation;
+    public Animator playerAnimation;
 
     public State CurrentState { get; private set; }
     public bool HasWallJumped { get; private set; }
