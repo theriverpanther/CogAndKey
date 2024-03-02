@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 6338203660251416511}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.134, z: 0}
+  m_LocalPosition: {x: 0, y: 0.041, z: 0}
   m_LocalScale: {x: 0.33333334, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -57,7 +57,7 @@ Transform:
   m_GameObject: {fileID: 6617770580905915831}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.002, y: 0.237, z: -0.122}
+  m_LocalPosition: {x: -0.002, y: 0.14399959, z: -0.122}
   m_LocalScale: {x: 0.16397087, y: 0.16397087, z: 0.16397087}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -141,7 +141,7 @@ Transform:
   m_GameObject: {fileID: 6835160728138475964}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.002, y: 0.237, z: 0.2}
+  m_LocalPosition: {x: -0.002, y: 0.14399959, z: 0.2}
   m_LocalScale: {x: 0.16397087, y: 0.16397087, z: 0.16397087}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -367,7 +367,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8114411831495069194, guid: 875da7def8dd2af478612d8e697ec539, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.11
+      value: 0.016999587
       objectReference: {fileID: 0}
     - target: {fileID: 8114411831495069194, guid: 875da7def8dd2af478612d8e697ec539, type: 3}
       propertyPath: m_LocalPosition.z
@@ -452,7 +452,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5938606351015525991, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_Size.y
-      value: 0.79813385
+      value: 0.7937603
       objectReference: {fileID: 0}
     - target: {fileID: 5938606351015525991, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_Offset.x
@@ -460,7 +460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5938606351015525991, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_Offset.y
-      value: 0.100933075
+      value: 0.011267662
       objectReference: {fileID: 0}
     - target: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_RootOrder
