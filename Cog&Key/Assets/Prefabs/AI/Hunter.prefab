@@ -171,7 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpState: 0
   movementSpeed: 5
-  jumpSpeed: 20
+  jumpSpeed: 17.5
   fastScalar: 2
   stepSize: 0.1
   direction: {x: 0, y: 0}
