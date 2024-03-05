@@ -22,6 +22,11 @@ public class PoweredBlock : Rideable
     }
 
     void FixedUpdate() {
+        if(physBod.isKinematic)
+        {
+            physBod.velocity = Vector3.zero;
+        }
+
         Vector2 moveDirection = Vector2.zero;
         if(InsertedKeyType != KeyState.Lock && transform.position.y < startHeight) {
             moveDirection = Vector2.up;
@@ -33,22 +38,8 @@ public class PoweredBlock : Rideable
             moveDirection = -forwardDirection;
         }
 
-        if(moveDirection != Vector2.zero) {
-            //Vector2 perp = halfWidth * new Vector2(-moveDirection.y, moveDirection.x);
-            //Vector2 halfForward = (halfWidth + 0.01f) * moveDirection;
-            //Vector2 top = (Vector2)transform.position + perp + halfForward;
-            //Vector2 bot = (Vector2)transform.position - perp + halfForward;
-
-            //RaycastHit2D topRay = Physics2D.Raycast(top, moveDirection, 1f);
-            //RaycastHit2D botRay = Physics2D.Raycast(bot, moveDirection, 1f);
-
-            //if(topRay.collider != null && topRay.distance < 0.02f || botRay.collider != null && botRay.distance < 0.02f) {
-            //    moveDirection = Vector2.zero;
-            //}
-
-            if(Global.IsObjectBlocked(gameObject, moveDirection)) {
-                moveDirection = Vector2.zero;
-            }
+        if(moveDirection != Vector2.zero && Global.IsObjectBlocked(gameObject, moveDirection)) {
+            moveDirection = Vector2.zero;
         }
 
         transform.position += SPEED * Time.deltaTime * (Vector3)moveDirection;
