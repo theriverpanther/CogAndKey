@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 [Serializable]
 public class SoundKeywordPair
@@ -12,6 +13,8 @@ public class SoundKeywordPair
 
 public class SoundManager : MonoBehaviour
 {
+    [SerializeField] private AudioMixer musicMixer;
+    [SerializeField] private AudioMixer effectsMixer;
     [SerializeField] private SoundKeywordPair[] sounds;
     public static SoundManager Instance { get; private set; }
 
@@ -48,6 +51,7 @@ public class SoundManager : MonoBehaviour
 
         AudioSource soundClip = gameObject.AddComponent<AudioSource>();
         soundClip.clip = soundList[identifier];
+        soundClip.outputAudioMixerGroup = musicMixer.outputAudioMixerGroup;
         soundClip.volume = volume;
         soundClip.Play();
         activeSounds.Add(soundClip);
