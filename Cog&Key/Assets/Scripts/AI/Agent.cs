@@ -148,7 +148,7 @@ public class Agent : KeyWindable
         if (transform.position.y + halfHeight <= LevelData.Instance.YMin)
         {
             Transform t = transform.GetChild(transform.childCount - 1);
-            if (t != null && t.name == "Key")
+            if (t != null && t.tag == "Key")
             {
                 t.parent = null;
                 t.GetComponent<KeyScript>().Detach();
