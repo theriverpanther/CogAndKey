@@ -45,5 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
-  - sound: {fileID: 0}
-    identifier: 
+  - soundClip: {fileID: 8300000, guid: 5685d5a283ea2704bbaa45df7557e876, type: 3}
+    identifier: Lock
