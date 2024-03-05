@@ -168,7 +168,7 @@ public class Agent : KeyWindable
     {
         if (!processingTurn && !processingStop)
         {
-            rb.velocity = new Vector2(walkSpeed * direction.x, rb.velocity.y);
+            rb.velocity = new Vector2(walkSpeed * direction.x * (InsertedKeyType == KeyState.Reverse ? -1 : 1), rb.velocity.y);
             ani.SetBool("Walking", true);
         }
     }

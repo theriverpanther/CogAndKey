@@ -57,7 +57,7 @@ public class MovingWallScript : Rideable
         float currentSpeed = CurrentSpeed;
         float shift = currentSpeed * Time.deltaTime;
 
-        if(Vector2.Distance(target, transform.position) <= shift) {
+        if(Vector2.Distance(target, transform.position) <= Mathf.Max(0.1f, shift)) {
             // reached target point
             transform.position = target;
             bufferedMomentum = BecomeMomentum(pathPoints[nextPointIndex] - (Vector2)startPosition);
@@ -84,7 +84,10 @@ public class MovingWallScript : Rideable
             }
         } else {
             // moving towards target point
-            transform.position += shift * ((Vector3)target - transform.position).normalized;
+            Vector3 direction = ((Vector3)target - transform.position).normalized;
+            if(!Global.IsObjectBlocked(gameObject, direction)) {
+                transform.position += shift * direction;
+            }
         }
 
         CheckSideRiders();

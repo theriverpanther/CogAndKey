@@ -26,18 +26,26 @@ public class DoorScript : MonoBehaviour
             return;
         }
 
+        Vector2 direction = Vector2.zero;
         if(open && transform.position.y < startY + height) {
-            float newY = transform.position.y + MOVE_SPEED * Time.deltaTime;
-            if(newY > startY + height) {
-                newY = startY + height;
-            }
-            transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+            //float newY = transform.position.y + MOVE_SPEED * Time.deltaTime;
+            //if(newY > startY + height) {
+            //    newY = startY + height;
+            //}
+            //transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+            direction = Vector2.up;
         }
         else if(!open && transform.position.y > startY) {
-            float newY = transform.position.y - MOVE_SPEED * Time.deltaTime;
-            if(newY < startY) {
-                newY = startY;
-            }
+            //float newY = transform.position.y - MOVE_SPEED * Time.deltaTime;
+            //if(newY < startY) {
+            //    newY = startY;
+            //}
+            //transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+            direction = Vector2.down;
+        }
+
+        if(direction != Vector2.zero && !Global.IsObjectBlocked(gameObject, direction)) {
+            float newY = Mathf.Clamp(transform.position.y + MOVE_SPEED * Time.deltaTime * direction.y, startY, startY + height);
             transform.position = new Vector3(transform.position.x, newY, transform.position.z);
         }
     }

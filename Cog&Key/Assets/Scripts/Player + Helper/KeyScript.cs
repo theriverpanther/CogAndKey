@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 // keys can be pickups in the world, an ability for the player to use, or attached to a level element
 public class KeyScript : MonoBehaviour
@@ -99,6 +100,9 @@ public class KeyScript : MonoBehaviour
             if(Vector2.Distance(playerPos, transform.position) <= 0.5f) {
                 // use distance check instead of collision trigger so that the key gets more to the center of the player
                 SetState(State.PlayerHeld);
+                if(Gamepad.current != null) {
+                    PlayerInput.Instance.Rumble(0.2f, 0.2f);
+                }
             }
         }
         else if(currentState == State.Attached && !attachedPickup) {
@@ -206,6 +210,9 @@ public class KeyScript : MonoBehaviour
         KeyWindable windable = collision.gameObject.GetComponent<KeyWindable>();
         if(currentState == State.Attacking && windable != null) {
             AttachTo(windable);
+            if(Gamepad.current != null) {
+                PlayerInput.Instance.Rumble(0.6f, 0.1f);
+            }
             return;
         }
 

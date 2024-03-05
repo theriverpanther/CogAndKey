@@ -35,7 +35,7 @@ public class PressurePlateScript : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if(collision.attachedRigidbody.isKinematic || collision.gameObject.tag == "Not Physics") {
+        if((collision.attachedRigidbody.isKinematic && collision.gameObject.GetComponent<PoweredBlock>() == null) || collision.gameObject.tag == "Not Physics") {
             return;
         }
 
@@ -45,7 +45,7 @@ public class PressurePlateScript : MonoBehaviour
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
-        if(collision.attachedRigidbody.isKinematic || collision.gameObject.tag == "Not Physics") {
+        if((collision.attachedRigidbody.isKinematic && collision.gameObject.GetComponent<PoweredBlock>() == null) || collision.gameObject.tag == "Not Physics") {
             return;
         }
 
