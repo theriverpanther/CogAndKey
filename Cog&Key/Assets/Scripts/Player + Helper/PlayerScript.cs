@@ -102,7 +102,8 @@ public class PlayerScript : MonoBehaviour
         // vertical movement
         Vector2 floorNorm;
         GameObject floorObject = null;
-        bool onFloor = IsOnFloor(out floorNorm, out floorObject);
+        float groundDistance;
+        bool onFloor = IsOnFloor(out floorNorm, out floorObject, out groundDistance);
         if(onFloor) {
             CoyoteMomentum = null;
         }
@@ -123,7 +124,7 @@ public class PlayerScript : MonoBehaviour
                 bool topAgainstWall = false;
                 Direction adjWallDir = GetAdjacentWallDireciton(out topAgainstWall);
 
-                if (velocity.y < 0)
+                if (velocity.y < 0 && groundDistance > 1.0f)
                 {
                     SetAnimation("Falling");
                 }
@@ -183,7 +184,9 @@ public class PlayerScript : MonoBehaviour
                 }
                 else if(!onFloor) {
                     // fall off platform
-                    SetAnimation("Falling");
+                    //if(groundDistance > 1f) {
+                    //    SetAnimation("Falling");
+                    //}
                     CurrentState = State.Aerial;
                     coyoteTime = 0.125f;
                     physicsBody.gravityScale = FALL_GRAVITY;
@@ -306,7 +309,8 @@ public class PlayerScript : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision) {
         Vector2 floorNormal;
         GameObject hitSurface;
-        if(collision.gameObject.tag == "Wall" && physicsBody.velocity.y < 0 && IsOnFloor(out floorNormal, out hitSurface) && floorNormal != Vector2.zero && floorNormal != Vector2.up) {
+        float groundDist;
+        if(collision.gameObject.tag == "Wall" && physicsBody.velocity.y < 0 && IsOnFloor(out floorNormal, out hitSurface, out groundDist) && floorNormal != Vector2.zero && floorNormal != Vector2.up) {
             physicsBody.velocity *= 0.5f; // prevent sliding down slopes
         }
     }
@@ -324,10 +328,13 @@ public class PlayerScript : MonoBehaviour
     }
 
     // uses raycasts to determine if the player is standing on a surface
-    private bool IsOnFloor(out Vector2 normal, out GameObject hitSurface) {
+    private bool IsOnFloor(out Vector2 normal, out GameObject hitSurface, out float groundDistance) {
+        groundDistance = 0;
         const float BUFFER = 0.2f;
         RaycastHit2D left = Physics2D.Raycast(new Vector3(transform.position.x - colliderHalfSize.x, transform.position.y - colliderHalfSize.y, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
         RaycastHit2D right = Physics2D.Raycast(new Vector3(transform.position.x + colliderHalfSize.x, transform.position.y - colliderHalfSize.y, 0), Vector2.down, 10, LayerMask.NameToLayer("Player"));
+
+        groundDistance = Mathf.Max(right.distance, left.distance);
 
         bool leftOnSurface = left.collider != null && left.distance < BUFFER;
         bool rightOnSurface = right.collider != null && right.distance < BUFFER;
