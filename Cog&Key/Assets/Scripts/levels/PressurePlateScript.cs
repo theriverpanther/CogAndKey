@@ -12,7 +12,7 @@ public class PressurePlateScript : MonoBehaviour
     private float buttonTop;
     private int numOnTop;
 
-    private const float SPEED = 12.0f;
+    private const float SPEED = 5.0f;
 
     void Start() {
         doorLock = new DoorOpener(target);
