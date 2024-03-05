@@ -37,7 +37,7 @@ public class ButtonShowcase : MonoBehaviour
         transform.localScale = new Vector3(scale, scale, scale);    
 
         Texture2D img = detectControllerType.ReturnImage(mapping, specific);
-        Debug.Log(img);
+        //Debug.Log(img);
 
         if (img != null)
         {
@@ -48,7 +48,7 @@ public class ButtonShowcase : MonoBehaviour
             {
                 Sprite spr = Sprite.Create(img, new Rect(0, 0, img.width, img.height), new Vector2(0.5f, 0.5f), 100.0f);
                 GetComponent<Image>().sprite = spr;
-                Debug.Log("UI IMG: " + spr.texture.name);
+                //Debug.Log("UI IMG: " + spr.texture.name);
             }
         }
 

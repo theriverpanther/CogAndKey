@@ -10,6 +10,8 @@ public class KeyScript : MonoBehaviour
     [SerializeField] private KeyWindable StartAttachedTo;
     [SerializeField] private KeyState type;
 
+    [SerializeField] private GameObject keyAcquiredUI;
+
     public enum State {
         Pickup,
         PlayerHeld,
@@ -200,6 +202,7 @@ public class KeyScript : MonoBehaviour
 
         if((currentState == State.Pickup || attachedPickup) && collision.gameObject.tag == "Player") {
             keyAni.SetInteger("Status", 0);
+            keyAcquiredUI.GetComponent<WindKeySplash>().ShowInformation(Type);
             Equip();
             return;
         }

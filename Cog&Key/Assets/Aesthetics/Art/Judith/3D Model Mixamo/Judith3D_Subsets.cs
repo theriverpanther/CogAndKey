@@ -18,9 +18,9 @@ public class Judith3D_Subsets : MonoBehaviour
 
     public void RandomChanceArmSwing()
     {
-        int randomArmSwing = Random.Range(0, 4);
+        int randomArmSwing = Random.Range(0, 15);
         //Debug.Log("Arm swing? " + randomArmSwing);
-        if(randomArmSwing < 2)
+        if(randomArmSwing < 4)
         {
             gameObject.GetComponent<Animator>().SetInteger("IdleVariant", 1);
         }

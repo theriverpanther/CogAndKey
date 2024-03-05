@@ -74,7 +74,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1829041407
-  m_SortingLayer: 3
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1d446003c87fb6141bd2a5aea71809c1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -124,6 +124,7 @@ MonoBehaviour:
   specific: 0
   animated: 0
   scale: 0.2
+  hideOther: {fileID: 0}
 --- !u!114 &8159206412872999816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,38 +139,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xboxPairs:
   - key: Jump_UP
-    imagePair: {fileID: 2800000, guid: c7cbc93eeea571e4d9ce6e26f14f0f64, type: 3}
+    imagePair: {fileID: 2800000, guid: d5254e3096027bc478e8190748901974, type: 3}
   - key: Jump_DOWN
-    imagePair: {fileID: 2800000, guid: d2cdd509d4b77c54098a789f834074ed, type: 3}
+    imagePair: {fileID: 2800000, guid: b889bff0dadeedf4ca3f8c7c10e1da24, type: 3}
   - key: Reverse_UP
-    imagePair: {fileID: 2800000, guid: d447626880667264e9bf346266a8d8e7, type: 3}
+    imagePair: {fileID: 2800000, guid: 1d955ce94a947104591403bd57f9f688, type: 3}
   - key: Reverse_DOWN
-    imagePair: {fileID: 2800000, guid: 5898d56c6047cbd459195fbbfbb72d3f, type: 3}
+    imagePair: {fileID: 2800000, guid: 4b37584add5eb674b8c0c1a7355690ec, type: 3}
   - key: Fast_UP
-    imagePair: {fileID: 2800000, guid: 0a28412e79e0f8c4b80aecc18a1cc5b3, type: 3}
+    imagePair: {fileID: 2800000, guid: 8678b7f5ee0e1e0438d1cc45c64adab9, type: 3}
   - key: Fast_DOWN
-    imagePair: {fileID: 2800000, guid: b6ebefb1287440e40aa76004b56584d5, type: 3}
+    imagePair: {fileID: 2800000, guid: b66a46ae584e2ba4f8317dc88a2b311e, type: 3}
   - key: Lock_UP
-    imagePair: {fileID: 2800000, guid: 8a9c36ac6564fac498b62ffc4074aa2c, type: 3}
+    imagePair: {fileID: 2800000, guid: 07a8531994123fa468e953642db345cc, type: 3}
   - key: Lock_DOWN
-    imagePair: {fileID: 2800000, guid: c319bb524f7a35f45a3dee2e258abcf7, type: 3}
+    imagePair: {fileID: 2800000, guid: ac0a072dcae815040b9d18604302caf3, type: 3}
   playstationPairs:
   - key: Jump_UP
-    imagePair: {fileID: 2800000, guid: 6c9e17f7065f40144a2e3c9ed2c3a6a1, type: 3}
+    imagePair: {fileID: 2800000, guid: 768371d09b7aa1e4489a8cbdd68419be, type: 3}
   - key: Jump_DOWN
-    imagePair: {fileID: 2800000, guid: 5b37837431d340e48a777b4526e4ab5a, type: 3}
+    imagePair: {fileID: 2800000, guid: ed012033272032f4592c7b49aa8d0d06, type: 3}
   - key: Reverse_UP
     imagePair: {fileID: 2800000, guid: 1fea07e5148cf6645a250dc61402a1db, type: 3}
   - key: Reverse_DOWN
     imagePair: {fileID: 2800000, guid: 83f1fd21d25ace04089d5105b67384cc, type: 3}
   - key: Fast_UP
-    imagePair: {fileID: 2800000, guid: d861e277c23306243a9aef1b8c811d10, type: 3}
+    imagePair: {fileID: 2800000, guid: a03f7d16bbf201a4b957da71996b0dfe, type: 3}
   - key: Fast_DOWN
-    imagePair: {fileID: 2800000, guid: 5ad6bc9da1dce0546b8b856a3ed0ab0d, type: 3}
+    imagePair: {fileID: 2800000, guid: 842065d918a061443a50070c4ce34aea, type: 3}
   - key: Lock_UP
-    imagePair: {fileID: 2800000, guid: d132ebdd55a764b42beb2575785416f9, type: 3}
+    imagePair: {fileID: 2800000, guid: 87cc76cf13e07c048978abf74bbd9b57, type: 3}
   - key: Lock_DOWN
-    imagePair: {fileID: 2800000, guid: 9f4223981f8495e4984ecbdf69670dc9, type: 3}
+    imagePair: {fileID: 2800000, guid: e1e85ebf8ba47c142989c56cadf41549, type: 3}
   keyboardPairs:
   - key: Jump_UP
     imagePair: {fileID: 2800000, guid: e0de54a09341f8e4a9aca3cf7731702d, type: 3}

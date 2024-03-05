@@ -5,6 +5,8 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using System;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -61,9 +63,11 @@ public class PauseMenu : MonoBehaviour
     public void Resume()
     {
         pauseMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
         current.enabled = false;
+        current.SetSelectedGameObject(null);
     }
 
     /// <summary>
@@ -73,7 +77,13 @@ public class PauseMenu : MonoBehaviour
     {
         current.enabled = true;
         pauseMenuUI.SetActive(true);
+        Button b = pauseMenuUI.transform.GetChild(0).gameObject.GetComponent<Button>();
+
         current.SetSelectedGameObject(pauseMenuUI.transform.GetChild(0).gameObject);
+
+        b.Select();
+        b.OnSelect(null);
+
         Time.timeScale = 0f;
         isPaused = true;
     }

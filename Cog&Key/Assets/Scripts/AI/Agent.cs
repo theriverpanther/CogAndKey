@@ -23,6 +23,7 @@ public class Agent : KeyWindable
     [SerializeField] protected float jumpSpeed = 2f;
     protected float attackSpeed;
     [SerializeField] protected float fastScalar = 3f;
+    [SerializeField] protected float stepSize = 0.1f;
 
     protected const float GROUND_GRAVITY = 7.5f;
 
@@ -32,28 +33,28 @@ public class Agent : KeyWindable
     /// </summary>
     protected float mistakeThreshold = 0.05f;
     protected float senseCount = 2;
-    [SerializeField] protected List<Sense> senses = new List<Sense>(2);
+    protected List<Sense> senses = new List<Sense>(2);
     protected float attackDamage;
     protected bool flightEnabled = false;
 
     protected Vector3 scaleVal = Vector3.zero;
 
     [Header("Runtime Logic")]
-    [SerializeField] protected List<GameObject> collidingObjs;
+    protected List<GameObject> collidingObjs;
     [SerializeField] protected Vector2 direction = Vector2.zero;
 
-    protected Vector3 playerPosition = Vector3.zero;
+    [SerializeField] protected Vector3 playerPosition = Vector3.zero;
     protected float halfHeight = 0.75f;
     protected float halfWidth = 0;
 
-    protected float turnDelay = 0.5f;
+    protected float turnDelay = .5f;
     [SerializeField] protected bool processingTurn = false;
     protected float stopDelay = 0.5f;
     [SerializeField] protected bool processingStop = false;
 
     protected List<GameObject> nodes = new List<GameObject>();
     public PathNode pathTarget;
-    [SerializeField] protected CogIndicator cog;
+    protected CogIndicator cog;
 
 
     protected List<ContactPoint2D> contacts;
@@ -61,14 +62,17 @@ public class Agent : KeyWindable
     protected List<ContactPoint2D> wallPts;
 
     [SerializeField] protected float minLedgeSize = 0.1f;
-    [SerializeField] protected float ledgeSize = 0f;
+    protected float ledgeSize = 0f;
 
-    [SerializeField] protected bool isLost = false;
+    protected bool isLost = false;
     protected float confusionTime = 5f;
     protected float lostTimer = 0f;
 
     protected float maxHuntTime = 2f;
     protected float huntTimer = 0f;
+
+    protected GameObject animationTag;
+    protected Animator ani;
 
     #endregion
 
@@ -90,13 +94,19 @@ public class Agent : KeyWindable
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = GROUND_GRAVITY;
         scaleVal = transform.localScale;
+        collidingObjs = new List<GameObject>(); 
+
+        animationTag = FindChildWithTag(gameObject, "AgentAnimator");
+        ani = animationTag.GetComponent<Animator>();
+        Debug.Log("Found child: " + animationTag);
+
         //senses = new List<Sense>
         //{
         //    transform.GetChild(5).GetComponent<Sense>(),
         //    transform.GetChild(6).GetComponent<Sense>()
         //};
         IsGrounded();
-        halfHeight = GetComponent<BoxCollider2D>().bounds.size.y / 2;
+        halfHeight = GetComponent<BoxCollider2D>().bounds.extents.y / 2;
         halfWidth = GetComponent<BoxCollider2D>().bounds.size.x / 2;
 
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
@@ -145,7 +155,7 @@ public class Agent : KeyWindable
                 Destroy(gameObject);
             }
         }
-        cog.fast = InsertedKeyType == KeyState.Fast;
+        //cog.fast = InsertedKeyType == KeyState.Fast;
 
         if(transform.position.y + halfHeight < LevelData.Instance.YMin)
         {
@@ -159,6 +169,7 @@ public class Agent : KeyWindable
         if (!processingTurn && !processingStop)
         {
             rb.velocity = new Vector2(walkSpeed * direction.x, rb.velocity.y);
+            ani.SetBool("Walking", true);
         }
     }
 
@@ -172,15 +183,20 @@ public class Agent : KeyWindable
         }
     }
 
+    protected void StepUp()
+    {
+        rb.position = new Vector2(rb.position.x, rb.position.y + stepSize);
+    }
+
     protected void IsGrounded()
     {
         const float BUFFER = 0.1f;
 
-        //jumpState = (RayCheck(transform.position, BUFFER, -halfWidth, halfHeight) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight) ? JumpState.Grounded: JumpState.Aerial);
-        if(floorPts!=null)
-        {
-            jumpState = floorPts.Count >= 2 && ledgeSize > minLedgeSize / 2 ? JumpState.Grounded : JumpState.Aerial;
-        } 
+        jumpState = (RayCheck(transform.position, BUFFER, -halfWidth, halfHeight) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight) ? JumpState.Grounded: JumpState.Aerial);
+        //if(floorPts!=null)
+        //{
+        //    jumpState = floorPts.Count >= 2 && ledgeSize > minLedgeSize / 2 ? JumpState.Grounded : JumpState.Aerial;
+        //} 
     }
 
     protected bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight)
@@ -211,8 +227,10 @@ public class Agent : KeyWindable
         return calcY > y - threshold && calcY < y + threshold;
     }
 
+    // turning animations go here
     protected IEnumerator TurnDelay()
-    {   
+    {
+
         if (!processingTurn && !processingStop)
         {
             processingTurn = true;
@@ -220,9 +238,13 @@ public class Agent : KeyWindable
             direction.x = -direction.x;
             Vector2 tempVelocity = rb.velocity;
             rb.velocity = new Vector2(0, rb.velocity.y);
+
+            if (animationTag != null)
+            {
+                animationTag.GetComponent<Animator>().SetBool("Walking", false);
+            }
             // Idle anim
             yield return new WaitForSeconds(turnDelay);
-
 
             transform.localScale = new Vector3(direction.x > 0 ? -scaleVal.x : scaleVal.x, scaleVal.y, scaleVal.z);
             // Set values back to how they used to be for a frame to prevent stunlocking
@@ -234,12 +256,43 @@ public class Agent : KeyWindable
             if (Mathf.Abs(tempVelocity.x) > 1f) yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
             else yield return new WaitForSeconds(turnDelay);
             processingTurn = false;
-            //Debug.Log("Coroutine End");
+            Debug.Log("Coroutine End");
         }
-        
+
+        if (animationTag != null)
+        {
+            animationTag.GetComponent<Animator>().SetBool("Walking", true);
+        }
+
         yield return null;
     }
 
+    public static GameObject FindChildWithTag(GameObject parent, string tag)
+    {
+        GameObject child = null;
+
+        foreach (Transform transform in parent.transform)
+        {
+            if (transform.CompareTag(tag))
+            {
+                child = transform.gameObject;
+                break;
+            }
+        }
+
+        return child;
+    }
+
+    public static void MatSwap(GameObject signifier, Material mat)
+    {
+        Material[] materials = signifier.GetComponent<SkinnedMeshRenderer>().materials;
+        materials[1] = mat;
+        signifier.GetComponent<Renderer>().materials = materials;
+        Debug.Log("Material swapped succesfully!");
+    }
+
+
+    //potential idle animations go here? change via level design for stop delay @ liam
     protected IEnumerator MoveDelay()
     {
         if(!processingStop && !processingTurn)
@@ -282,7 +335,18 @@ public class Agent : KeyWindable
         PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
         if (player != null)
         {
-            player.Die();
+            if (animationTag != null)
+            {
+                ani.SetTrigger("Attack");
+
+                player.playerAnimation.SetBool("Dead", true);
+
+                PlayerInput.Instance.Locked = true;
+            } else
+            {
+                player.Die();
+            }
+            
         }
 
         //if (collision.gameObject.name == "Spikes")
@@ -434,17 +498,37 @@ public class Agent : KeyWindable
                         else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
 
                     }
+                    else
+                    {
+                        float maxY = float.MinValue;
+                        float minY = float.MaxValue;
+                        foreach(ContactPoint2D contact in floorPts)
+                        {
+                            if (contact.point.y < minY) minY = contact.point.y;
+                            if (contact.point.y > maxY) maxY = contact.point.y;
+                        }
+                        if (maxY - minY > 0.01f) StepUp();
+                    }
                 }
             }
             if (detectWalls)
             {
                 if (wallPts.Count >= 2)
                 {
-                    if (wallPts[0].point.y - transform.position.y >= halfHeight - .1f)
+                    float maxY = float.MinValue;
+                    float minY = float.MaxValue;
+
+                    foreach(ContactPoint2D contact in wallPts)
+                    {
+                        if(contact.point.y < minY) minY = contact.point.y;
+                        if(contact.point.y > maxY) maxY = contact.point.y;
+                    }
+
+                    if (maxY - minY >= halfHeight - .1f)
                     {
                         returnVal = wallPts[0].point.x < transform.position.x ? 1 : -1;
                     }
-                    else if (wallPts[0].point.y - wallPts[1].point.y >= halfHeight - 0.1f)
+                    else if (maxY - minY >= halfHeight - 0.1f)
                     {
                         if (Mathf.Abs(rb.velocity.x) > 0) Jump();
                     }

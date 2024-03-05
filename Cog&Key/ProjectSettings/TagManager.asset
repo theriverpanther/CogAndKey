@@ -15,6 +15,7 @@ TagManager:
   - Not Physics
   - Focus Point
   - Path
+  - AgentAnimator
   layers:
   - Default
   - TransparentFX
@@ -30,7 +31,7 @@ TagManager:
   - PlayerVisual
   - HelperConnectionPoint
   - Gear
-  - 
+  - Enemy
   - 
   - 
   - 
