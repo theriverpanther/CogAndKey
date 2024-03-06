@@ -16,6 +16,20 @@ public class ConveyorBeltScript : Rideable
 
     private static Dictionary<GameObject, List<Vector3>> allBeltRiders; // prevents multiple belts affecting things at the seams
 
+    private class RecentRiderData {
+        public float timer;
+        public GameObject rider;
+        public Vector3 previousDirection;
+        public bool stillAttached;
+
+        public RecentRiderData(float timer, GameObject rider, Vector3 previousDirection) {
+            this.timer = timer;
+            this.rider = rider;
+            this.previousDirection = previousDirection;
+        }
+    }
+    private List<RecentRiderData> recentRiders = new List<RecentRiderData>();
+
     // temp visual spin
     private List<GameObject> topTicks = new List<GameObject>();
     private List<GameObject> bottomTicks = new List<GameObject>();
@@ -91,6 +105,18 @@ public class ConveyorBeltScript : Rideable
                 }
             }
         }
+
+        // manage recently removed
+        for(int i = recentRiders.Count - 1; i >= 0; i--) {
+            recentRiders[i].timer -= Time.deltaTime;
+            if(recentRiders[i].timer <= 0) {
+                if(recentRiders[i].stillAttached) {
+                    riders.Add(recentRiders[i].rider);
+                    shiftDirections.Add(recentRiders[i].previousDirection);
+                }
+                recentRiders.RemoveAt(i);
+            }
+        }
         
         // update temp visuals
         float lastTime = visualTimer;
@@ -135,6 +161,14 @@ public class ConveyorBeltScript : Rideable
             return;
         }
 
+        RecentRiderData recentRider = recentRiders.Find((RecentRiderData recent) => { return recent.rider == rider; });
+        if(recentRider != null) {
+            // prevent recently removed riders from instantly rejoining
+            recentRider.stillAttached = true;
+            riders.Remove(rider);
+            return;
+        }
+
         shiftDirections.Add(shiftDir);
         if(!allBeltRiders.ContainsKey(rider)) {
             allBeltRiders[rider] = new List<Vector3>();
@@ -154,6 +188,10 @@ public class ConveyorBeltScript : Rideable
             rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (launchDir == Vector2.up ? 0.5f : 0.8f) * launchDir;
         }
 
+        if(rider.transform.position.y > transform.position.y + transform.lossyScale.y / 2f) {
+            recentRiders.Add(new RecentRiderData(.5f, rider, shiftDirections[index]));
+        }
+
         allBeltRiders[rider].Remove(shiftDirections[index]);
         shiftDirections.RemoveAt(index);
     }
@@ -162,6 +200,11 @@ public class ConveyorBeltScript : Rideable
     protected override void SubCollisionExit(Collision2D collision) {
         if(attachedDuplicateRiders.Contains(collision.gameObject)) {
             attachedDuplicateRiders.Remove(collision.gameObject);
+        }
+
+        RecentRiderData recentRider = recentRiders.Find((RecentRiderData recent) => { return recent.rider == collision.gameObject; });
+        if(recentRider != null) {
+            recentRider.stillAttached = false;
         }
     }
 
