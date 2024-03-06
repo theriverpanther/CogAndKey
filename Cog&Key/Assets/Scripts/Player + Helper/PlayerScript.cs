@@ -184,9 +184,6 @@ public class PlayerScript : MonoBehaviour
                 }
                 else if(!onFloor) {
                     // fall off platform
-                    //if(groundDistance > 1f) {
-                    //    SetAnimation("Falling");
-                    //}
                     CurrentState = State.Aerial;
                     coyoteTime = 0.125f;
                     physicsBody.gravityScale = FALL_GRAVITY;
@@ -195,18 +192,13 @@ public class PlayerScript : MonoBehaviour
                 // check if walking into a slope
                 bool movingRight = input.IsPressed(PlayerInput.Action.Right);
                 bool movingLeft = input.IsPressed(PlayerInput.Action.Left);
-                if(floorNorm == Vector2.up && movingLeft != movingRight) {
-                    RaycastHit2D floorCast = new RaycastHit2D();
-                    RaycastHit2D hipCast = new RaycastHit2D();
-                    if(movingRight) {
-                        floorCast = Physics2D.Raycast(new Vector3(transform.position.x + colliderHalfSize.x, transform.position.y - colliderHalfSize.y + 0.05f, 0), Vector2.right, 0.15f, LayerMask.NameToLayer("Player"));
-                        hipCast = Physics2D.Raycast(new Vector3(transform.position.x + colliderHalfSize.x, transform.position.y, 0), Vector2.right, 0.15f, LayerMask.NameToLayer("Player"));
-                    }
-                    else if(movingLeft) {
-                        floorCast = Physics2D.Raycast(new Vector3(transform.position.x - colliderHalfSize.x, transform.position.y - colliderHalfSize.y + 0.05f, 0), Vector2.left, 0.15f, LayerMask.NameToLayer("Player"));
-                        hipCast = Physics2D.Raycast(new Vector3(transform.position.x - colliderHalfSize.x, transform.position.y, 0), Vector2.left, 0.15f, LayerMask.NameToLayer("Player"));
-                    }
-
+                if(floorNorm.y > .98f && movingLeft != movingRight) {
+                    float side = transform.position.x + (movingRight ? 1 : -1) * colliderHalfSize.x;
+                    Vector2 direction = movingRight ? Vector2.right : Vector2.left;
+                    RaycastHit2D floorCast = Physics2D.Raycast(new Vector3(side, transform.position.y - colliderHalfSize.y + 0.05f, 0), direction, 0.15f, LayerMask.NameToLayer("Player"));
+                    RaycastHit2D hipCast = Physics2D.Raycast(new Vector3(side, transform.position.y, 0), direction, 0.15f, LayerMask.NameToLayer("Player"));
+                    Debug.Log("floor: " + (floorCast.collider != null) + ", hip: " + (hipCast.collider != null));
+                    //DebugDisplay.Instance.PlaceDot("ray play", new Vector3(side, transform.position.y - colliderHalfSize.y + 0.05f, 0));
                     if(hipCast.collider == null && floorCast.collider != null) {
                         floorNorm = floorCast.normal;
                     }
