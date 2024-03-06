@@ -197,8 +197,6 @@ public class PlayerScript : MonoBehaviour
                     Vector2 direction = movingRight ? Vector2.right : Vector2.left;
                     RaycastHit2D floorCast = Physics2D.Raycast(new Vector3(side, transform.position.y - colliderHalfSize.y + 0.05f, 0), direction, 0.15f, LayerMask.NameToLayer("Player"));
                     RaycastHit2D hipCast = Physics2D.Raycast(new Vector3(side, transform.position.y, 0), direction, 0.15f, LayerMask.NameToLayer("Player"));
-                    Debug.Log("floor: " + (floorCast.collider != null) + ", hip: " + (hipCast.collider != null));
-                    //DebugDisplay.Instance.PlaceDot("ray play", new Vector3(side, transform.position.y - colliderHalfSize.y + 0.05f, 0));
                     if(hipCast.collider == null && floorCast.collider != null) {
                         floorNorm = floorCast.normal;
                     }
