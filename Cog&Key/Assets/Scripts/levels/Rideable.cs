@@ -33,11 +33,6 @@ public abstract class Rideable : KeyWindable
 
     // add riders when they collide
     private void OnCollisionEnter2D(Collision2D collision) {
-        if(collision.gameObject.GetComponent<PoweredBlock>() != null)
-        {
-            int stop = 5;
-        }
-
         Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
         if(rb != null && !rb.isKinematic && !riders.Contains(collision.gameObject)) {
             if(OnSide(collision.gameObject) && !PressedTowardsMiddle(collision.gameObject)) {
@@ -68,7 +63,7 @@ public abstract class Rideable : KeyWindable
     protected bool OnSide(GameObject rider) {
         Rect riderArea = Global.GetCollisionArea(rider);
         Rect platformArea = Global.GetCollisionArea(gameObject);
-        return riderArea.yMin < platformArea.yMax - 0.1f && riderArea.yMax > riderArea.yMin + 0.1f;
+        return riderArea.yMin < platformArea.yMax && riderArea.yMax > riderArea.yMin;
     }
 
     // returns true if the input game object is attempting to move towards the middle of this rideable

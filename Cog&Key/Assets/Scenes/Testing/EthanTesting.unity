@@ -1771,6 +1771,10 @@ PrefabInstance:
       value: Tall Conveyor Belt
       objectReference: {fileID: 0}
     - target: {fileID: 8034297726487001618, guid: 025cdb5a36be30449a21b764fe684d3c, type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8034297726487001618, guid: 025cdb5a36be30449a21b764fe684d3c, type: 3}
       propertyPath: m_UsedByComposite
       value: 0
       objectReference: {fileID: 0}
@@ -2025,6 +2029,10 @@ PrefabInstance:
     - target: {fileID: 8999532955221749485, guid: bb491babc34d8cc40924907bdc626b50, type: 3}
       propertyPath: m_Name
       value: Wide Conveyor Belt
+      objectReference: {fileID: 0}
+    - target: {fileID: 8999532955221749485, guid: bb491babc34d8cc40924907bdc626b50, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2283,11 +2291,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7145158304048912666, guid: a4ffc1bc0cbd0c44696625931f24c92d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.5
+      value: -2.2
       objectReference: {fileID: 0}
     - target: {fileID: 7145158304048912666, guid: a4ffc1bc0cbd0c44696625931f24c92d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 7.46
       objectReference: {fileID: 0}
     - target: {fileID: 7145158304048912666, guid: a4ffc1bc0cbd0c44696625931f24c92d, type: 3}
       propertyPath: m_LocalPosition.z
