@@ -138,7 +138,8 @@ public class KeyScript : MonoBehaviour
 
     // gives the player possession of a key pickup, turning it into an ability
     public void Equip() {
-        if(attachedPickup) {
+
+        if (attachedPickup) {
             Detach();
             attachedPickup = false;
         }

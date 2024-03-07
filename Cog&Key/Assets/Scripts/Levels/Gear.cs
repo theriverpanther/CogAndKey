@@ -61,9 +61,9 @@ public class Gear : MonoBehaviour
             }
         }
 
-        gearChosen.GetComponent<MeshRenderer>().material = selectedMaterial;
-        MyRenderer = gearChosen.GetComponent<Renderer>();
-        SetSortingLayer();
+        //gearChosen.GetComponent<MeshRenderer>().material = selectedMaterial;
+        //MyRenderer = gearChosen.GetComponent<Renderer>();
+        //SetSortingLayer();
     }
 
     // Update is called once per frame

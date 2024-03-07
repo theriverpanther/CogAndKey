@@ -103,6 +103,7 @@ public class PlayerInput
             }
         }
 
+
         pressedThisFrame.CopyTo(pressedLastFrame, 0);
 
         for(int i = 0; i < NUM_ACTIONS; i++) {
