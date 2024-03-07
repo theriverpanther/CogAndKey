@@ -139,17 +139,17 @@ public class PlayerInput
 
     // if the player is input a throw this frame, returns the direction the player is attempting to throw the key this frame
     public Vector2? GetThrowDirection(KeyState key) {
-        if(JustPressed(KeyScript.keyToInput[key])) {
-            // when pressing the controller button, use the left stick for the direction and default to the player's facing direction
-            Vector2 result = Player.gameObject.transform.localScale.x > 0 ? Vector2.right : Vector2.left;
-            if(IsPressed(Action.Up)) {
-                result = Vector2.up;
-            }
-            else if(IsPressed(Action.Down)) {
-                result = Vector2.down;
-            }
-            return result;
-        }
+        //if(JustPressed(KeyScript.keyToInput[key])) {
+        //    // when pressing the controller button, use the left stick for the direction and default to the player's facing direction
+        //    Vector2 result = Player.gameObject.transform.localScale.x > 0 ? Vector2.right : Vector2.left;
+        //    if(IsPressed(Action.Up)) {
+        //        result = Vector2.up;
+        //    }
+        //    else if(IsPressed(Action.Down)) {
+        //        result = Vector2.down;
+        //    }
+        //    return result;
+        //}
 
         if(key != SelectedKey) {
             return null;
