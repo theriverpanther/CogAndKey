@@ -101,7 +101,6 @@ public class Hunter : Agent
                 Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
                 if (Mathf.Sign(dir.x) != Mathf.Sign(direction.x) && ledgeSize > 2) StartCoroutine(TurnDelay());
             }
-            //huntSignifier.color = idleColor;
             if (currentStateMat != "idle")
             {
                 Agent.MatSwap(signifier, signifier_mat_idle);
@@ -110,8 +109,8 @@ public class Hunter : Agent
         }
         else if (sqrDist > distThreshold * distThreshold)
         {
-            //huntSignifier.color = huntColor;
-            if(currentStateMat != "attack")
+            //EdgeDetectMovement(!fast, true);
+            if (currentStateMat != "attack")
             {
                 Agent.MatSwap(signifier, signifier_mat_attack);
             }
@@ -119,7 +118,8 @@ public class Hunter : Agent
 
             // try to chase the player
             float tempX = (playerPosition - transform.position).x;
-            if(Mathf.Sign(tempX) != Mathf.Sign(direction.x) && !processingTurn) 
+            wallDetected = EdgeDetect(false, true) != 0;
+            if (Mathf.Sign(tempX) != Mathf.Sign(direction.x) && !processingTurn) 
             {
                 StartCoroutine(TurnDelay());
             }
@@ -128,12 +128,23 @@ public class Hunter : Agent
                 Jump();
                 Debug.Log("Wall D");
             }
-            wallDetected = EdgeDetect(false, true) != 0;
+            else
+            {
+                float maxY = float.MinValue;
+                float minY = float.MaxValue;
+                foreach (ContactPoint2D contact in floorPts)
+                {
+                    if (contact.point.y < minY) minY = contact.point.y;
+                    if (contact.point.y > maxY) maxY = contact.point.y;
+                }
+                if (maxY - minY > stepSize) StepUp();
+            }
+            
             // If there's a wall in front and the player is above it, try to jump
             // Player needs to be able to jump over enemy
             // instead of jumping to meet, turn around
             
-            if(playerPosition.y > transform.position.y + halfHeight * 5)
+            if(playerPosition.y > transform.position.y + halfHeight * 2)
             {
                 if(playerSensed || wallDetected) Jump();
             }
@@ -150,6 +161,8 @@ public class Hunter : Agent
             {
                 huntTimer = 0f;
             }
+
+            //EdgeDetectMovement(!fast, true);
         }
         else
         {
