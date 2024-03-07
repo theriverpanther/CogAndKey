@@ -13,6 +13,7 @@ public class KeyUI : MonoBehaviour
     [SerializeField]
     List<Sprite> statusSprites;
 
+
     void Awake()
     {
        data = GameObject.FindObjectOfType<LevelData>();
@@ -67,9 +68,11 @@ public class KeyUI : MonoBehaviour
                 break;
             case KeyScript.State.Attached:
                 keyDictionary[type].transform.GetChild(1).GetComponent<Image>().sprite = statusSprites[2];
+                keyDictionary[type].transform.GetComponent<Animator>().SetBool("Inserted", true);
                 break;
             case KeyScript.State.Returning:
                 keyDictionary[type].transform.GetChild(1).GetComponent<Image>().sprite = statusSprites[3];
+                keyDictionary[type].transform.GetComponent<Animator>().SetBool("Inserted", false);
                 break;
         }
     }
