@@ -210,6 +210,8 @@ public class KeyScript : MonoBehaviour
         KeyWindable windable = collision.gameObject.GetComponent<KeyWindable>();
         if(currentState == State.Attacking && windable != null) {
             AttachTo(windable);
+            //Sound Manager Code
+            SoundManager.Instance.PlaySound("Lock", .3f);
             if(Gamepad.current != null) {
                 PlayerInput.Instance.Rumble(0.6f, 0.1f);
             }
