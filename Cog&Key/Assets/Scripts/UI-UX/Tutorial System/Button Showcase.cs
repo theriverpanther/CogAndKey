@@ -23,6 +23,8 @@ public class ButtonShowcase : MonoBehaviour
     public GameObject hideOther;
 
     private Animator ani;
+
+    bool set = false;
     private void Start()
     {
         detectControllerType = GetComponent<DetectControllerType>();
@@ -31,48 +33,57 @@ public class ButtonShowcase : MonoBehaviour
     // Start is called before the first frame update
     void OnEnable()
     {
-        detectControllerType = GetComponent<DetectControllerType>();
-
-
-        transform.localScale = new Vector3(scale, scale, scale);    
-
-        Texture2D img = detectControllerType.ReturnImage(mapping, specific);
-        //Debug.Log(img);
-
-        if (img != null)
+        if (!set)
         {
-            if(GetComponent<SpriteRenderer>() != null)
+            detectControllerType = GetComponent<DetectControllerType>();
+
+
+            transform.localScale = new Vector3(scale, scale, scale);
+
+            Texture2D img = detectControllerType.ReturnImage(mapping, specific);
+            //Debug.Log(img);
+
+            if (img != null)
             {
-                GetComponent<SpriteRenderer>().sprite = Sprite.Create(img, new Rect(0, 0, img.width, img.height), Vector2.zero);
-            } else
+                if (GetComponent<SpriteRenderer>() != null)
+                {
+                    GetComponent<SpriteRenderer>().sprite = Sprite.Create(img, new Rect(0, 0, img.width, img.height), Vector2.zero);
+                }
+                else
+                {
+                    Sprite spr = Sprite.Create(img, new Rect(0, 0, img.width, img.height), new Vector2(0.5f, 0.5f), 100.0f);
+                    GetComponent<Image>().sprite = spr;
+                    //Debug.Log("UI IMG: " + spr.texture.name);
+                }
+            }
+
+            ani = GetComponent<Animator>();
+            if (ani != null)
             {
-                Sprite spr = Sprite.Create(img, new Rect(0, 0, img.width, img.height), new Vector2(0.5f, 0.5f), 100.0f);
-                GetComponent<Image>().sprite = spr;
-                //Debug.Log("UI IMG: " + spr.texture.name);
+                ani.SetBool("Fade", true);
+            }
+
+            if (animated)
+            {
+                switch (detectControllerType.Current)
+                {
+                    case "xbox":
+                        ani.SetTrigger("Xbox");
+                        break;
+                    case "playstation":
+                        ani.SetTrigger("Playstation");
+                        break;
+                    case "keyboard":
+                        ani.SetTrigger("Keyboard");
+                        break;
+                }
             }
         }
+    }
 
-        ani = GetComponent<Animator>();
-        if(ani != null)
-        {
-            ani.SetBool("Fade", true);
-        }
-
-        if(animated)
-        {
-            switch(detectControllerType.Current)
-            {
-                case "xbox":
-                    ani.SetTrigger("Xbox");
-                    break;
-                case "playstation":
-                    ani.SetTrigger("Playstation");
-                    break;
-                case "keyboard":
-                    ani.SetTrigger("Keyboard");
-                    break;
-            }
-        }
+    private void OnDisable()
+    {
+        set = false;
     }
 
 }

@@ -13,6 +13,8 @@ public class KeyUI : MonoBehaviour
     [SerializeField]
     List<Sprite> statusSprites;
 
+    KeyState current = KeyState.None;
+
 
     void Awake()
     {
@@ -48,15 +50,47 @@ public class KeyUI : MonoBehaviour
         keyDictionary.Add(KeyState.Fast, keys[0]);
         keyDictionary.Add(KeyState.Lock, keys[1]);
         keyDictionary.Add(KeyState.Reverse, keys[2]);
+
     }
 
     public void UpdateKeyUI(KeyState key)
     {
         keyDictionary[key].SetActive(true);
+        SetArrowSelector();
+    }
+
+    private void Update()
+    {
+        //keyDictionary[PlayerInput.Instance.SelectedKey].transform.GetChild(3).gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Display arrow based on button press
+    /// </summary>
+    public void SetArrowSelector()
+    {
+        foreach(KeyState key in keyDictionary.Keys)
+        {
+            if(key != PlayerInput.Instance.SelectedKey)
+            {
+                keyDictionary[key].transform.GetChild(3).GetComponent<Image>().color = Color.clear;
+            } else
+            {
+                keyDictionary[key].transform.GetChild(3).GetComponent<Image>().color = Color.white;
+                current = key;
+            }
+
+        }
+
     }
 
     public void KeyUpdate(KeyScript.State currentState, KeyState type)
     {
+        if(current != PlayerInput.Instance.SelectedKey)
+        {
+            SetArrowSelector();
+        }
+
         switch(currentState)
         {
             case KeyScript.State.Pickup:
