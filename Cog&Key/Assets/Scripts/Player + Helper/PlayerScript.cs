@@ -141,6 +141,7 @@ public class PlayerScript : MonoBehaviour
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
                     HasWallJumped = true;
+                    coyoteTime = 0;
                     physicsBody.gravityScale = JUMP_GRAVITY;
                     bool boosted = false;
                     const float WALL_JUMP_SPEED = 11f;
