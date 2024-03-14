@@ -93,7 +93,7 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5213765909111699289}
+      addedObject: {fileID: 7095351802146852975}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3620713396818469456, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       insertIndex: -1
@@ -122,7 +122,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
   m_PrefabInstance: {fileID: 115686334408349547}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &2640320018965396263
+--- !u!1001 &1047238328241888273
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -133,7 +133,7 @@ PrefabInstance:
     - target: {fileID: 3055616292520604455, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 6ee5d643b6557ab43865c9702091db63, type: 3}
+      objectReference: {fileID: 21300000, guid: 1ea72d75289d9ee4f8ef18d81f987cba, type: 3}
     - target: {fileID: 3055616292520604455, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_Color.a
       value: 1
@@ -160,7 +160,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3620713396818469456, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_Name
-      value: Door
+      value: Door (1)
       objectReference: {fileID: 0}
     - target: {fileID: 5938606351015525991, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
@@ -172,11 +172,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.18
+      value: 0.19350001
       objectReference: {fileID: 0}
     - target: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.09
+      value: 0.05788125
       objectReference: {fileID: 0}
     - target: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_LocalScale.z
@@ -188,7 +188,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.056
       objectReference: {fileID: 0}
     - target: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -229,8 +229,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
---- !u!4 &5213765909111699289 stripped
+--- !u!4 &7095351802146852975 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7854076990703012990, guid: 28d4bba41f620a74d9dac600009b05d3, type: 3}
-  m_PrefabInstance: {fileID: 2640320018965396263}
+  m_PrefabInstance: {fileID: 1047238328241888273}
   m_PrefabAsset: {fileID: 0}

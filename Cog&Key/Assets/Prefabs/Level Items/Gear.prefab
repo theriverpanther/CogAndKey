@@ -83,7 +83,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.23, y: 0.23, z: 0.23}
+  m_LocalScale: {x: 0.276759, y: 0.276759, z: 0.276759}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3818261274241612550}
@@ -129,7 +129,7 @@ SpriteRenderer:
   m_SortingLayerID: -1829041407
   m_SortingLayer: 2
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 1119ca9b72e7fa448a31e5ca22bf5f96, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9b041eb205bec214d877010764e5665e, type: 3}
   m_Color: {r: 0.6792453, g: 0.48953554, b: 0.24670699, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -167,7 +167,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.23, y: 0.23, z: 0.23}
+  m_LocalScale: {x: 0.276759, y: 0.276759, z: 0.276759}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3818261274241612550}
@@ -213,7 +213,7 @@ SpriteRenderer:
   m_SortingLayerID: -1829041407
   m_SortingLayer: 2
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 1119ca9b72e7fa448a31e5ca22bf5f96, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9b041eb205bec214d877010764e5665e, type: 3}
   m_Color: {r: 0.6792453, g: 0.48953554, b: 0.24670699, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -251,7 +251,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.23, y: 0.23, z: 0.23}
+  m_LocalScale: {x: 0.276759, y: 0.276759, z: 0.276759}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3818261274241612550}
@@ -297,7 +297,7 @@ SpriteRenderer:
   m_SortingLayerID: -1829041407
   m_SortingLayer: 2
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 1119ca9b72e7fa448a31e5ca22bf5f96, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9b041eb205bec214d877010764e5665e, type: 3}
   m_Color: {r: 0.6792453, g: 0.48953554, b: 0.24670699, a: 1}
   m_FlipX: 0
   m_FlipY: 0
