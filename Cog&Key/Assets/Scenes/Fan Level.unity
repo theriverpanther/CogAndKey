@@ -11333,6 +11333,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fan (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5339250556595703946, guid: a4ffc1bc0cbd0c44696625931f24c92d, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4746d98e89c8cc242a09a8b1cfe00cbd, type: 3}
     - target: {fileID: 7145158304048912666, guid: a4ffc1bc0cbd0c44696625931f24c92d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 35.5
