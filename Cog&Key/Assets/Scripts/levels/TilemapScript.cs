@@ -13,4 +13,6 @@ public class TilemapScript : MonoBehaviour
         Instance = this;
         WallGrid = GetComponent<Tilemap>();
     }
+
+
 }

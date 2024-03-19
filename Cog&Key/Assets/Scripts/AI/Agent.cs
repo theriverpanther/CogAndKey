@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 //using UnityEditor.Build;
 //using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 public class Agent : KeyWindable
 {
@@ -23,7 +24,7 @@ public class Agent : KeyWindable
     [SerializeField] protected float jumpSpeed = 2f;
     protected float attackSpeed;
     [SerializeField] protected float fastScalar = 3f;
-    [SerializeField] protected float stepSize = 0.1f;
+    [SerializeField] protected float stepSize = 0.01f;
 
     protected const float GROUND_GRAVITY = 7.5f;
 
@@ -190,19 +191,23 @@ public class Agent : KeyWindable
 
     protected void IsGrounded()
     {
-        const float BUFFER = 0.1f;
+        const float BUFFER = 0.2f;
 
-        jumpState = (RayCheck(transform.position, BUFFER, -halfWidth, halfHeight) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight) ? JumpState.Grounded: JumpState.Aerial);
+        jumpState = ((RayCheck(transform.position, BUFFER, -halfWidth, halfHeight, 5) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight, 5)) && ledgeSize >= minLedgeSize ? JumpState.Grounded: JumpState.Aerial);
         //if(floorPts!=null)
         //{
-        //    jumpState = floorPts.Count >= 2 && ledgeSize > minLedgeSize / 2 ? JumpState.Grounded : JumpState.Aerial;
+        //    jumpState = floorPts.Count >= 2 && ledgeSize >= minLedgeSize ? JumpState.Grounded : JumpState.Aerial;
         //} 
     }
 
-    protected bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight)
+    protected bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight, float distance)
     {
-        RaycastHit2D ray = Physics2D.Raycast(new Vector3(position.x - halfWidth + buffer, position.y - halfHeight, 0), Vector2.down, 10, LayerMask.GetMask("Ground"));
-        return ray.collider != null && ray.distance < halfHeight + buffer;
+        RaycastHit2D ray = Physics2D.Raycast(new Vector3(position.x - halfWidth + buffer, position.y - halfHeight, 0), Vector2.down, distance, LayerMask.GetMask("Ground"));
+        if(ray.collider!=null && distance != 10)
+        {
+            Debug.DrawRay(new Vector3(position.x - halfWidth + buffer, position.y - halfHeight, 0), Vector2.down, Color.green, 1f);
+        }
+        return ray.collider != null && ray.distance < halfHeight + distance;
     }
 
     protected List<Vector2> ValidJumps()
@@ -411,104 +416,107 @@ public class Agent : KeyWindable
 
             float sqrDist = 0f;
             ledgeSize = 0f;
+            if (floorPts.Count > 0)
+            {
+                sqrDist = SquareDistance(floorPts[0].point, floorPts[floorPts.Count - 1].point);
+
+                ledgeSize = sqrDist;
+            }
 
             if (detectFloorEdges)
             {
-                if (floorPts.Count > 0)
+                if (sqrDist <= minLedgeSize)
                 {
-                    sqrDist = SquareDistance(floorPts[0].point, floorPts[floorPts.Count - 1].point);
-
-                    ledgeSize = sqrDist;
-
-                    if (sqrDist <= minLedgeSize)
+                    bool leftRayCheck = RayCheck(transform.position, 0.1f, -halfWidth, halfHeight, 10);
+                    bool rightRayCheck = RayCheck(transform.position, -0.1f, halfWidth, halfHeight, 10);
+                    if (pathTarget != null)
                     {
-                        bool leftRayCheck = RayCheck(transform.position, 0.1f, -halfWidth, halfHeight);
-                        bool rightRayCheck = RayCheck(transform.position, -0.1f, halfWidth, halfHeight);
-                        if (pathTarget != null)
+                        float xDistToTarget = Mathf.Abs(transform.position.x - pathTarget.transform.position.x);
+                        float sqrDistToTarget = Vector3.SqrMagnitude(transform.position - pathTarget.transform.position);
+                        if (xDistToTarget < 20f)
                         {
-                            float xDistToTarget = Mathf.Abs(transform.position.x - pathTarget.transform.position.x);
-                            float sqrDistToTarget = Vector3.SqrMagnitude(transform.position - pathTarget.transform.position);
-                            if (xDistToTarget < 20f)
+                            RaycastHit2D results;
+                            results = Physics2D.Raycast(transform.position, (pathTarget.transform.position - transform.position).normalized, 5f, LayerMask.GetMask("Ground", "Player"));
+                            if (results.collider != null)
                             {
-                                RaycastHit2D results;
-                                results = Physics2D.Raycast(transform.position, (pathTarget.transform.position - transform.position).normalized, 5f, LayerMask.GetMask("Ground", "Player"));
-                                if (results.collider != null)
+                                //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                Vector3 point = results.collider.transform.position;
+                                if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
                                 {
-                                    //Debug.DrawLine(transform.position, pathTarget.transform.position);
-                                    Vector3 point = results.collider.transform.position;
-                                    if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
-                                    {
-                                        if (pathTarget.transform.position.y > transform.position.y) Jump();
-                                        returnVal = 0;
-                                        lostTimer = 0;
-                                        isLost = false;
-                                    }
-                                    else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
-                                    // Still end up stopping at the edge
-                                    // This will also run them off the edge
-                                    // Is this a garbage collection issue?
+                                    if (pathTarget.transform.position.y > transform.position.y) Jump();
+                                    returnVal = 0;
+                                    lostTimer = 0;
+                                    isLost = false;
+                                }
+                                else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
+                                // Still end up stopping at the edge
+                                // This will also run them off the edge
+                                // Is this a garbage collection issue?
+                            }
+                            else
+                            {
+                                //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                if (sqrDistToTarget <= 64f)
+                                {
+                                    if (transform.position.y < pathTarget.transform.position.y) Jump();
+                                    returnVal = 0;
+                                    lostTimer = 0;
+                                    isLost = false;
                                 }
                                 else
                                 {
-                                    //Debug.DrawLine(transform.position, pathTarget.transform.position);
-                                    if (sqrDistToTarget <= 64f)
+                                    lostTimer += Time.deltaTime;
+                                    if (lostTimer >= confusionTime)
                                     {
-                                        if (transform.position.y < pathTarget.transform.position.y) Jump();
-                                        returnVal = 0;
-                                        lostTimer = 0;
-                                        isLost = false;
+                                        isLost = true;
+                                        Debug.Log(gameObject.name + " can't reach next point at " + pathTarget.transform.position + ".");
                                     }
-                                    else
-                                    {
-                                        lostTimer += Time.deltaTime;
-                                        if (lostTimer >= confusionTime)
-                                        {
-                                            isLost = true;
-                                            Debug.Log(gameObject.name + " can't reach next point at " + pathTarget.transform.position + ".");
-                                        }
-                                        // Turn the way that is opposite of the edge the agent is at
-                                        bool left = false;
-                                        bool right = false;
+                                    // Turn the way that is opposite of the edge the agent is at
+                                    bool left = false;
+                                    bool right = false;
 
-                                        // Need to turn when meeting two conditions
-                                        // Central point within a threshold of minLedgeSize + x
-                                        // Edge point greater than or less than x
-                                        foreach(ContactPoint2D contact in floorPts)
-                                        {
-                                            if (contact.point.x > transform.position.x) right = true;
-                                            else left = true;
-                                        }
-                                        if (left) returnVal = -1;
-                                        else if (right) returnVal = 1;
-                                        else returnVal = 0;
+                                    // Need to turn when meeting two conditions
+                                    // Central point within a threshold of minLedgeSize + x
+                                    // Edge point greater than or less than x
+                                    foreach(ContactPoint2D contact in floorPts)
+                                    {
+                                        if (contact.point.x > transform.position.x) right = true;
+                                        else left = true;
                                     }
+                                    if (left) returnVal = -1;
+                                    else if (right) returnVal = 1;
+                                    else returnVal = 0;
                                 }
                             }
-                        
-                            
-                            else if (PlayerPosition != Vector3.zero)
-                            {
-                                if(Mathf.Abs(rb.velocity.x) > 0) Jump();
-                                returnVal = 0;
-                            }
-
-                            else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
-
                         }
+                    
+                        
+                        else if (PlayerPosition != Vector3.zero)
+                        {
+                            if(Mathf.Abs(rb.velocity.x) > 0) Jump();
+                            returnVal = 0;
+                        }
+
                         else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
 
                     }
-                    else
+                    else if(!RayCheck(transform.position, 0.1f, halfWidth * direction.x * -1, halfHeight, 20))
                     {
-                        float maxY = float.MinValue;
-                        float minY = float.MaxValue;
-                        foreach(ContactPoint2D contact in floorPts)
-                        {
-                            if (contact.point.y < minY) minY = contact.point.y;
-                            if (contact.point.y > maxY) maxY = contact.point.y;
-                        }
-                        if (maxY - minY > 0.01f) StepUp();
+                        // Account for stepping down
+                        returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
                     }
+
+                }
+                else
+                {
+                    float maxY = float.MinValue;
+                    float minY = float.MaxValue;
+                    foreach(ContactPoint2D contact in floorPts)
+                    {
+                        if (contact.point.y < minY) minY = contact.point.y;
+                        if (contact.point.y > maxY) maxY = contact.point.y;
+                    }
+                    if (maxY - minY > stepSize) StepUp();
                 }
             }
             if (detectWalls)
@@ -532,76 +540,9 @@ public class Agent : KeyWindable
                     {
                         if (Mathf.Abs(rb.velocity.x) > 0) Jump();
                     }
-                    //if (wallPts[0].collider.tag == "Ground")
-                    //{
-                        
-                    //}
-                    //else
-                    //{
-                    //    // Left in case we re add agent on agent collision
-                    //    if (wallPts[1].collider.tag == "Agent")
-                    //    {
-                    //        Agent a = wallPts[0].collider.GetComponent<Agent>();
-                    //        if (a.Direction != direction || movementSpeed > a.Speed)
-                    //        {
-                    //            // If its a small enough object, jump over it.
-                    //            if (wallPts[0].collider.transform.position.y < wallPts[0].point.y && Mathf.Abs(rb.velocity.x) > 0) Jump();//Jump();
-                    //        }
-
-                    //    }
-                    //}
                 }
             }
         }
-
-        //int returnVal = 0;
-        //foreach (GameObject obj in collidingObjs)
-        //{
-        //    if(obj.GetComponent<BoxCollider2D>() != null)
-        //    {
-        //        if (detectWalls && transform.position.y > obj.transform.position.y - obj.GetComponent<BoxCollider2D>().bounds.size.y / 2 &&
-        //        transform.position.y < obj.transform.position.y + obj.GetComponent<BoxCollider2D>().bounds.size.y / 2)
-        //        {
-        //            returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
-        //        }
-        //        else if (detectFloorEdges && transform.position.x + GetComponent<BoxCollider2D>().bounds.size.x / 2 > obj.transform.position.x + obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
-        //        {
-        //            jumpState = JumpState.Grounded;
-        //            returnVal = -1;
-        //        }
-        //        else if (detectFloorEdges && transform.position.x - GetComponent<BoxCollider2D>().bounds.size.x / 2 < obj.transform.position.x - obj.GetComponent<BoxCollider2D>().bounds.size.x / 2)
-        //        {
-        //            jumpState = JumpState.Grounded;
-        //            returnVal = 1;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // If the agent is stuck at a wall, search for a node to move towards
-        //        if(detectWalls && !processingTurn)
-        //        {
-        //            foreach(GameObject node in nodes)
-        //            {
-        //                if(Mathf.Sign((node.transform.position - transform.position).x) == Mathf.Sign(direction.x) &&
-        //                    Vector2.Distance(node.transform.position, transform.position) <= 0.25f && 
-        //                    Physics2D.Raycast(transform.position, node.transform.position, 0.6f))
-        //                {
-        //                    Debug.DrawLine(node.transform.position, transform.position, Color.red, 2f);
-        //                    // Turn
-        //                    returnVal = transform.position.x > node.transform.position.x ? 1 : -1;
-        //                    break;
-        //                }
-        //            }
-        //        }
-        //        // If the collision is against a node, that means that the agent is at a ledge, so turn around
-        //        if(detectFloorEdges && obj.tag == "Node" && !processingTurn)
-        //        {
-        //            returnVal = transform.position.x > obj.transform.position.x ? 1 : -1;
-        //        }
-        //    }
-        //}
-
-        //return returnVal;
         return returnVal;
     }
 

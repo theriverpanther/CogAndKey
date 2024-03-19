@@ -11,7 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Onboarding_v1.unity
     guid: fa661e545a8d29141b1beb56e0527a92
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Fan Level.unity
     guid: 9b63fbe1e5a5b4c4b92ca95282d704ce
+  - enabled: 1
+    path: Assets/Scenes/Level_2.unity
+    guid: 863f1bd97a9c2304a9754b794d5016d0
   m_configObjects: {}

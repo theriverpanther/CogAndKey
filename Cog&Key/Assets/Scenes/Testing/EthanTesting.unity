@@ -1699,6 +1699,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: KeyA
       objectReference: {fileID: 0}
+    - target: {fileID: 8181461652135794025, guid: 99864f9ff9a3f6c4b98374edf687a368, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.3894043
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2222,7 +2226,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8751292470688992327, guid: aa11c686614da8b43997b46291e85e97, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9176067104390047342, guid: aa11c686614da8b43997b46291e85e97, type: 3}
       propertyPath: m_RootOrder

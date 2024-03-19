@@ -16,14 +16,33 @@ public class Sense : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag.Equals("Player"))
+        CollisionCheck(collision); 
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.tag == "Player")
         {
-            if(type == SenseType.Sight) 
+            player = null;
+            collidedPlayer = false;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        CollisionCheck(collision);   
+    }
+
+    private void CollisionCheck(Collider2D collision)
+    {
+        if (collision.gameObject.tag.Equals("Player"))
+        {
+            if (type == SenseType.Sight)
             {
                 RaycastHit2D results = Physics2D.Raycast(transform.position, (collision.transform.position - transform.position).normalized, 10f);
                 //Debug.DrawLine(transform.position, results.transform.position, Color.red, 2f);
                 //Debug.Log($"Pos:{transform.position}, Collider: {collision.transform.position}");
-                
+
                 if (results.collider != null && results.collider.gameObject.tag == "Player")
                 {
                     Debug.DrawLine(transform.position, collision.transform.position, Color.red, 2f);
@@ -31,24 +50,15 @@ public class Sense : MonoBehaviour
                 }
                 else
                 {
-                    player = collision.gameObject; 
+                    player = collision.gameObject;
                 }
             }
             else
             {
                 PlayerSensed(collision);
             }
-            
-            
-        }
-    }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        collidedPlayer = false;
-        if(collision.tag == "Player")
-        {
-            player = null;
+
         }
     }
 
@@ -62,26 +72,5 @@ public class Sense : MonoBehaviour
     {
         collidedPlayer = true;
         transform.parent.GetComponent<Agent>().PlayerPosition = player.transform.position;
-    }
-
-    private void Update()
-    {
-        if(player != null)
-        {
-            if (type == SenseType.Sight)
-            {
-                RaycastHit2D results;
-                results = Physics2D.Raycast(transform.position, (player.transform.position - transform.position).normalized, 10f);
-                //Debug.DrawLine(transform.position, results.point, Color.red, 2f);
-                //DebugDisplay.Instance.PlaceDot("Raycast", results.point);
-                if (results.collider != null && results.collider.gameObject.tag == "Player")
-                {
-                    //Debug.Log($"Pos:{transform.position}, Collider: {player.transform.position}");
-
-                    //Debug.DrawLine(transform.position, (player.transform.position - transform.position).normalized, Color.red, 2f);
-                    PlayerSensed(player);
-                }
-            }
-        }
     }
 }
