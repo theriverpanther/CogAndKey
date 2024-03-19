@@ -30,7 +30,7 @@ public class KeyScript : MonoBehaviour
     };
 
     private State currentState;
-    private Vector3 velocity;
+    public Vector3 velocity { get; private set; }
     private KeyWindable insertTarget;
     private Rigidbody2D physicsBody;
     private GameObject player;
@@ -202,6 +202,7 @@ public class KeyScript : MonoBehaviour
         }
 
         if((currentState == State.Pickup || attachedPickup) && collision.gameObject.tag == "Player") {
+            // equip key
             keyAni.SetInteger("Status", 0);
             keyAcquiredUI.GetComponent<WindKeySplash>().ShowInformation(Type);
             Equip();
@@ -209,17 +210,20 @@ public class KeyScript : MonoBehaviour
         }
 
         KeyWindable windable = collision.gameObject.GetComponent<KeyWindable>();
-        if(currentState == State.Attacking && windable != null) {
+        SnapPoint? snap = windable == null ? null : windable.FindSnapPoint(this);
+        if(currentState == State.Attacking && windable != null && snap.HasValue) {
+            // attach to an object
+            transform.position = windable.transform.position + snap.Value.localPosition;
             AttachTo(windable);
-            //Sound Manager Code
-            SoundManager.Instance.PlaySound("Lock", .3f);
+            SoundManager.Instance.PlaySound("Lock", .3f); //Sound Manager Code
             if(Gamepad.current != null) {
                 PlayerInput.Instance.Rumble(0.6f, 0.1f);
             }
             return;
         }
 
-        if(currentState == State.Attacking && collision.gameObject.tag == "Wall") {
+        if(currentState == State.Attacking && (collision.gameObject.tag == "Wall" || windable != null && !snap.HasValue)) {
+            // bounce off of walls
             keyAni.SetInteger("Status", 0);
             SetState(State.Returning);
         }
