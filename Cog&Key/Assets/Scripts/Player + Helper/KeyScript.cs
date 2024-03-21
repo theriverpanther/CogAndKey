@@ -62,7 +62,7 @@ public class KeyScript : MonoBehaviour
         if(StartEquipped) {
             Equip();
         }
-        else if(StartAttachedTo != null) {
+        else if(StartAttachedTo != null && currentState != State.PlayerHeld) { // the key might be equipped to the player before running this function
             SnapPoint? snap = StartAttachedTo.FindSnapPoint(this);
             transform.position = StartAttachedTo.transform.position + snap.Value.localPosition;
             AttachTo(StartAttachedTo);
