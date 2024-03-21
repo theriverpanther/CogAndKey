@@ -568,7 +568,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279053928
+    rgba: 4279115064
   m_fontColor: {r: 0.21960784, g: 0.11372549, b: 0.05490196, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -3073,8 +3073,8 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 2109938732}
-    m_SelectOnDown: {fileID: 2109938732}
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 1250494753}
     m_SelectOnRight: {fileID: 1243563739}
   m_Transition: 1
@@ -4805,7 +4805,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279053928
+    rgba: 4279115064
   m_fontColor: {r: 0.21960784, g: 0.11372549, b: 0.05490196, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -5964,10 +5964,10 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 2109938732}
-    m_SelectOnDown: {fileID: 2109938732}
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 794935326}
-    m_SelectOnRight: {fileID: 1250494753}
+    m_SelectOnRight: {fileID: 2109938732}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.22745098, g: 0.22745098, b: 0.22745098, a: 1}
@@ -6097,9 +6097,9 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 2109938732}
-    m_SelectOnDown: {fileID: 2109938732}
-    m_SelectOnLeft: {fileID: 1243563739}
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 2109938732}
     m_SelectOnRight: {fileID: 794935326}
   m_Transition: 1
   m_Colors:
@@ -8687,7 +8687,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279053928
+    rgba: 4279115064
   m_fontColor: {r: 0.21960784, g: 0.11372549, b: 0.05490196, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -14423,7 +14423,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4279119463
+    rgba: 4279115064
   m_fontColor: {r: 0.21960784, g: 0.11372549, b: 0.05549129, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -15588,10 +15588,10 @@ MonoBehaviour:
   m_Navigation:
     m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 1250494753}
-    m_SelectOnDown: {fileID: 1250494753}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 1243563739}
+    m_SelectOnRight: {fileID: 1250494753}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 1}
