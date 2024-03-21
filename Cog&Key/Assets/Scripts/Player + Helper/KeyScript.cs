@@ -31,7 +31,7 @@ public class KeyScript : MonoBehaviour
     };
 
     private State currentState;
-    public Vector3 velocity { get; private set; }
+    private Vector3 velocity;
     private KeyWindable insertTarget;
     private Rigidbody2D physicsBody;
     private GameObject player;
@@ -63,6 +63,8 @@ public class KeyScript : MonoBehaviour
             Equip();
         }
         else if(StartAttachedTo != null) {
+            SnapPoint? snap = StartAttachedTo.FindSnapPoint(this);
+            transform.position = StartAttachedTo.transform.position + snap.Value.localPosition;
             AttachTo(StartAttachedTo);
             StartAttachedTo.Insertible = false;
             SetState(State.AttachPickup);
@@ -149,7 +151,6 @@ public class KeyScript : MonoBehaviour
         if(keyUI != null) {
             keyUI.UpdateKeyUI(Type);
         }
-
     }
 
     // called when the player shoots the key out to try and insert it

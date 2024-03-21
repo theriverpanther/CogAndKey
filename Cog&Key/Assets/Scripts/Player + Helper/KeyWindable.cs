@@ -23,13 +23,19 @@ public abstract class KeyWindable : MonoBehaviour
 
     // check if there is a snap point that this key can attach to
     public SnapPoint? FindSnapPoint(KeyScript key) {
+        float keyRotation = key.transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+        Vector3 keyDirection = new Vector3(Mathf.Cos(keyRotation), Mathf.Sin(keyRotation), 0);
+        if(key.transform.localScale.x < 0) {
+            keyDirection *= -1f;
+        }
+
         if(snapPoints.Count == 0) {
             // if there are no snap points, allow snapping anywhere
-            return new SnapPoint { localPosition = key.transform.position - transform.position, keyDirection = key.velocity };
+            return new SnapPoint { localPosition = key.transform.position - transform.position, keyDirection = keyDirection };
         }
 
         foreach(SnapPoint snap in snapPoints) {
-            if(Vector3.Dot(key.velocity.normalized, snap.keyDirection) > 0.8f && Vector2.Distance(key.transform.position, transform.position + snap.localPosition) < 1.3f) {
+            if(Vector3.Dot(keyDirection, snap.keyDirection) > 0.8f && Vector2.Distance(key.transform.position, transform.position + snap.localPosition) < 1.3f) {
                 return snap;
             }
         }
