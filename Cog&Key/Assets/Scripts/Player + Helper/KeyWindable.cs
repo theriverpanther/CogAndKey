@@ -15,6 +15,7 @@ public abstract class KeyWindable : MonoBehaviour
     private List<SnapPoint> snapPoints = new List<SnapPoint>();
     private KeyScript insertedKey;
     public KeyState InsertedKeyType { get { return insertedKey == null ? KeyState.None : insertedKey.Type; } }
+    public bool Insertible { get; set; } = true;
 
     public void AddSnapPoint(SnapPoint snap) {
         snapPoints.Add(snap);

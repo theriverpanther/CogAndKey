@@ -93,7 +93,7 @@ public class KeyUI : MonoBehaviour
 
         switch(currentState)
         {
-            case KeyScript.State.Pickup:
+            case KeyScript.State.FloatPickup:
             case KeyScript.State.PlayerHeld:
                 keyDictionary[type].transform.GetChild(1).GetComponent<Image>().sprite = statusSprites[0];
                 break;

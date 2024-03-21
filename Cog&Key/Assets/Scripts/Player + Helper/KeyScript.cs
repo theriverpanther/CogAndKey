@@ -13,11 +13,12 @@ public class KeyScript : MonoBehaviour
     [SerializeField] private GameObject keyAcquiredUI;
 
     public enum State {
-        Pickup,
+        FloatPickup,
         PlayerHeld,
         Attacking,
         Attached,
-        Returning
+        Returning,
+        AttachPickup
     }
 
     private const float SPEED = 20f;
@@ -40,14 +41,14 @@ public class KeyScript : MonoBehaviour
     private KeyUI keyUI;
     private GameObject visual;
     private Collider2D boxCollider;
-    private bool attachedPickup;
+    //private bool attachedPickup;
     public KeyState Type { get { return type; } }
 
-    public bool Attached { get { return currentState == State.Attached; } }
+    public bool Attached { get { return currentState == State.Attached || currentState == State.AttachPickup; } }
 
     void Awake()
     {
-        currentState = State.Pickup;
+        currentState = State.FloatPickup;
         uiKeys = GameObject.Find("OverlayMain")?.GetComponent<KeyShowcaser>();
         physicsBody = GetComponent<Rigidbody2D>();
         keyUI = GameObject.Find("KeyBG")?.GetComponent<KeyUI>();
@@ -61,10 +62,10 @@ public class KeyScript : MonoBehaviour
         if(StartEquipped) {
             Equip();
         }
-
-        if(StartAttachedTo != null && currentState == State.Pickup) {
-            attachedPickup = true;
+        else if(StartAttachedTo != null) {
             AttachTo(StartAttachedTo);
+            StartAttachedTo.Insertible = false;
+            SetState(State.AttachPickup);
         }
     }
 
@@ -105,7 +106,7 @@ public class KeyScript : MonoBehaviour
                 }
             }
         }
-        else if(currentState == State.Attached && !attachedPickup) {
+        else if(currentState == State.Attached) {
             if(PlayerInput.Instance.JustPressed(keyToInput[Type]) || PlayerInput.Instance.JustPressed(PlayerInput.Action.Recall)
                 || Mathf.Abs(player.transform.position.y - transform.position.y) > 16f 
                 || Mathf.Abs(player.transform.position.x - transform.position.x) > 16f
@@ -129,7 +130,7 @@ public class KeyScript : MonoBehaviour
                 transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
                 break;
             case State.Attached:
-                boxCollider.enabled = attachedPickup; // disable collider because triggers are sent to the parent
+                boxCollider.enabled = false; // disable collider because triggers are sent to the parent
                 break;
         }
 
@@ -138,10 +139,9 @@ public class KeyScript : MonoBehaviour
 
     // gives the player possession of a key pickup, turning it into an ability
     public void Equip() {
-
-        if (attachedPickup) {
+        if(currentState == State.AttachPickup) {
+            insertTarget.Insertible = true;
             Detach();
-            attachedPickup = false;
         }
         SetState(State.PlayerHeld);
         PlayerInput.Instance.SelectedKey = Type;
@@ -187,7 +187,7 @@ public class KeyScript : MonoBehaviour
     }
 
     public void Detach() {
-        if(insertTarget == null || currentState != State.Attached) {
+        if(insertTarget == null) {
             return;
         }
 
@@ -201,8 +201,7 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
-        if((currentState == State.Pickup || attachedPickup) && collision.gameObject.tag == "Player") {
-            // equip key
+        if((currentState == State.FloatPickup || currentState == State.AttachPickup) && collision.gameObject.tag == "Player") {
             keyAni.SetInteger("Status", 0);
             keyAcquiredUI.GetComponent<WindKeySplash>().ShowInformation(Type);
             Equip();
@@ -211,7 +210,7 @@ public class KeyScript : MonoBehaviour
 
         KeyWindable windable = collision.gameObject.GetComponent<KeyWindable>();
         SnapPoint? snap = windable == null ? null : windable.FindSnapPoint(this);
-        if(currentState == State.Attacking && windable != null && snap.HasValue) {
+        if(currentState == State.Attacking && windable != null && windable.Insertible && snap.HasValue) {
             // attach to an object
             transform.position = windable.transform.position + snap.Value.localPosition;
             AttachTo(windable);
@@ -222,7 +221,7 @@ public class KeyScript : MonoBehaviour
             return;
         }
 
-        if(currentState == State.Attacking && (collision.gameObject.tag == "Wall" || windable != null && !snap.HasValue)) {
+        if(currentState == State.Attacking && (collision.gameObject.tag == "Wall" || windable != null)) {
             // bounce off of walls
             keyAni.SetInteger("Status", 0);
             SetState(State.Returning);
