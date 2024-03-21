@@ -94,7 +94,9 @@ public class KeyScript : MonoBehaviour
         }
         else if(currentState == State.Returning) {
             Vector3 playerPos = player.transform.position;
-            Vector3 towardsPlayer = (playerPos - transform.position).normalized;
+            Vector3 towardsPlayer = (playerPos - transform.position);
+            towardsPlayer.z = 0;
+            towardsPlayer = towardsPlayer.normalized;
             float newSpeed = velocity.magnitude + Time.deltaTime * 2 * ACCEL;
 
             velocity = newSpeed * towardsPlayer;
