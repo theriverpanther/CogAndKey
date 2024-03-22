@@ -180,16 +180,6 @@ public class PlayerScript : MonoBehaviour
                 playerAnimation.SetBool("Falling", false);
                 playerAnimation.SetBool("Wallslide", false);
 
-                if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
-                    Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
-                }
-                else if(!onFloor) {
-                    // fall off platform
-                    CurrentState = State.Aerial;
-                    coyoteTime = 0.125f;
-                    physicsBody.gravityScale = FALL_GRAVITY;
-                }
-
                 // check if walking into a slope
                 bool movingRight = input.IsPressed(PlayerInput.Action.Right);
                 bool movingLeft = input.IsPressed(PlayerInput.Action.Left);
@@ -210,13 +200,23 @@ public class PlayerScript : MonoBehaviour
                     Vector2 downSlope = gravity + normalForce;
                     physicsBody.AddForce(-downSlope);
                 }
+
+                if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
+                    Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
+                }
+                else if(!onFloor) {
+                    // fall off platform
+                    CurrentState = State.Aerial;
+                    coyoteTime = 0.125f;
+                    physicsBody.gravityScale = FALL_GRAVITY;
+                }
                 break;
         }
 
         // horizontal movement
         float friction = (CurrentState == State.Grounded ? 30f : 5f);
         Vector2 slopeLeft = Vector2.left;
-        if(onFloor) {
+        if(CurrentState == State.Grounded) {
             slopeLeft = Vector2.Perpendicular(floorNorm);
         }
         Vector2 slopeRight = -slopeLeft;
@@ -252,10 +252,6 @@ public class PlayerScript : MonoBehaviour
 
             Vector2 moveDir = (moveRight ? slopeRight : slopeLeft);
 
-            if(playerAnimation.GetBool("Falling") == false)
-            {
-                velocity += WALK_ACCEL * Time.deltaTime * moveDir;
-            }
             velocity += WALK_ACCEL * Time.deltaTime * moveDir;
 
             // cap walk speed
