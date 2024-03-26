@@ -131,6 +131,25 @@ public class CameraController : MonoBehaviour
         // move the camera to the new position
         Vector2 cameraSize = Dimensions;
         LevelData level = LevelData.Instance;
+
+        List<float> landBlocks = FindLandBlocks(newPosition);
+        float? bottomBlock = null;
+        float? topBlock = null;
+        foreach(float blockHeight in landBlocks) {
+            if(blockHeight > newPosition.y && (!topBlock.HasValue || blockHeight < topBlock.Value)) {
+                topBlock = blockHeight;
+            }
+            else if(blockHeight < newPosition.y && (!bottomBlock.HasValue || blockHeight > bottomBlock.Value)) {
+                bottomBlock = blockHeight;
+            }
+        }
+
+        if(topBlock.HasValue && bottomBlock.HasValue && topBlock.Value - bottomBlock.Value < cameraSize.y) {
+            newPosition.y = (topBlock.Value + bottomBlock.Value) / 2f;
+        } else {
+            newPosition.y = Mathf.Clamp(newPosition.y, bottomBlock.HasValue ? bottomBlock.Value + cameraSize.y / 2f: float.MinValue, topBlock.HasValue ? topBlock.Value - cameraSize.y / 2f: float.MaxValue);
+        }
+
         newPosition.x = Mathf.Clamp(newPosition.x, player.transform.position.x - WINDOW_X_LIMIT, player.transform.position.x + WINDOW_X_LIMIT); // keep player within view
         newPosition.y = Mathf.Clamp(newPosition.y, player.transform.position.y - WINDOW_Y_LIMIT, player.transform.position.y + WINDOW_Y_LIMIT);
         newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f); // do not look beyond the level bounds
@@ -159,11 +178,6 @@ public class CameraController : MonoBehaviour
         // REMOVE FOR FINAL VERSION
         visibleWindow.transform.position = new Vector3(transform.position.x + playerWindow.center.x, transform.position.y + playerWindow.center.y, 0);
         visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
-        }
-
-        List<float> landBlocks = FindLandBlocks(transform.position);
-        for(int i = 0; i < landBlocks.Count; i++) {
-            //DebugDisplay.Instance.PlaceDot("camera time " + i, new Vector3(transform.position.x, landBlocks[i], 0));
         }
     }
 
