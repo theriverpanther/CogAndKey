@@ -107,8 +107,11 @@ public class Agent : KeyWindable
         //    transform.GetChild(6).GetComponent<Sense>()
         //};
         IsGrounded();
-        halfHeight = GetComponent<BoxCollider2D>().bounds.extents.y / 2;
-        halfWidth = GetComponent<BoxCollider2D>().bounds.size.x / 2;
+        BoxCollider2D[] colliders = GetComponents<BoxCollider2D>(); 
+
+        halfHeight = colliders[0].bounds.extents.y / 2;
+        halfHeight = colliders[1].bounds.extents.y / 2 > halfHeight ? colliders[1].bounds.extents.y / 2 : halfHeight;
+        halfWidth = colliders[1].bounds.size.x / 2;
 
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
         // Get a non magic number way pls
@@ -161,7 +164,9 @@ public class Agent : KeyWindable
         if(transform.position.y + halfHeight < LevelData.Instance.YMin)
         {
             Destroy(gameObject);
-        }      
+        }
+        //if (InsertedKeyType == KeyState.Lock && ani.speed != 0) ani.speed = 0;
+        //else if (ani.speed != 2) ani.speed = 2;
 
     }
 
@@ -380,7 +385,11 @@ public class Agent : KeyWindable
         int returnVal = 0;
         if (contacts!=null)
         {
-            GetComponent<BoxCollider2D>().GetContacts(contacts);
+            BoxCollider2D[] boxes = GetComponents<BoxCollider2D>();
+            List<ContactPoint2D> contactTemp = new List<ContactPoint2D>();
+            boxes[0].GetContacts(contactTemp);
+            boxes[1].GetContacts(contacts);
+            contacts.AddRange(contactTemp);
 
             // Floor Edges -
             // Find the contact points at the base of the agent
@@ -399,14 +408,16 @@ public class Agent : KeyWindable
             foreach (ContactPoint2D contact in contacts)
             {
                 if (contact.collider.tag == "Agent") continue;
-                if (contact.point.y - transform.position.y <= .1f + halfHeight)
+                if (contact.point.y - transform.position.y <= halfHeight)
                 {
                     floorPts.Add(contact);
                 }
-                if (Mathf.Abs(contact.point.x - transform.position.x) <= .1f + halfWidth)
+                if (Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth)
                 {
                     wallPts.Add(contact);
+                    Debug.Log(wallPts.Count);
                 }
+                //DebugDisplay.Instance.DrawDot(contact.point);
             }
 
             // Custom Sort based on agent -> pill based on orientation
