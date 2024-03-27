@@ -37,7 +37,7 @@ public class PlayerScript : MonoBehaviour
     public Animator playerAnimation;
 
     public State CurrentState { get; private set; }
-    public bool HasWallJumped { get; private set; }
+    public bool HasWallSlid { get; private set; }
     public Vector2 Velocity { get { return physicsBody.velocity; } }
     public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
     public static PlayerScript CurrentPlayer { get; private set; }
@@ -134,13 +134,14 @@ public class PlayerScript : MonoBehaviour
                     (adjWallDir == Direction.Left && input.IsPressed(PlayerInput.Action.Left) || adjWallDir == Direction.Right && input.IsPressed(PlayerInput.Action.Right))
                 ) {
                     velocity.y = CLING_VELOCITY;
+                    HasWallSlid = true;
                     SetAnimation("Wallslide");
                 }
 
 
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
-                    HasWallJumped = true;
+                    HasWallSlid = true;
                     coyoteTime = 0;
                     physicsBody.gravityScale = JUMP_GRAVITY;
                     bool boosted = false;
@@ -176,7 +177,7 @@ public class PlayerScript : MonoBehaviour
                 break;
 
             case State.Grounded:
-                HasWallJumped = false;
+                HasWallSlid = false;
                 playerAnimation.SetBool("Falling", false);
                 playerAnimation.SetBool("Wallslide", false);
 
