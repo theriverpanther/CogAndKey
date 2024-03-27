@@ -91,25 +91,28 @@ public class CameraController : MonoBehaviour
         }
 
         // prevent the camera from looking through the ground
-        List<float> landBlocks = FindLandBlocks(newPosition);
-        float? bottomBlock = null;
-        float? topBlock = null;
-        foreach(float blockHeight in landBlocks) {
-            if(blockHeight > followPoint.y && (!topBlock.HasValue || blockHeight < topBlock.Value)) {
-                topBlock = blockHeight;
-            }
-            else if(blockHeight < followPoint.y && (!bottomBlock.HasValue || blockHeight > bottomBlock.Value)) {
-                bottomBlock = blockHeight;
-            }
-        }
+        //List<float> landBlocks = FindLandBlocks(newPosition);
+        //float? bottomBlock = null;
+        //float? topBlock = null;
+        //bool blockMoved = false;
+        //foreach(float blockHeight in landBlocks) {
+        //    if(blockHeight > followPoint.y && (!topBlock.HasValue || blockHeight < topBlock.Value)) {
+        //        topBlock = blockHeight;
+        //    }
+        //    else if(blockHeight < followPoint.y && (!bottomBlock.HasValue || blockHeight > bottomBlock.Value)) {
+        //        bottomBlock = blockHeight;
+        //    }
+        //}
 
-        if(topBlock.HasValue && bottomBlock.HasValue && topBlock.Value - bottomBlock.Value < cameraSize.y) {
-            followPoint.y = (topBlock.Value + bottomBlock.Value) / 2f;
-        } else {
-            float bottomTarget = bottomBlock.HasValue ? bottomBlock.Value + cameraSize.y / 2f - 2f : float.MinValue;
-            float topTarget = topBlock.HasValue ? topBlock.Value - cameraSize.y / 2f + 2f : float.MaxValue;
-            followPoint.y = Mathf.Clamp(followPoint.y, bottomTarget, topTarget);
-        }
+        //if(topBlock.HasValue && bottomBlock.HasValue && topBlock.Value - bottomBlock.Value < cameraSize.y) {
+        //    followPoint.y = (topBlock.Value + bottomBlock.Value) / 2f;
+        //    blockMoved = true;
+        //} else {
+        //    float bottomTarget = bottomBlock.HasValue ? bottomBlock.Value + cameraSize.y / 2f - 2f : float.MinValue;
+        //    float topTarget = topBlock.HasValue ? topBlock.Value - cameraSize.y / 2f + 2f : float.MaxValue;
+        //    blockMoved = followPoint.y  < bottomTarget || followPoint.y > topTarget;
+        //    followPoint.y = Mathf.Clamp(followPoint.y, bottomTarget, topTarget);
+        //}
 
         Vector2 followRelativeToCenter = followPoint - (Vector2)transform.position;
 

@@ -67,7 +67,8 @@ public class KeyScript : MonoBehaviour
             transform.position = StartAttachedTo.transform.position + snap.Value.localPosition;
             AttachTo(StartAttachedTo);
             StartAttachedTo.Insertible = false;
-            SetState(State.AttachPickup);
+            currentState = State.AttachPickup;
+            boxCollider.enabled = true;
         }
     }
 
