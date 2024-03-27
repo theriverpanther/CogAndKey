@@ -144,19 +144,18 @@ public class PlayerScript : MonoBehaviour
                     HasWallSlid = true;
                     coyoteTime = 0;
                     physicsBody.gravityScale = JUMP_GRAVITY;
-                    bool boosted = false;
                     const float WALL_JUMP_SPEED = 11f;
                     if(velocity.y < WALL_JUMP_SPEED) {
                         velocity.y = WALL_JUMP_SPEED;
                     } else {
-                        boosted = true;
+                        physicsBody.gravityScale = FALL_GRAVITY; // no extendable jump height when launching off of a vertical conveyor belt
                     }
 
                     int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
                     if(Mathf.Sign(velocity.x) != jumpDirection) {
                         velocity.x = 0;
                     }
-                    velocity.x += jumpDirection * (boosted ? 10f : 6.0f);
+                    velocity.x += jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
                     SetAnimation("Jumping");
                 }
