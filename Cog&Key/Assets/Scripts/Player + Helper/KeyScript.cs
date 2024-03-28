@@ -98,7 +98,7 @@ public class KeyScript : MonoBehaviour
             Vector3 towardsPlayer = (playerPos - transform.position);
             towardsPlayer.z = 0;
             towardsPlayer = towardsPlayer.normalized;
-            float newSpeed = velocity.magnitude + Time.deltaTime * 2 * ACCEL;
+            float newSpeed = velocity.magnitude + Time.deltaTime * 4 * ACCEL;
 
             velocity = newSpeed * towardsPlayer;
             transform.position += Time.deltaTime * velocity;

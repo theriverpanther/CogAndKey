@@ -90,30 +90,6 @@ public class CameraController : MonoBehaviour
             followPoint = ratio * focus.Value + (1 - ratio) * (Vector2)player.transform.position; // focus on the average of the focus point and the player
         }
 
-        // prevent the camera from looking through the ground
-        //List<float> landBlocks = FindLandBlocks(newPosition);
-        //float? bottomBlock = null;
-        //float? topBlock = null;
-        //bool blockMoved = false;
-        //foreach(float blockHeight in landBlocks) {
-        //    if(blockHeight > followPoint.y && (!topBlock.HasValue || blockHeight < topBlock.Value)) {
-        //        topBlock = blockHeight;
-        //    }
-        //    else if(blockHeight < followPoint.y && (!bottomBlock.HasValue || blockHeight > bottomBlock.Value)) {
-        //        bottomBlock = blockHeight;
-        //    }
-        //}
-
-        //if(topBlock.HasValue && bottomBlock.HasValue && topBlock.Value - bottomBlock.Value < cameraSize.y) {
-        //    followPoint.y = (topBlock.Value + bottomBlock.Value) / 2f;
-        //    blockMoved = true;
-        //} else {
-        //    float bottomTarget = bottomBlock.HasValue ? bottomBlock.Value + cameraSize.y / 2f - 2f : float.MinValue;
-        //    float topTarget = topBlock.HasValue ? topBlock.Value - cameraSize.y / 2f + 2f : float.MaxValue;
-        //    blockMoved = followPoint.y  < bottomTarget || followPoint.y > topTarget;
-        //    followPoint.y = Mathf.Clamp(followPoint.y, bottomTarget, topTarget);
-        //}
-
         Vector2 followRelativeToCenter = followPoint - (Vector2)transform.position;
 
         // manage horizontal
@@ -155,6 +131,27 @@ public class CameraController : MonoBehaviour
             }
         }
 
+        // prevent the camera from looking through the ground
+        List<float> landBlocks = FindLandBlocks(newPosition);
+        float? bottomBlock = null;
+        float? topBlock = null;
+        foreach(float blockHeight in landBlocks) {
+            if(blockHeight > followPoint.y && (!topBlock.HasValue || blockHeight < topBlock.Value)) {
+                topBlock = blockHeight;
+            }
+            else if(blockHeight < followPoint.y && (!bottomBlock.HasValue || blockHeight > bottomBlock.Value)) {
+                bottomBlock = blockHeight;
+            }
+        }
+
+        if(topBlock.HasValue && bottomBlock.HasValue && topBlock.Value - bottomBlock.Value < cameraSize.y) {
+            newPosition.y = (topBlock.Value + bottomBlock.Value) / 2f;
+        } else {
+            float bottomTarget = bottomBlock.HasValue ? bottomBlock.Value + cameraSize.y / 2f - 3f : float.MinValue;
+            float topTarget = topBlock.HasValue ? topBlock.Value - cameraSize.y / 2f + 3f : float.MaxValue;
+            newPosition.y = Mathf.Clamp(newPosition.y, bottomTarget, topTarget);
+        }
+
         // move the camera to the new position
         newPosition.x = Mathf.Clamp(newPosition.x, player.transform.position.x - WINDOW_X_LIMIT, player.transform.position.x + WINDOW_X_LIMIT); // keep player within view
         newPosition.y = Mathf.Clamp(newPosition.y, player.transform.position.y - WINDOW_Y_LIMIT, player.transform.position.y + WINDOW_Y_LIMIT);
@@ -182,8 +179,8 @@ public class CameraController : MonoBehaviour
 
         if(visibleWindow != null) {
         // REMOVE FOR FINAL VERSION
-        visibleWindow.transform.position = new Vector3(transform.position.x + playerWindow.center.x, transform.position.y + playerWindow.center.y, 0);
-        visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
+            visibleWindow.transform.position = new Vector3(transform.position.x + playerWindow.center.x, transform.position.y + playerWindow.center.y, 0);
+            visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
         }
     }
 
