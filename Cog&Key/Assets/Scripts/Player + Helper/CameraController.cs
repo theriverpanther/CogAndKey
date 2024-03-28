@@ -144,12 +144,21 @@ public class CameraController : MonoBehaviour
             }
         }
 
+        float targetY = newPosition.y;
         if(topBlock.HasValue && bottomBlock.HasValue && topBlock.Value - bottomBlock.Value < cameraSize.y) {
-            newPosition.y = (topBlock.Value + bottomBlock.Value) / 2f;
+            targetY = (topBlock.Value + bottomBlock.Value) / 2f;
         } else {
             float bottomTarget = bottomBlock.HasValue ? bottomBlock.Value + cameraSize.y / 2f - 3f : float.MinValue;
             float topTarget = topBlock.HasValue ? topBlock.Value - cameraSize.y / 2f + 3f : float.MaxValue;
-            newPosition.y = Mathf.Clamp(newPosition.y, bottomTarget, topTarget);
+            targetY = Mathf.Clamp(newPosition.y, bottomTarget, topTarget);
+        }
+
+        if(newPosition.y != targetY) {
+            if(Mathf.Sign(targetY - newPosition.y) == -Mathf.Sign(newPosition.y - startPosition.y)) {
+                newPosition.y = targetY;
+            } else {
+                newPosition.y += (targetY - newPosition.y) * 0.08f * Time.timeScale;
+            }
         }
 
         // move the camera to the new position
