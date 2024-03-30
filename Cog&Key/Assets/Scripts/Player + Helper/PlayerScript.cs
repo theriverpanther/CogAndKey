@@ -193,14 +193,6 @@ public class PlayerScript : MonoBehaviour
                     }
                 }
 
-                if(floorNorm.y < 0.9f) {
-                    // apply a force to stay still on slopes
-                    Vector2 gravity = Physics2D.gravity * physicsBody.gravityScale;
-                    Vector2 normalForce = -Vector3.Project(gravity, -floorNorm);
-                    Vector2 downSlope = gravity + normalForce;
-                    physicsBody.AddForce(-downSlope);
-                }
-
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
                 }
@@ -209,6 +201,13 @@ public class PlayerScript : MonoBehaviour
                     CurrentState = State.Aerial;
                     coyoteTime = 0.125f;
                     physicsBody.gravityScale = FALL_GRAVITY;
+                }
+                else if(floorNorm.y < 0.9f) {
+                    // apply a force to stay still on slopes
+                    Vector2 gravity = Physics2D.gravity * physicsBody.gravityScale;
+                    Vector2 normalForce = -Vector3.Project(gravity, -floorNorm);
+                    Vector2 downSlope = gravity + normalForce;
+                    physicsBody.AddForce(-downSlope);
                 }
                 break;
         }
@@ -251,15 +250,14 @@ public class PlayerScript : MonoBehaviour
             }
 
             Vector2 moveDir = (moveRight ? slopeRight : slopeLeft);
-
             velocity += WALK_ACCEL * Time.deltaTime * moveDir;
 
             // cap walk speed
             if(Vector2.Dot(velocity, moveDir) > 0 && Vector3.Project(velocity, moveDir).sqrMagnitude > WALK_SPEED * WALK_SPEED) {
-                velocity = (Vector2)Vector3.Project(velocity, (onFloor ? floorNorm : Vector2.up)) + WALK_SPEED * moveDir;
+                velocity = (Vector2)Vector3.Project(velocity, (CurrentState == State.Grounded ? floorNorm : Vector2.up)) + WALK_SPEED * moveDir;
             }
         }
-
+        
         physicsBody.velocity = velocity;
         playerAnimation.SetFloat("velocity", physicsBody.velocity.y);
 
