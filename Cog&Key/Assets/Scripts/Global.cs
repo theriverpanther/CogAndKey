@@ -43,19 +43,21 @@ public static class Global
 
     public static bool IsObjectBlocked(GameObject rectangleObject, Vector2 cardinalDirection) {
         float thickness = 0.05f;
+        BoxCollider2D collider = rectangleObject.GetComponent<BoxCollider2D>();
         Vector2 absPerp = new Vector2(Mathf.Abs(cardinalDirection.y), Mathf.Abs(cardinalDirection.x));
-        Vector2 scale = rectangleObject.transform.lossyScale * absPerp;
+        Vector2 objectSize = rectangleObject.transform.lossyScale * collider.size;
+        Vector2 scale = objectSize * absPerp;
         scale = new Vector2(scale.x == 0 ? thickness : scale.x - 0.02f, scale.y == 0 ? thickness : scale.y - 0.02f);
-        RaycastHit2D raycast = Physics2D.BoxCast((Vector2)rectangleObject.transform.position + ((Vector2)rectangleObject.transform.lossyScale / 2f + new Vector2(thickness, thickness)) * cardinalDirection,
+        RaycastHit2D raycast = Physics2D.BoxCast((Vector2)rectangleObject.transform.position + (objectSize / 2f + new Vector2(thickness, thickness)) * cardinalDirection,
             scale, 
             0f, cardinalDirection, 0.01f);
 
-        // ignore children of this game object
+        // if a child is attached, check if the child is blocked
         if(raycast.collider != null) {
             Transform current = raycast.collider.transform;
-            while(current != null) {
-                if(current == rectangleObject.transform) {
-                    return false;
+            while(current.parent != null) {
+                if(current.parent == rectangleObject.transform) {
+                    return IsObjectBlocked(raycast.collider.gameObject, cardinalDirection);
                 }
                 current = current.parent;
             }

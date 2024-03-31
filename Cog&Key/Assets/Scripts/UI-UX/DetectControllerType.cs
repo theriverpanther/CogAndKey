@@ -112,7 +112,7 @@ public class DetectControllerType : MonoBehaviour
         {
             current = "keyboard";
         }
-        Debug.Log(current);
+        //Debug.Log(current);
         return current;
     }
 
@@ -157,7 +157,7 @@ public class DetectControllerType : MonoBehaviour
             }
         }
 
-        Debug.Log("Returning new texture...");
+        //Debug.Log("Returning new texture...");
 
         return texture;
     }
