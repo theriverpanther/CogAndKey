@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public enum Direction
@@ -50,24 +51,30 @@ public static class Global
         Vector2 objectSize = lossyScale * collider.size;
         Vector2 scale = objectSize * absPerp;
         scale = new Vector2(scale.x == 0 ? thickness : scale.x - 0.02f, scale.y == 0 ? thickness : scale.y - 0.02f);
-        RaycastHit2D raycast = Physics2D.BoxCast((Vector2)rectangleObject.transform.position + (objectSize / 2f + new Vector2(thickness, thickness)) * cardinalDirection,
+        RaycastHit2D[] boxcastHits = Physics2D.BoxCastAll((Vector2)rectangleObject.transform.position + (objectSize / 2f + new Vector2(thickness, thickness)) * cardinalDirection,
             scale, 
             0f, cardinalDirection, 0.01f);
 
-        // if a child is attached, check if the child is blocked
-        if(raycast.collider != null) {
-            Transform current = raycast.collider.transform;
+        // if there is a child blocking, check if the child is blocked instead
+        foreach(RaycastHit2D boxHit in boxcastHits) {
+            Transform current = boxHit.collider.transform;
+            bool isChild = false;
             while(current.parent != null) {
-                if(current.parent == rectangleObject.transform) {
-                    if(raycast.collider.gameObject.transform.position.y >= 1.3f) {
-                        Debug.Log("checking if " + raycast.collider.gameObject.name + " is blocked");
+                if(current.parent == rectangleObject.transform) { // if the boxcast hit a child
+                    isChild = true;
+                    if(IsObjectBlocked(boxHit.collider.gameObject, cardinalDirection)) {
+                        return true;
                     }
-                    return IsObjectBlocked(raycast.collider.gameObject, cardinalDirection);
+                    break;
                 }
                 current = current.parent;
             }
+
+            if(!isChild) {
+                return true;
+            }
         }
 
-        return raycast.collider != null;
+        return false;
     }
 }
