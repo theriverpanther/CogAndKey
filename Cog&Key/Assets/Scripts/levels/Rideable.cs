@@ -63,10 +63,14 @@ public abstract class Rideable : KeyWindable
     protected bool OnSide(GameObject rider) {
         Rect riderArea = Global.GetCollisionArea(rider);
         Rect platformArea = Global.GetCollisionArea(gameObject);
+        if(riderArea.xMin >= platformArea.xMin && riderArea.xMax <= platformArea.xMax) {
+            return false;
+        }
+
         return riderArea.yMin < platformArea.yMax && riderArea.yMax > riderArea.yMin;
     }
 
-    // returns true if the input game object is attempting to move towards the middle of this rideable
+    // returns true if the input game object is attempting to move towards the middle of this rideable (only the player in final version)
     private bool PressedTowardsMiddle(GameObject rider) {
         PlayerScript player = rider.GetComponent<PlayerScript>();
         if(player != null) {

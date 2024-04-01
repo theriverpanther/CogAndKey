@@ -45,7 +45,9 @@ public static class Global
         float thickness = 0.05f;
         BoxCollider2D collider = rectangleObject.GetComponent<BoxCollider2D>();
         Vector2 absPerp = new Vector2(Mathf.Abs(cardinalDirection.y), Mathf.Abs(cardinalDirection.x));
-        Vector2 objectSize = rectangleObject.transform.lossyScale * collider.size;
+        Vector3 lossyScale = rectangleObject.transform.lossyScale;
+        lossyScale = new Vector3(Mathf.Abs(lossyScale.x), Mathf.Abs(lossyScale.y), Mathf.Abs(lossyScale.z));
+        Vector2 objectSize = lossyScale * collider.size;
         Vector2 scale = objectSize * absPerp;
         scale = new Vector2(scale.x == 0 ? thickness : scale.x - 0.02f, scale.y == 0 ? thickness : scale.y - 0.02f);
         RaycastHit2D raycast = Physics2D.BoxCast((Vector2)rectangleObject.transform.position + (objectSize / 2f + new Vector2(thickness, thickness)) * cardinalDirection,
@@ -57,6 +59,9 @@ public static class Global
             Transform current = raycast.collider.transform;
             while(current.parent != null) {
                 if(current.parent == rectangleObject.transform) {
+                    if(raycast.collider.gameObject.transform.position.y >= 1.3f) {
+                        Debug.Log("checking if " + raycast.collider.gameObject.name + " is blocked");
+                    }
                     return IsObjectBlocked(raycast.collider.gameObject, cardinalDirection);
                 }
                 current = current.parent;
