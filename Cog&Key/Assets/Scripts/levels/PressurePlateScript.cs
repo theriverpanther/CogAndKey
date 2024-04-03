@@ -44,6 +44,11 @@ public class PressurePlateScript : MonoBehaviour
         numOnTop++;
         pressed = true;
         doorLock.Activated = true;
+
+        PoweredBlock block = collision.gameObject.GetComponent<PoweredBlock>();
+        if(block != null) {
+            block.SetPlateDirection();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {

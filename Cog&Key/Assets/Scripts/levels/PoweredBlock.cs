@@ -9,12 +9,14 @@ public class PoweredBlock : Rideable
     private Vector2 forwardDirection;
     private Rigidbody2D physBod;
     private float halfWidth;
+    private float plateTimer;
+
+    public Vector2? plateDirection;
 
     void Start() {
         startHeight = transform.position.y;
         physBod = GetComponent<Rigidbody2D>();
         physBod.gravityScale = 4.0f;
-        //physBod.mass = 999999f;
         halfWidth = transform.localScale.x / 2f;
 
         float angle = transform.GetChild(0).transform.rotation.eulerAngles.z;
@@ -59,6 +61,16 @@ public class PoweredBlock : Rideable
             moveDirection = Vector2.up;
         }
 
+
+        if(plateDirection.HasValue && plateTimer > 0) {
+            moveDirection = plateDirection.Value;
+            plateTimer -= Time.deltaTime;
+            if(plateTimer <= 0) {
+                plateDirection = null;
+            }
+        }
+
+
         if(moveDirection != Vector2.zero && Global.IsObjectBlocked(gameObject, moveDirection)) {
             moveDirection = Vector2.zero;
         }
@@ -66,6 +78,19 @@ public class PoweredBlock : Rideable
         transform.position += SPEED * Time.deltaTime * (Vector3)moveDirection;
 
         CheckSideRiders();
+    }
+
+    public void SetPlateDirection() {
+        switch(InsertedKeyType)
+        {
+            case KeyState.Fast:
+                plateDirection = -forwardDirection;
+                break;
+
+            case KeyState.Reverse:
+                plateDirection = forwardDirection;
+                break;
+        }
     }
 
     protected override void OnRiderAdded(GameObject rider) {
@@ -82,6 +107,8 @@ public class PoweredBlock : Rideable
     }
 
     protected override void OnKeyInserted(KeyState newKey) {
+        plateDirection = null;
+        plateTimer = 0f;
         if(newKey == KeyState.Lock) {
             physBod.isKinematic = false;
             physBod.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
@@ -89,6 +116,12 @@ public class PoweredBlock : Rideable
     }
 
     protected override void OnKeyRemoved(KeyState removedKey) {
+        if(plateDirection.HasValue && InsertedKeyType == KeyState.Fast || InsertedKeyType == KeyState.Reverse) {
+            plateTimer = 0.1f;
+        } else { 
+            plateDirection = null;
+        }
+
         if(removedKey == KeyState.Lock) {
             physBod.isKinematic = true;
             physBod.velocity = Vector3.zero;
