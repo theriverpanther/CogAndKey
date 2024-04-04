@@ -37,7 +37,7 @@ public class PlayerScript : MonoBehaviour
     public Animator playerAnimation;
 
     public State CurrentState { get; private set; }
-    public bool HasWallJumped { get; private set; }
+    public bool HasWallSlid { get; private set; }
     public Vector2 Velocity { get { return physicsBody.velocity; } }
     public Dictionary<KeyState, bool> EquippedKeys { get; private set; }
     public static PlayerScript CurrentPlayer { get; private set; }
@@ -134,28 +134,28 @@ public class PlayerScript : MonoBehaviour
                     (adjWallDir == Direction.Left && input.IsPressed(PlayerInput.Action.Left) || adjWallDir == Direction.Right && input.IsPressed(PlayerInput.Action.Right))
                 ) {
                     velocity.y = CLING_VELOCITY;
+                    HasWallSlid = true;
                     SetAnimation("Wallslide");
                 }
 
 
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
-                    HasWallJumped = true;
+                    HasWallSlid = true;
                     coyoteTime = 0;
                     physicsBody.gravityScale = JUMP_GRAVITY;
-                    bool boosted = false;
                     const float WALL_JUMP_SPEED = 11f;
                     if(velocity.y < WALL_JUMP_SPEED) {
                         velocity.y = WALL_JUMP_SPEED;
                     } else {
-                        boosted = true;
+                        physicsBody.gravityScale = FALL_GRAVITY; // no extendable jump height when launching off of a vertical conveyor belt
                     }
 
                     int jumpDirection = (adjWallDir == Direction.Left ? 1 : -1);
                     if(Mathf.Sign(velocity.x) != jumpDirection) {
                         velocity.x = 0;
                     }
-                    velocity.x += jumpDirection * (boosted ? 10f : 6.0f);
+                    velocity.x += jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
                     SetAnimation("Jumping");
                 }
@@ -176,19 +176,9 @@ public class PlayerScript : MonoBehaviour
                 break;
 
             case State.Grounded:
-                HasWallJumped = false;
+                HasWallSlid = false;
                 playerAnimation.SetBool("Falling", false);
                 playerAnimation.SetBool("Wallslide", false);
-
-                if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
-                    Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
-                }
-                else if(!onFloor) {
-                    // fall off platform
-                    CurrentState = State.Aerial;
-                    coyoteTime = 0.125f;
-                    physicsBody.gravityScale = FALL_GRAVITY;
-                }
 
                 // check if walking into a slope
                 bool movingRight = input.IsPressed(PlayerInput.Action.Right);
@@ -203,7 +193,16 @@ public class PlayerScript : MonoBehaviour
                     }
                 }
 
-                if(floorNorm.y < 0.9f) {
+                if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
+                    Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
+                }
+                else if(!onFloor) {
+                    // fall off platform
+                    CurrentState = State.Aerial;
+                    coyoteTime = 0.125f;
+                    physicsBody.gravityScale = FALL_GRAVITY;
+                }
+                else if(floorNorm.y < 0.9f) {
                     // apply a force to stay still on slopes
                     Vector2 gravity = Physics2D.gravity * physicsBody.gravityScale;
                     Vector2 normalForce = -Vector3.Project(gravity, -floorNorm);
@@ -216,7 +215,7 @@ public class PlayerScript : MonoBehaviour
         // horizontal movement
         float friction = (CurrentState == State.Grounded ? 30f : 5f);
         Vector2 slopeLeft = Vector2.left;
-        if(onFloor) {
+        if(CurrentState == State.Grounded) {
             slopeLeft = Vector2.Perpendicular(floorNorm);
         }
         Vector2 slopeRight = -slopeLeft;
@@ -251,19 +250,14 @@ public class PlayerScript : MonoBehaviour
             }
 
             Vector2 moveDir = (moveRight ? slopeRight : slopeLeft);
-
-            if(playerAnimation.GetBool("Falling") == false)
-            {
-                velocity += WALK_ACCEL * Time.deltaTime * moveDir;
-            }
             velocity += WALK_ACCEL * Time.deltaTime * moveDir;
 
             // cap walk speed
             if(Vector2.Dot(velocity, moveDir) > 0 && Vector3.Project(velocity, moveDir).sqrMagnitude > WALK_SPEED * WALK_SPEED) {
-                velocity = (Vector2)Vector3.Project(velocity, (onFloor ? floorNorm : Vector2.up)) + WALK_SPEED * moveDir;
+                velocity = (Vector2)Vector3.Project(velocity, (CurrentState == State.Grounded ? floorNorm : Vector2.up)) + WALK_SPEED * moveDir;
             }
         }
-
+        
         physicsBody.velocity = velocity;
         playerAnimation.SetFloat("velocity", physicsBody.velocity.y);
 
