@@ -138,15 +138,19 @@ MonoBehaviour:
   jumpSpeed: 16
   fastScalar: 3
   stepSize: 0.1
+  senses:
+  - {fileID: 8710868206761123753}
+  - {fileID: 4419252549508052745}
   direction: {x: 0, y: 0}
   playerPosition: {x: 0, y: 0, z: 0}
   processingTurn: 0
   processingStop: 0
   pathTarget: {fileID: 0}
   minLedgeSize: 3.5
-  coyoteTime: 0.4
-  fallGravity: 0.25
-  groundState: 0
+  isFalling: 0
+  isRotating: 0
+  testVal: 0
+  orientationState: 0
 --- !u!50 &4023532078733587198
 Rigidbody2D:
   serializedVersion: 4

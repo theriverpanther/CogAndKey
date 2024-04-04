@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 //using UnityEditor.Build;
 //using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
@@ -34,7 +36,7 @@ public class Agent : KeyWindable
     /// </summary>
     protected float mistakeThreshold = 0.05f;
     protected float senseCount = 2;
-    protected List<Sense> senses = new List<Sense>(2);
+    [SerializeField] protected List<Sense> senses = new List<Sense>(2);
     protected float attackDamage;
     protected bool flightEnabled = false;
 
@@ -97,10 +99,6 @@ public class Agent : KeyWindable
         scaleVal = transform.localScale;
         collidingObjs = new List<GameObject>(); 
 
-        animationTag = FindChildWithTag(gameObject, "AgentAnimator");
-        ani = animationTag.GetComponent<Animator>();
-        Debug.Log("Found child: " + animationTag);
-
         //senses = new List<Sense>
         //{
         //    transform.GetChild(5).GetComponent<Sense>(),
@@ -110,8 +108,12 @@ public class Agent : KeyWindable
         BoxCollider2D[] colliders = GetComponents<BoxCollider2D>(); 
 
         halfHeight = colliders[0].bounds.extents.y / 2;
-        halfHeight = colliders[1].bounds.extents.y / 2 > halfHeight ? colliders[1].bounds.extents.y / 2 : halfHeight;
-        halfWidth = colliders[1].bounds.size.x / 2;
+        if (colliders.Length > 1)
+        {
+            halfHeight = colliders[1].bounds.extents.y / 2 > halfHeight ? colliders[1].bounds.extents.y / 2 : halfHeight;
+            halfWidth = colliders[1].bounds.size.x / 2;
+        }
+        else halfWidth = colliders[0].bounds.size.x / 2;
 
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
         // Get a non magic number way pls
@@ -143,6 +145,15 @@ public class Agent : KeyWindable
         wallPts = new List<ContactPoint2D>();
 
         direction = Vector2.left;
+
+        // Temporary If Statement
+        if(this.GetType() == typeof(Hunter))
+        {
+            animationTag = FindChildWithTag(gameObject, "AgentAnimator");
+            ani = animationTag.GetComponent<Animator>();
+            Debug.Log("Found child: " + animationTag);
+        }
+        
     }
 
     // Update is called once per frame
@@ -175,7 +186,7 @@ public class Agent : KeyWindable
         if (!processingTurn && !processingStop)
         {
             rb.velocity = new Vector2(walkSpeed * direction.x * (InsertedKeyType == KeyState.Reverse ? -1 : 1), rb.velocity.y);
-            ani.SetBool("Walking", true);
+            if(ani!=null) ani.SetBool("Walking", true);
         }
     }
 
@@ -380,7 +391,7 @@ public class Agent : KeyWindable
     /// <param name="detectFloorEdges">Detect floor edges</param>
     /// <param name="detectWalls">Detect walls to turn around at</param>
     /// <returns>x direction to turn towards</returns>
-    protected int EdgeDetect(bool detectFloorEdges, bool detectWalls)
+    protected virtual int EdgeDetect(bool detectFloorEdges, bool detectWalls)
     {
         int returnVal = 0;
         if (contacts!=null)
@@ -460,9 +471,6 @@ public class Agent : KeyWindable
                                     isLost = false;
                                 }
                                 else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
-                                // Still end up stopping at the edge
-                                // This will also run them off the edge
-                                // Is this a garbage collection issue?
                             }
                             else
                             {
@@ -599,10 +607,28 @@ public class Agent : KeyWindable
             }
         }
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(new Vector3(transform.position.x - halfWidth + 0.2f, transform.position.y - halfHeight, 0), .125f);
-        Gizmos.DrawWireSphere(new Vector3(transform.position.x + halfWidth - 0.2f, transform.position.y - halfHeight, 0), .125f);
 
-        Gizmos.DrawRay(new Vector3(transform.position.x - halfWidth + 0.2f, transform.position.y - halfHeight, 0), Vector2.down);
-        Gizmos.DrawRay(new Vector3(transform.position.x + halfWidth - 0.2f, transform.position.y - halfHeight, 0), Vector2.down);
+        Vector3 temp = new Vector3(transform.position.x - halfWidth, transform.position.y - halfHeight, 0);
+        //Vector3 leftPt = RotatePoint(temp, transform.rotation.z);
+        Vector3 leftPt = temp;
+
+        temp = new Vector3(transform.position.x + halfWidth, transform.position.y - halfHeight, 0);
+        //Vector3 rightPt = RotatePoint(temp, transform.rotation.z);
+        Vector3 rightPt = temp;
+
+        Gizmos.DrawWireSphere(leftPt, .125f);
+        Gizmos.DrawWireSphere(rightPt, .125f);
+
+        Vector2 dir = new Vector2(Mathf.Sin(transform.rotation.z * Mathf.Deg2Rad), -Mathf.Cos(transform.rotation.z * Mathf.Deg2Rad)).normalized;
+        Gizmos.DrawRay(leftPt, dir);
+        Gizmos.DrawRay(rightPt, dir);
+    }
+
+    protected Vector3 RotatePoint(Vector3 point, float angle)
+    {
+        Vector3 newPoint = Vector3.zero;
+        newPoint.x = point.x * Mathf.Cos(transform.rotation.z * Mathf.Deg2Rad) * halfWidth - point.y * Mathf.Sin(transform.rotation.z * Mathf.Deg2Rad) * halfHeight;
+        newPoint.y = point.y * Mathf.Cos(transform.rotation.z * Mathf.Deg2Rad) * halfWidth + point.x * Mathf.Sin(transform.rotation.z * Mathf.Deg2Rad) * halfHeight;
+        return newPoint;
     }
 }
