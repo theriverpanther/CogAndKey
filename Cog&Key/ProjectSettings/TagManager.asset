@@ -16,6 +16,7 @@ TagManager:
   - Focus Point
   - Path
   - AgentAnimator
+  - Gear
   layers:
   - Default
   - TransparentFX

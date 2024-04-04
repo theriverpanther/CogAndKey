@@ -19,8 +19,12 @@ public class MovingWallScript : Rideable
     private float momentumBufferTime;
     private float CurrentSpeed { get { return MOVE_SPEED * (InsertedKeyType == KeyState.Fast ? 2 : 1); } }
 
+    [SerializeField]
+    Gear[] gears;
+
     void Awake()
     {
+        gears = transform.GetComponentsInChildren<Gear>();
         forward = !StartReversed;
 
         // construct path
@@ -39,6 +43,16 @@ public class MovingWallScript : Rideable
         if(LoopPath) {
             PlaceTrack(pathPoints[pathPoints.Count -1], pathPoints[0]);
         }
+
+        if(StartReversed)
+        {
+            UpdateGears(KeyState.Reverse);
+        } else
+        {
+            UpdateGears(KeyState.None);
+        }
+
+
     }
 
     void FixedUpdate()
@@ -156,6 +170,8 @@ public class MovingWallScript : Rideable
             forward = !forward;
             NextWaypoint();
         }
+
+        UpdateGears(newKey);
     }
 
     protected override void OnKeyRemoved(KeyState removedKey) {
@@ -163,6 +179,16 @@ public class MovingWallScript : Rideable
             // flip direction
             forward = !forward;
             NextWaypoint();
+        }
+
+        UpdateGears(KeyState.None);
+    }
+
+    private void UpdateGears(KeyState s)
+    {
+        foreach (Gear g in gears)
+        {
+            g.ChangeDirection(s, forward);
         }
     }
 
