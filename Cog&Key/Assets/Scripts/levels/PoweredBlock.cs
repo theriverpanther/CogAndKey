@@ -16,6 +16,7 @@ public class PoweredBlock : Rideable
     void Start() {
         startHeight = transform.position.y;
         physBod = GetComponent<Rigidbody2D>();
+        physBod.mass = 80f;
         physBod.gravityScale = 4.0f;
         halfWidth = transform.localScale.x / 2f;
 
@@ -111,7 +112,7 @@ public class PoweredBlock : Rideable
         plateTimer = 0f;
         if(newKey == KeyState.Lock) {
             physBod.isKinematic = false;
-            physBod.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
+            //physBod.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
         }
     }
 
@@ -125,7 +126,7 @@ public class PoweredBlock : Rideable
         if(removedKey == KeyState.Lock) {
             physBod.isKinematic = true;
             physBod.velocity = Vector3.zero;
-            physBod.constraints = RigidbodyConstraints2D.FreezeRotation;
+            //physBod.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
     }
 }

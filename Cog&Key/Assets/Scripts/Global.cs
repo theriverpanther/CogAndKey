@@ -43,6 +43,10 @@ public static class Global
     }
 
     public static bool IsObjectBlocked(GameObject rectangleObject, Vector2 cardinalDirection) {
+        if(rectangleObject.GetComponent<PoweredBlock>() != null) {
+            Debug.Log("stop here");
+        }
+
         float thickness = 0.05f;
         BoxCollider2D collider = rectangleObject.GetComponent<BoxCollider2D>();
         Vector2 absPerp = new Vector2(Mathf.Abs(cardinalDirection.y), Mathf.Abs(cardinalDirection.x));
