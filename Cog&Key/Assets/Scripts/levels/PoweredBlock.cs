@@ -16,7 +16,7 @@ public class PoweredBlock : Rideable
     void Start() {
         startHeight = transform.position.y;
         physBod = GetComponent<Rigidbody2D>();
-        physBod.mass = 1f;
+        physBod.mass = 80f;
         physBod.gravityScale = 4.0f;
         halfWidth = transform.localScale.x / 2f;
 
