@@ -50,7 +50,7 @@ public static class Global
         lossyScale = new Vector3(Mathf.Abs(lossyScale.x), Mathf.Abs(lossyScale.y), Mathf.Abs(lossyScale.z));
         Vector2 objectSize = lossyScale * collider.size;
         Vector2 scale = objectSize * absPerp;
-        scale = new Vector2(scale.x == 0 ? thickness : scale.x - 0.02f, scale.y == 0 ? thickness : scale.y - 0.02f);
+        scale = new Vector2(scale.x == 0 ? thickness : scale.x - 0.06f, scale.y == 0 ? thickness : scale.y - 0.06f);
         RaycastHit2D[] boxcastHits = Physics2D.BoxCastAll((Vector2)rectangleObject.transform.position + (objectSize / 2f + new Vector2(thickness, thickness)) * cardinalDirection,
             scale, 
             0f, cardinalDirection, 0.01f);
