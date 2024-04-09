@@ -44,6 +44,7 @@ public class LevelData : MonoBehaviour
         // set up the single instance
         Instance = this;
         levelName = SceneManager.GetActiveScene().name;
+        transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
         SceneManager.activeSceneChanged += CheckNextLevel;
 

@@ -31587,21 +31587,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainUI
       objectReference: {fileID: 0}
+    - target: {fileID: 894678647358999144, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1844205818969713511, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1844205818969713511, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1844205818969713511, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1844205818969713511, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -416.66663
       objectReference: {fileID: 0}
     - target: {fileID: 3406903062921563124, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_Pivot.x
@@ -31685,35 +31689,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4731646434638453134, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4731646434638453134, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4731646434638453134, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4731646434638453134, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -249.99998
       objectReference: {fileID: 0}
     - target: {fileID: 8108943294323019650, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8108943294323019650, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8108943294323019650, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8108943294323019650, guid: dc681091dedd9f940b9b56c7605d864f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -83.33333
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -95,7 +95,7 @@ public class PoweredBlock : Rideable
     }
 
     protected override void OnRiderAdded(GameObject rider) {
-        if(rider.layer == LayerMask.NameToLayer("Ground")) {
+        if(rider.layer == LayerMask.NameToLayer("Ground") && rider.GetComponent<PoweredBlock>() == null) {
             return;
         }
 
