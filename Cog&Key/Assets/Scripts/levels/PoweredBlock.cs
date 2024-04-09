@@ -108,8 +108,6 @@ public class PoweredBlock : Rideable
     }
 
     protected override void OnKeyInserted(KeyState newKey) {
-        plateDirection = null;
-        plateTimer = 0f;
         if(newKey == KeyState.Lock) {
             physBod.isKinematic = false;
             //physBod.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
