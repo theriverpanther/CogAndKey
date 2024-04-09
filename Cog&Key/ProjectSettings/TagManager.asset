@@ -17,6 +17,7 @@ TagManager:
   - Path
   - AgentAnimator
   - Gear
+  - Pressure Plate
   layers:
   - Default
   - TransparentFX

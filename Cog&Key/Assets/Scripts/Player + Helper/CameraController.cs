@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.Tilemaps;
 
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private GameObject visibleWindow;
 
     private const float WINDOW_WIDTH = 4f;
-    private const float WINDOW_GROUND_HEIGHT = 5.0f;//1.5f;
-    private const float WINDOW_AIR_HEIGHT = 1.0f;//1.5f;
+    private const float WINDOW_GROUND_HEIGHT = 5.0f;
+    private const float WINDOW_AIR_HEIGHT = 1.0f;
     private const float WINDOW_X_LIMIT = 9f;
     private const float WINDOW_Y_LIMIT = 5f;
 
@@ -56,6 +57,9 @@ public class CameraController : MonoBehaviour
     }
 
     void FixedUpdate() {
+        Vector2 cameraSize = Dimensions;
+        LevelData level = LevelData.Instance;
+
         Vector3 startPosition = transform.position;
         Vector3 newPosition = transform.position;
 
@@ -107,7 +111,7 @@ public class CameraController : MonoBehaviour
 
         // manage vertical
         bool belowWindow = followRelativeToCenter.y < playerWindow.yMin && player.Velocity.y <= 0f;
-        if(player.CurrentState == PlayerScript.State.Grounded || player.HasWallJumped || belowWindow) {
+        if(player.CurrentState == PlayerScript.State.Grounded || player.HasWallSlid) {
             float? movingY = null;
             
             if(followRelativeToCenter.y < playerWindow.yMin) {
@@ -127,9 +131,36 @@ public class CameraController : MonoBehaviour
             }
         }
 
+        // prevent the camera from looking through the ground
+        List<float> landBlocks = FindLandBlocks(newPosition);
+        float? bottomBlock = null;
+        float? topBlock = null;
+        foreach(float blockHeight in landBlocks) {
+            if(blockHeight > followPoint.y && (!topBlock.HasValue || blockHeight < topBlock.Value)) {
+                topBlock = blockHeight;
+            }
+            else if(blockHeight < followPoint.y && (!bottomBlock.HasValue || blockHeight > bottomBlock.Value)) {
+                bottomBlock = blockHeight;
+            }
+        }
+
+        float targetY = newPosition.y;
+        if(topBlock.HasValue && bottomBlock.HasValue && topBlock.Value - bottomBlock.Value < cameraSize.y) {
+            targetY = (topBlock.Value + bottomBlock.Value) / 2f;
+        } else {
+            float bottomTarget = bottomBlock.HasValue ? bottomBlock.Value + cameraSize.y / 2f - 3f : float.MinValue;
+            float topTarget = topBlock.HasValue ? topBlock.Value - cameraSize.y / 2f + 3f : float.MaxValue;
+            targetY = Mathf.Clamp(newPosition.y, bottomTarget, topTarget);
+        }
+
+        if(newPosition.y != targetY) {
+            if(Mathf.Sign(targetY - newPosition.y) == -Mathf.Sign(newPosition.y - startPosition.y)) {
+                newPosition.y = startPosition.y; // prevent scrolling past what should be an edge
+            }
+            newPosition.y += (targetY - newPosition.y) * 0.08f * Time.timeScale;
+        }
+
         // move the camera to the new position
-        Vector2 cameraSize = Dimensions;
-        LevelData level = LevelData.Instance;
         newPosition.x = Mathf.Clamp(newPosition.x, player.transform.position.x - WINDOW_X_LIMIT, player.transform.position.x + WINDOW_X_LIMIT); // keep player within view
         newPosition.y = Mathf.Clamp(newPosition.y, player.transform.position.y - WINDOW_Y_LIMIT, player.transform.position.y + WINDOW_Y_LIMIT);
         newPosition.x = Mathf.Clamp(newPosition.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f); // do not look beyond the level bounds
@@ -154,11 +185,11 @@ public class CameraController : MonoBehaviour
         windowCenter.y = Mathf.Clamp(windowCenter.y, -windowCenterYLimit, windowCenterYLimit);
         playerWindow.center = windowCenter;
 
-         if(visibleWindow != null) {
-            // REMOVE FOR FINAL VERSION
+        if(visibleWindow != null) {
+        // REMOVE FOR FINAL VERSION
             visibleWindow.transform.position = new Vector3(transform.position.x + playerWindow.center.x, transform.position.y + playerWindow.center.y, 0);
             visibleWindow.transform.localScale = new Vector3(playerWindow.width, playerWindow.height, 1f);
-         }
+        }
     }
 
     // called by LevelData.cs Start() after generating the level bounds
@@ -168,5 +199,35 @@ public class CameraController : MonoBehaviour
         startingPos.x = Mathf.Clamp(startingPos.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f); // do not look beyond the level bounds
         startingPos.y = Mathf.Clamp(startingPos.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = startingPos;
+    }
+
+    private List<float> FindLandBlocks(Vector2 middle) {
+        List<float> result = new List<float>();
+        Vector2 dimensions = Dimensions;
+        Tilemap walls = TilemapScript.Instance.WallGrid;
+
+        float leftEdge = middle.x - dimensions.x / 2f;
+        float topEdge = middle.y + dimensions.y / 2f;
+        float bottomEdge = middle.y - dimensions.y / 2f;
+        float rightEdge = middle.x + dimensions.x / 2f;
+        Vector3Int topLeft = walls.WorldToCell(new Vector3(leftEdge, topEdge, 0));
+        Vector3Int bottomRight = walls.WorldToCell(new Vector3(rightEdge, bottomEdge, 0));
+
+        for(int y = bottomRight.y; y <= topLeft.y; y++) {
+            // check if every tile on this row is a wall
+            bool fullRow = true;
+            for(int x = topLeft.x; x <= bottomRight.x; x++) {
+                if(walls.GetTile(new Vector3Int(x, y, 0)) == null) {
+                    fullRow = false;
+                    break;
+                }
+            }
+
+            if(fullRow) {
+                result.Add(walls.GetCellCenterWorld(new Vector3Int(topLeft.x, y, 0)).y);
+            }
+        }
+
+        return result;
     }
 }

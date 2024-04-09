@@ -93,6 +93,15 @@ public class ConveyorBeltScript : Rideable
 
         CheckSideRiders();
 
+        // remove riders that have become kinematic (aka powered blocks)
+        for(int i = 0; i < riders.Count; i++) {
+            if(riders[i].GetComponent<Rigidbody2D>().isKinematic) {
+                OnRiderRemoved(riders[i], i);
+                riders.RemoveAt(i);
+                i--;
+            }
+        }
+
         // check for an adjacent belt passing something onto this
         for(int i = attachedDuplicateRiders.Count - 1; i >= 0; i--) {
             Vector3 shiftDir = DetermineShiftDirection(attachedDuplicateRiders[i]);
@@ -107,6 +116,7 @@ public class ConveyorBeltScript : Rideable
         for(int i = 0; i < riders.Count; i++) {
             Vector3 shiftDir = shiftDirections[i];
             riders[i].transform.position += ShiftSpeed * Time.deltaTime * shiftDir;
+            //riders[i].GetComponent<Rigidbody2D>().transform.position += ShiftSpeed * Time.deltaTime * shiftDir;
 
             // cancel out gravity when on the side
             if(shiftDir == Vector3.up && InsertedKeyType != KeyState.Lock) {

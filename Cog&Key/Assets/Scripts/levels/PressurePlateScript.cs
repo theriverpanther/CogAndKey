@@ -10,6 +10,7 @@ public class PressurePlateScript : MonoBehaviour
     private DoorOpener doorLock;
     private bool pressed;
     private float buttonTop;
+    private float buttonBottom;
     private int numOnTop;
 
     private const float SPEED = 5.0f;
@@ -17,13 +18,14 @@ public class PressurePlateScript : MonoBehaviour
     void Start() {
         doorLock = new DoorOpener(target);
         buttonTop = button.transform.localPosition.y;
+        buttonBottom = -0.3f;
     }
 
     void Update() {
-        if(pressed && button.transform.localPosition.y > 0) {
+        if(pressed && button.transform.localPosition.y > buttonBottom) {
             button.transform.localPosition += new Vector3(0, -SPEED * Time.deltaTime, 0);
-            if(button.transform.localPosition.y < 0) {
-                button.transform.localPosition = new Vector3(button.transform.localPosition.x, 0, button.transform.localPosition.z);
+            if(button.transform.localPosition.y < buttonBottom) {
+                button.transform.localPosition = new Vector3(button.transform.localPosition.x, buttonBottom, button.transform.localPosition.z);
             }
         }
         else if(!pressed && button.transform.localPosition.y < buttonTop) {
@@ -42,6 +44,11 @@ public class PressurePlateScript : MonoBehaviour
         numOnTop++;
         pressed = true;
         doorLock.Activated = true;
+
+        PoweredBlock block = collision.gameObject.GetComponent<PoweredBlock>();
+        if(block != null) {
+            block.SetPlateDirection();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision) {
