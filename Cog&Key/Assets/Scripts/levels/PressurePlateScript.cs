@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class PressurePlateScript : MonoBehaviour
 {
-    [SerializeField] private DoorScript target;
+    [SerializeField] private List<DoorScript> targets;
     [SerializeField] private GameObject button;
 
-    private DoorOpener doorLock;
+    private DoorOpener[] doorLocks;
     private bool pressed;
     private float buttonTop;
     private float buttonBottom;
@@ -16,7 +16,10 @@ public class PressurePlateScript : MonoBehaviour
     private const float SPEED = 5.0f;
 
     void Start() {
-        doorLock = new DoorOpener(target);
+        doorLocks = new DoorOpener[targets.Count];
+        for(int i = 0; i < targets.Count; i++) {
+            doorLocks[i] = new DoorOpener(targets[i]);
+        }
         buttonTop = button.transform.localPosition.y;
         buttonBottom = -0.3f;
     }
@@ -43,7 +46,9 @@ public class PressurePlateScript : MonoBehaviour
 
         numOnTop++;
         pressed = true;
-        doorLock.Activated = true;
+        foreach(DoorOpener doorLock in doorLocks) {
+            doorLock.Activated = true;
+        }
 
         PoweredBlock block = collision.gameObject.GetComponent<PoweredBlock>();
         if(block != null) {
@@ -59,7 +64,9 @@ public class PressurePlateScript : MonoBehaviour
         numOnTop--;
         if(numOnTop <= 0) {
             pressed = false;
-            doorLock.Activated = false;
+            foreach(DoorOpener doorLock in doorLocks) {
+                doorLock.Activated = false;
+            }
         }
     }
 }
