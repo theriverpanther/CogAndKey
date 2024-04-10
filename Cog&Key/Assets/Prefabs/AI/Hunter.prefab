@@ -174,6 +174,8 @@ MonoBehaviour:
   jumpSpeed: 17.5
   fastScalar: 2
   stepSize: 0.25
+  rb: {fileID: 6266114410323300525}
+  senses: []
   direction: {x: 0, y: 0}
   playerPosition: {x: 0, y: 0, z: 0}
   processingTurn: 0

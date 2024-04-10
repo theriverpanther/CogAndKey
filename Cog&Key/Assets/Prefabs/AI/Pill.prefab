@@ -138,6 +138,7 @@ MonoBehaviour:
   jumpSpeed: 16
   fastScalar: 3
   stepSize: 0.1
+  rb: {fileID: 4023532078733587198}
   senses:
   - {fileID: 8710868206761123753}
   - {fileID: 4419252549508052745}
@@ -151,6 +152,7 @@ MonoBehaviour:
   isRotating: 0
   testVal: 0
   orientationState: 0
+  angle: 0
 --- !u!50 &4023532078733587198
 Rigidbody2D:
   serializedVersion: 4

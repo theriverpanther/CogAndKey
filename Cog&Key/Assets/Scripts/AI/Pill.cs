@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -113,7 +114,7 @@ public class Pill : Agent
             Fall();
         }
 
-        if (testVal) Jump();
+        if (testVal) Drop();
 
         base.Update();
     }
@@ -149,7 +150,7 @@ public class Pill : Agent
         if (PlayerPosition.Equals(Vector3.zero))
         {
             // patrol
-            EdgeDetectMovement(!fast, true);
+            if(jumpState == JumpState.Grounded) EdgeDetectMovement(!fast, true);
             if (!isLost && pathTarget != null)
             {
                 Vector2 dir = (pathTarget.transform.position - this.transform.position).normalized;
@@ -376,38 +377,51 @@ public class Pill : Agent
     }
 
     private void Drop()
-    {        
-        //StartCoroutine(Rotate(-1));
+    {
+        StartCoroutine(Rotate(direction.x == -1 ? -1 : 1));
     }
 
     protected override void Jump()
     {
-        StartCoroutine(Rotate(1));
+        StartCoroutine(Rotate(direction.x == -1 ? 1 : -1));
     }
 
 
     IEnumerator Rotate(int direction)
     {
-        if(!isRotating)
+        IsGrounded();
+        if(!isRotating && jumpState == JumpState.Grounded)
         {
-            rb.freezeRotation = false;
             isRotating = true;
 
             orientationState -= direction;
             if (orientationState > Orientation.Left) orientationState = 0;
             if (orientationState < 0) orientationState = Orientation.Left;
 
-
-            float timer = 0;
-            float rotateTime = 1f;
-            while (timer < rotateTime)
-            {
-                rb.SetRotation(Mathf.Lerp(rb.rotation, rb.rotation + 90 * direction, timer));
-                timer += Time.deltaTime;
-                yield return null;
-            }
-            isRotating = false;
+            rb.freezeRotation = false;
+            rb.SetRotation(rb.rotation + direction * 90);
             rb.freezeRotation = true;
+
+            if (this.direction.x != 0)
+            {
+                this.direction.y = this.direction.x * -1;
+                this.direction.x = 0;
+            }
+            else if(this.direction.y != 0)
+            {
+                this.direction.x = this.direction.y;
+                this.direction.y = 0;
+            }
+
+            //float timer = 0;
+            //float rotateTime = 1f;
+            //while (timer < rotateTime)
+            //{
+            //    rb.SetRotation(Mathf.Lerp(rb.rotation, rb.rotation + 90 * direction, timer));
+            //    timer += Time.deltaTime;
+            //    yield return null;
+            //}
+            isRotating = false;
             testVal = false;
         }
         yield return null;
@@ -422,5 +436,44 @@ public class Pill : Agent
         //yield return new WaitUntil(() => floorPts.Count == 0);
         isFalling = false;
         yield return null;
+    }
+
+    protected override bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight, float distance)
+    {
+        Vector3 origin = RotatePoint(new Vector3(halfWidth, -halfHeight, 0), rb.rotation);
+        Vector2 direction = Vector2.down;
+        switch(orientationState)
+        {
+            case Orientation.Up:
+                direction = Vector2.down;
+                break;
+            case Orientation.Right:
+                direction = Vector2.left;
+                break;
+            case Orientation.Down:
+                direction = Vector2.up;
+                break;
+            case Orientation.Left:
+                direction = Vector2.right;
+                break;
+        }
+
+        RaycastHit2D ray = Physics2D.Raycast(position + origin, direction, distance, LayerMask.GetMask("Ground"));
+        if (ray.collider != null && distance != 10)
+        {
+            Debug.DrawRay(origin + position, direction, Color.green, 1f);
+        }
+        return ray.collider != null && ray.distance < halfHeight + distance;
+    }
+
+    protected override void IsGrounded()
+    {
+        const float BUFFER = 0.2f;
+
+        jumpState = ((RayCheck(transform.position, BUFFER, -halfWidth, halfHeight, 5) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight, 5)) && ledgeSize >= minLedgeSize ? JumpState.Grounded : JumpState.Aerial);
+        //if(floorPts!=null)
+        //{
+        //    jumpState = floorPts.Count >= 2 && ledgeSize >= minLedgeSize ? JumpState.Grounded : JumpState.Aerial;
+        //}
     }
 }

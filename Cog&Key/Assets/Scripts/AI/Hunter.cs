@@ -94,7 +94,7 @@ public class Hunter : Agent
         {
             // patrol
             // for now just deal with edge detection
-            EdgeDetectMovement(!fast, true);
+            if(jumpState == JumpState.Grounded) EdgeDetectMovement(!fast, true);
             if (!isLost && pathTarget != null)
             {
                 

@@ -30,7 +30,7 @@ public class Agent : KeyWindable
 
     protected const float GROUND_GRAVITY = 7.5f;
 
-    protected Rigidbody2D rb;
+    [SerializeField] protected Rigidbody2D rb;
     /// <summary>
     /// Degree of error for prediction built in for a less perfect agent
     /// </summary>
@@ -88,13 +88,18 @@ public class Agent : KeyWindable
 
     public Vector2 Direction { get { return direction; } }
 
-    public float Speed { get { return movementSpeed; } } 
+    public float Speed { get { return movementSpeed; } }
     #endregion
+
+    protected void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
 
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        
         rb.gravityScale = GROUND_GRAVITY;
         scaleVal = transform.localScale;
         collidingObjs = new List<GameObject>(); 
@@ -205,7 +210,7 @@ public class Agent : KeyWindable
         rb.position = new Vector2(rb.position.x, rb.position.y + stepSize);
     }
 
-    protected void IsGrounded()
+    protected virtual void IsGrounded()
     {
         const float BUFFER = 0.2f;
 
@@ -216,7 +221,7 @@ public class Agent : KeyWindable
         //} 
     }
 
-    protected bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight, float distance)
+    protected virtual bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight, float distance)
     {
         RaycastHit2D ray = Physics2D.Raycast(new Vector3(position.x - halfWidth + buffer, position.y - halfHeight, 0), Vector2.down, distance, LayerMask.GetMask("Ground"));
         if(ray.collider!=null && distance != 10)
@@ -590,8 +595,6 @@ public class Agent : KeyWindable
     {
         if (contacts != null)
         {
-            
-
             Gizmos.color = Color.blue;
 
             foreach (ContactPoint2D contact in floorPts)
@@ -605,30 +608,34 @@ public class Agent : KeyWindable
             {
                 Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
             }
+
+            Gizmos.color = Color.red;
+            foreach(ContactPoint2D contact in contacts)
+            {
+                Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0425f);
+            }
         }
         Gizmos.color = Color.red;
 
-        Vector3 temp = new Vector3(transform.position.x - halfWidth, transform.position.y - halfHeight, 0);
-        //Vector3 leftPt = RotatePoint(temp, transform.rotation.z);
-        Vector3 leftPt = temp;
+        Vector3 leftPt = RotatePoint(new Vector3(-halfWidth, -halfHeight, 0), rb.rotation);
 
-        temp = new Vector3(transform.position.x + halfWidth, transform.position.y - halfHeight, 0);
-        //Vector3 rightPt = RotatePoint(temp, transform.rotation.z);
-        Vector3 rightPt = temp;
+        Vector3 rightPt = RotatePoint(new Vector3(halfWidth, -halfHeight, 0), rb.rotation);
 
-        Gizmos.DrawWireSphere(leftPt, .125f);
-        Gizmos.DrawWireSphere(rightPt, .125f);
+        Gizmos.DrawWireSphere(leftPt + transform.position, .125f);
+        Gizmos.DrawWireSphere(rightPt + transform.position, .125f);
 
-        Vector2 dir = new Vector2(Mathf.Sin(transform.rotation.z * Mathf.Deg2Rad), -Mathf.Cos(transform.rotation.z * Mathf.Deg2Rad)).normalized;
-        Gizmos.DrawRay(leftPt, dir);
-        Gizmos.DrawRay(rightPt, dir);
+        Vector2 dir = new Vector2(Mathf.Sin(rb.rotation * Mathf.Deg2Rad), -Mathf.Cos(rb.rotation * Mathf.Deg2Rad)).normalized;
+        Gizmos.DrawRay(leftPt + transform.position, dir);
+        Gizmos.DrawRay(rightPt + transform.position, dir);
+
+        // Need to offset based on world point
     }
 
     protected Vector3 RotatePoint(Vector3 point, float angle)
     {
         Vector3 newPoint = Vector3.zero;
-        newPoint.x = point.x * Mathf.Cos(transform.rotation.z * Mathf.Deg2Rad) * halfWidth - point.y * Mathf.Sin(transform.rotation.z * Mathf.Deg2Rad) * halfHeight;
-        newPoint.y = point.y * Mathf.Cos(transform.rotation.z * Mathf.Deg2Rad) * halfWidth + point.x * Mathf.Sin(transform.rotation.z * Mathf.Deg2Rad) * halfHeight;
+        newPoint.x = point.x * Mathf.Cos(angle * Mathf.Deg2Rad) - point.y * Mathf.Sin(angle * Mathf.Deg2Rad);
+        newPoint.y = point.y * Mathf.Cos(angle * Mathf.Deg2Rad) + point.x * Mathf.Sin(angle * Mathf.Deg2Rad);
         return newPoint;
     }
 }
