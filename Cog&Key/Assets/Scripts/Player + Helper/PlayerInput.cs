@@ -96,7 +96,20 @@ public class PlayerInput
 
     // must be called once per frame
     public void Update() {
-        if(!locked && (Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse)) {
+        if (Gamepad.current != null)
+        {
+            if (Gamepad.current.leftStick.up.isPressed) Debug.Log("left up");
+            if (Gamepad.current.leftStick.left.isPressed) Debug.Log("left left");
+            if (Gamepad.current.leftStick.right.isPressed) Debug.Log("left right");
+            if (Gamepad.current.leftStick.down.isPressed) Debug.Log("left down");
+
+            if (Gamepad.current.rightStick.up.isPressed) Debug.Log("right up");
+            if (Gamepad.current.rightStick.left.isPressed) Debug.Log("right left");
+            if (Gamepad.current.rightStick.right.isPressed) Debug.Log("right right");
+            if (Gamepad.current.rightStick.down.isPressed) Debug.Log("right down");
+        }
+
+        if (!locked && (Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse)) {
             ConstructKeyBindings();
             if(currentGP != null) {
                 currentGP.SetMotorSpeeds(0f, 0f);
