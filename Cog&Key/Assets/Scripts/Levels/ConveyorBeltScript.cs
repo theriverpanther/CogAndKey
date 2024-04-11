@@ -262,8 +262,10 @@ public class ConveyorBeltScript : Rideable
         for(int i = 0; i < riders.Count; i++) {
             List<Vector3> allRiderDirections = allBeltRiders[riders[i]];
             int reverseIndex = allRiderDirections.IndexOf(shiftDirections[i]);
-            allRiderDirections[reverseIndex] = -allRiderDirections[reverseIndex];
-            shiftDirections[i] = -shiftDirections[i];
+            if(reverseIndex >= 0) {
+                allRiderDirections[reverseIndex] = -allRiderDirections[reverseIndex];
+                shiftDirections[i] = -shiftDirections[i];
+            }
         }
 
     }
