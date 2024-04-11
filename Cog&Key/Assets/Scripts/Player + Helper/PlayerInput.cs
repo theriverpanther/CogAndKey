@@ -132,8 +132,6 @@ public class PlayerInput
             }
         }
 
-        Debug.Log("right stick up: " + pressedThisFrame[(int)Action.ThrowUp]);
-
         foreach(KeyState keyType in KeyScript.keyToInput.Keys) {
             if((JustPressed(KeyScript.keyToInput[keyType]) || JustPressed(keyToSelector[keyType])) && Player.EquippedKeys[keyType]) {
                 SelectedKey = keyType;
