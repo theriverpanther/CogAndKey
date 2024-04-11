@@ -135,6 +135,7 @@ public class PlayerInput
         foreach(KeyState keyType in KeyScript.keyToInput.Keys) {
             if((JustPressed(KeyScript.keyToInput[keyType]) || JustPressed(keyToSelector[keyType])) && Player.EquippedKeys[keyType]) {
                 SelectedKey = keyType;
+                GameObject.Find("KeyBG").GetComponent<KeyUI>().SetArrowSelector();
             }
         }
 
