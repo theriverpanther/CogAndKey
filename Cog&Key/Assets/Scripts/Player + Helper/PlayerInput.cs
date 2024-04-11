@@ -96,19 +96,6 @@ public class PlayerInput
 
     // must be called once per frame
     public void Update() {
-        if (Gamepad.current != null)
-        {
-            if (Gamepad.current.leftStick.up.isPressed) Debug.Log("left up");
-            if (Gamepad.current.leftStick.left.isPressed) Debug.Log("left left");
-            if (Gamepad.current.leftStick.right.isPressed) Debug.Log("left right");
-            if (Gamepad.current.leftStick.down.isPressed) Debug.Log("left down");
-
-            if (Gamepad.current.rightStick.up.isPressed) Debug.Log("right up");
-            if (Gamepad.current.rightStick.left.isPressed) Debug.Log("right left");
-            if (Gamepad.current.rightStick.right.isPressed) Debug.Log("right right");
-            if (Gamepad.current.rightStick.down.isPressed) Debug.Log("right down");
-        }
-
         if (!locked && (Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse)) {
             ConstructKeyBindings();
             if(currentGP != null) {
@@ -128,6 +115,24 @@ public class PlayerInput
                 }
             }
         }
+
+        // fix webgl stick issues
+        if(currentGP != null) {
+            if(currentGP.leftStick.ReadValue().y > 0.7f) {
+                pressedThisFrame[(int)Action.Up] = true;
+            }
+            if(currentGP.leftStick.ReadValue().y < -0.7f) {
+                pressedThisFrame[(int)Action.Down] = true;
+            }
+            if(currentGP.rightStick.ReadValue().y > 0.7f) {
+                pressedThisFrame[(int)Action.ThrowUp] = true;
+            }
+            if(currentGP.rightStick.ReadValue().y < -0.7f) {
+                pressedThisFrame[(int)Action.ThrowDown] = true;
+            }
+        }
+
+        Debug.Log("right stick up: " + pressedThisFrame[(int)Action.ThrowUp]);
 
         foreach(KeyState keyType in KeyScript.keyToInput.Keys) {
             if((JustPressed(KeyScript.keyToInput[keyType]) || JustPressed(keyToSelector[keyType])) && Player.EquippedKeys[keyType]) {
