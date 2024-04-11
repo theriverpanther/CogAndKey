@@ -104,14 +104,18 @@ public class Pill : Agent
 
         if (floorPts.Count > 0 && orientationState != Orientation.Up && floorPts[0].point.y > transform.position.y)
         {
-            Fall();
+            //Fall();
         }
 
 
         if(Input.GetKeyDown(KeyCode.V))
         {
+            rb.freezeRotation = false;
+            rb.rotation = 0;
             orientationState = Orientation.Up;
-            Fall();
+            rb.freezeRotation = true;
+            //orientationState = Orientation.Up;
+            //Fall();
         }
 
         if (testVal) Drop();
@@ -208,7 +212,7 @@ public class Pill : Agent
             // Assault the player
             charging = true;
             // If above the player, fall
-            Fall();
+            if(transform.position.y > playerPosition.y && playerPosition != Vector3.zero) Fall();
             // If parallel to the player, charge them
 
             base.BehaviorTree(chargeSpeed, true);
@@ -234,6 +238,7 @@ public class Pill : Agent
         int returnVal = 0;
         if (contacts != null)
         {
+            //contacts.Clear();
             BoxCollider2D collider = GetComponent<BoxCollider2D>();
             collider.GetContacts(contacts);
 
@@ -253,18 +258,41 @@ public class Pill : Agent
             wallPts.Clear();
             foreach (ContactPoint2D contact in contacts)
             {
+                bool floorCheck = false;
+                bool wallCheck = false;
+                switch (orientationState)
+                {
+                    case Orientation.Up:
+                        floorCheck = contact.point.y - transform.position.y <= halfHeight;
+                        wallCheck = Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth;
+                        break;
+                    case Orientation.Right:
+                        floorCheck = contact.point.x - transform.position.x <= halfHeight;
+                        wallCheck = Mathf.Abs(contact.point.y - transform.position.y) <= halfWidth;
+                        break;
+                    case Orientation.Down:
+                        floorCheck = transform.position.y - contact.point.y <= halfHeight;
+                        wallCheck = Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth;
+                        break;
+                    case Orientation.Left:
+                        floorCheck = transform.position.x - contact.point.x <= halfHeight;
+                        wallCheck = Mathf.Abs(contact.point.y - transform.position.y) <= halfWidth;
+                        break;
+
+                }
                 if (contact.collider.tag == "Agent") continue;
-                if (contact.point.y - transform.position.y <= halfHeight)
+                if (floorCheck)
                 {
                     floorPts.Add(contact);
                 }
-                if (Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth)
+                if (wallCheck)
                 {
                     wallPts.Add(contact);
-                    Debug.Log(wallPts.Count);
                 }
                 //DebugDisplay.Instance.DrawDot(contact.point);
             }
+            if(floorPts.Count != 3) Debug.Log("Floor " + floorPts.Count);
+            if (wallPts.Count != 1) Debug.Log("Wall " + wallPts.Count);
 
             // Custom Sort based on agent -> pill based on orientation
             floorPts.Sort((i, j) => { return i.point.x < j.point.x ? -1 : 1; });
@@ -390,7 +418,8 @@ public class Pill : Agent
     IEnumerator Rotate(int direction)
     {
         IsGrounded();
-        if(!isRotating && jumpState == JumpState.Grounded)
+        //&& jumpState == JumpState.Grounded
+        if (!isRotating)
         {
             isRotating = true;
 

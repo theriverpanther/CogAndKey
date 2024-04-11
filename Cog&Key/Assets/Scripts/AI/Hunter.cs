@@ -126,7 +126,7 @@ public class Hunter : Agent
             else if (wallDetected)
             {
                 Jump();
-                Debug.Log("Wall D");
+                //Debug.Log("Wall D");
             }
             else
             {

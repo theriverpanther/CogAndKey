@@ -147,12 +147,12 @@ MonoBehaviour:
   processingTurn: 0
   processingStop: 0
   pathTarget: {fileID: 0}
-  minLedgeSize: 3.5
+  minLedgeSize: 0.25
+  ledgeSize: 0
   isFalling: 0
   isRotating: 0
   testVal: 0
   orientationState: 0
-  angle: 0
 --- !u!50 &4023532078733587198
 Rigidbody2D:
   serializedVersion: 4

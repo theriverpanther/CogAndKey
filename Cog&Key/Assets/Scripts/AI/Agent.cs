@@ -61,11 +61,11 @@ public class Agent : KeyWindable
 
 
     protected List<ContactPoint2D> contacts;
-    protected List<ContactPoint2D> floorPts;
-    protected List<ContactPoint2D> wallPts;
+    [SerializeField] protected List<ContactPoint2D> floorPts;
+    [SerializeField] protected List<ContactPoint2D> wallPts;
 
     [SerializeField] protected float minLedgeSize = 0.1f;
-    protected float ledgeSize = 0f;
+    [SerializeField] protected float ledgeSize = 0f;
 
     protected bool isLost = false;
     protected float confusionTime = 5f;
@@ -214,7 +214,7 @@ public class Agent : KeyWindable
     {
         const float BUFFER = 0.2f;
 
-        jumpState = ((RayCheck(transform.position, BUFFER, -halfWidth, halfHeight, 5) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight, 5)) && ledgeSize >= minLedgeSize ? JumpState.Grounded: JumpState.Aerial);
+        jumpState = ((RayCheck(transform.position, BUFFER, -halfWidth, halfHeight, 5) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight, 5)) || ledgeSize >= minLedgeSize ? JumpState.Grounded: JumpState.Aerial);
         //if(floorPts!=null)
         //{
         //    jumpState = floorPts.Count >= 2 && ledgeSize >= minLedgeSize ? JumpState.Grounded : JumpState.Aerial;
@@ -282,7 +282,7 @@ public class Agent : KeyWindable
             if (Mathf.Abs(tempVelocity.x) > 1f) yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
             else yield return new WaitForSeconds(turnDelay);
             processingTurn = false;
-            Debug.Log("Coroutine End");
+            //Debug.Log("Coroutine End");
         }
 
         if (animationTag != null)
@@ -431,7 +431,7 @@ public class Agent : KeyWindable
                 if (Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth)
                 {
                     wallPts.Add(contact);
-                    Debug.Log(wallPts.Count);
+                    //Debug.Log(wallPts.Count);
                 }
                 //DebugDisplay.Instance.DrawDot(contact.point);
             }
@@ -599,7 +599,7 @@ public class Agent : KeyWindable
 
             foreach (ContactPoint2D contact in floorPts)
             {
-                Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
+                if(!contact.Equals(null)) Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
             }
 
             Gizmos.color = Color.green;
@@ -612,7 +612,7 @@ public class Agent : KeyWindable
             Gizmos.color = Color.red;
             foreach(ContactPoint2D contact in contacts)
             {
-                Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0425f);
+                Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
             }
         }
         Gizmos.color = Color.red;
@@ -631,11 +631,42 @@ public class Agent : KeyWindable
         // Need to offset based on world point
     }
 
+    /// <summary>
+    /// Rotates a point around the origin of 0,0 at a given angle in degrees
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
     protected Vector3 RotatePoint(Vector3 point, float angle)
     {
         Vector3 newPoint = Vector3.zero;
         newPoint.x = point.x * Mathf.Cos(angle * Mathf.Deg2Rad) - point.y * Mathf.Sin(angle * Mathf.Deg2Rad);
         newPoint.y = point.y * Mathf.Cos(angle * Mathf.Deg2Rad) + point.x * Mathf.Sin(angle * Mathf.Deg2Rad);
         return newPoint;
+    }
+
+    /// <summary>
+    /// Rotates a point around a custom origin value at a given angle in degrees
+    /// </summary>
+    /// <param name="origin"></param>
+    /// <param name="positionToRotate"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    protected Vector3 RotateWorldPoint(Vector3 origin, Vector3 positionToRotate,  float angle)
+    {
+        Vector3 temp = RotatePoint(positionToRotate - origin, angle);
+        temp += origin;
+        return temp;
+    }
+
+    /// <summary>
+    /// Rotates a point at the origin of the Agent at the given angle in degrees
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    protected Vector3 RotateWorldPoint(Vector3 point, float angle)
+    {
+        return RotateWorldPoint(transform.position, point, angle);
     }
 }
