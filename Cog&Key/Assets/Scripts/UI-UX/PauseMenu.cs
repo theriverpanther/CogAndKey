@@ -127,6 +127,23 @@ public class PauseMenu : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Used on respawn button. Spawns back at last checkpoint or first spawn.
+    /// </summary>
+    public void SkipLevel()
+    {
+        Resume();
+        Debug.Log("BUILD INDEX " + SceneManager.GetActiveScene().buildIndex + " SCENE COUNT " + SceneManager.sceneCountInBuildSettings);
+        if(SceneManager.GetActiveScene().buildIndex + 1 < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        } else
+        {
+            SceneManager.LoadScene(0);
+        }
+        
+    }
+
     private bool PausedPressed() {
         return Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame
             || Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;

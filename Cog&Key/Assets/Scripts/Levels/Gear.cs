@@ -4,13 +4,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.U2D;
 
-public enum DirectionType
-{
-    Clockwise,
-    CounterClockwise,
-    Stop
-}
-
 public enum CopperType
 {
     Shiny,
@@ -24,8 +17,9 @@ public class Gear : MonoBehaviour
     float speed;
 
     [SerializeField]
-    public DirectionType direction;
     int dir;
+
+    bool reversedStart = false;
 
     GameObject attachedTo;
 
@@ -43,12 +37,8 @@ public class Gear : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-
         attachedTo = transform.root.gameObject;
-        Debug.Log("Attached to: " + attachedTo.name);
 
-        ChangeDirection();
         SetMetalMaterial();
 
         // Grab the first active gear in the GameObject
@@ -73,18 +63,29 @@ public class Gear : MonoBehaviour
         //Debug.Log("Rotating.. " + speed);
     }
 
-    private void ChangeDirection()
+    public void ChangeDirection(KeyState key, bool startReversed = false)
     {
-        switch(direction)
+        reversedStart = startReversed;
+
+        switch (key)
         {
-            case DirectionType.Clockwise:
+            case KeyState.Fast:
                 dir = -1;
                 break;
-            case DirectionType.CounterClockwise:
+            case KeyState.Reverse:
                 dir = 1;
                 break;
-            case DirectionType.Stop:
+            case KeyState.Lock:
                 dir = 0;
+                break;
+            default:
+                if(!reversedStart)
+                {
+                    dir = -1;
+                } else
+                {
+                    dir = 1;
+                }
                 break;
         }
     }

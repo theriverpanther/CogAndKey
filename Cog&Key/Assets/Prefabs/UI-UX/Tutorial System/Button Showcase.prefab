@@ -238,3 +238,5 @@ MonoBehaviour:
     imagePair: {fileID: 2800000, guid: df783610ae761a14f8e2d531b4c7f49b, type: 3}
   - key: StickR_RIGHT
     imagePair: {fileID: 2800000, guid: f9b21236f5b9ea240baf2885e8dd1517, type: 3}
+  - key: Ring
+    imagePair: {fileID: 2800000, guid: ff668cba066455b4ba60e7efba5b8192, type: 3}

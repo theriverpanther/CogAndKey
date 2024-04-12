@@ -96,7 +96,7 @@ public class PlayerInput
 
     // must be called once per frame
     public void Update() {
-        if(!locked && (Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse)) {
+        if (!locked && (Gamepad.current != currentGP || Keyboard.current != currentKB || Mouse.current != currentMouse)) {
             ConstructKeyBindings();
             if(currentGP != null) {
                 currentGP.SetMotorSpeeds(0f, 0f);
@@ -116,9 +116,26 @@ public class PlayerInput
             }
         }
 
+        // fix webgl stick issues
+        if(currentGP != null) {
+            if(currentGP.leftStick.ReadValue().y > 0.7f) {
+                pressedThisFrame[(int)Action.Up] = true;
+            }
+            if(currentGP.leftStick.ReadValue().y < -0.7f) {
+                pressedThisFrame[(int)Action.Down] = true;
+            }
+            if(currentGP.rightStick.ReadValue().y > 0.7f) {
+                pressedThisFrame[(int)Action.ThrowUp] = true;
+            }
+            if(currentGP.rightStick.ReadValue().y < -0.7f) {
+                pressedThisFrame[(int)Action.ThrowDown] = true;
+            }
+        }
+
         foreach(KeyState keyType in KeyScript.keyToInput.Keys) {
             if((JustPressed(KeyScript.keyToInput[keyType]) || JustPressed(keyToSelector[keyType])) && Player.EquippedKeys[keyType]) {
                 SelectedKey = keyType;
+                GameObject.Find("KeyBG").GetComponent<KeyUI>().SetArrowSelector();
             }
         }
 

@@ -37,8 +37,12 @@ public class ConveyorBeltScript : Rideable
     private List<GameObject> rightTicks = new List<GameObject>();
     private float visualTimer;
 
+    [SerializeField]
+    Gear[] gears;
+
     void Start()
     {
+        gears = transform.GetComponentsInChildren<Gear>();
         allBeltRiders = new Dictionary<GameObject, List<Vector3>>();
         Rect area = Global.GetCollisionArea(gameObject);
 
@@ -66,6 +70,15 @@ public class ConveyorBeltScript : Rideable
             rightTicks.Add(addedRight);
             addedRight.transform.position = new Vector3(area.xMax - tickHalfWidth, y, 0);
             addedRight.transform.rotation = Quaternion.Euler(0, 0, 90);
+        }
+
+        if (!clockwise)
+        {
+            UpdateGears(KeyState.Reverse);
+        }
+        else
+        {
+            UpdateGears(KeyState.Fast);
         }
     }
 
@@ -222,11 +235,25 @@ public class ConveyorBeltScript : Rideable
         if(newKey == KeyState.Reverse) {
             ReverseDirection();
         }
+
+        UpdateGears(newKey);
+
     }
 
     protected override void OnKeyRemoved(KeyState removedKey) {
         if(removedKey == KeyState.Reverse) {
             ReverseDirection();
+        }
+
+        UpdateGears(KeyState.None);
+
+    }
+
+    private void UpdateGears(KeyState s)
+    {
+        foreach (Gear g in gears)
+        {
+            g.ChangeDirection(s, clockwise);
         }
     }
 
