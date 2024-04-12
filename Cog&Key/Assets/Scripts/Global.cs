@@ -57,6 +57,8 @@ public static class Global
 
         // if there is a child blocking, check if the child is blocked instead
         foreach(RaycastHit2D boxHit in boxcastHits) {
+            if(boxHit.collider.gameObject.GetComponent<KeyPlug>() != null) continue;
+
             Transform current = boxHit.collider.transform;
             bool isChild = false;
             while(current.parent != null) {
