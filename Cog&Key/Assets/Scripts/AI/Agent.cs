@@ -61,8 +61,8 @@ public class Agent : KeyWindable
 
 
     protected List<ContactPoint2D> contacts;
-    [SerializeField] protected List<ContactPoint2D> floorPts;
-    [SerializeField] protected List<ContactPoint2D> wallPts;
+    protected List<ContactPoint2D> floorPts;
+    protected List<ContactPoint2D> wallPts;
 
     [SerializeField] protected float minLedgeSize = 0.1f;
     [SerializeField] protected float ledgeSize = 0f;
