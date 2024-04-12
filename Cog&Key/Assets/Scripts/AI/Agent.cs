@@ -214,7 +214,7 @@ public class Agent : KeyWindable
     {
         const float BUFFER = 0.2f;
 
-        jumpState = ((RayCheck(transform.position, BUFFER, -halfWidth, halfHeight, 5) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight, 5)) || ledgeSize >= minLedgeSize ? JumpState.Grounded: JumpState.Aerial);
+        jumpState = ((RayCheck(transform.position, BUFFER, -halfWidth, halfHeight, 5) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight, 5)) && ledgeSize >= minLedgeSize ? JumpState.Grounded: JumpState.Aerial);
         //if(floorPts!=null)
         //{
         //    jumpState = floorPts.Count >= 2 && ledgeSize >= minLedgeSize ? JumpState.Grounded : JumpState.Aerial;
