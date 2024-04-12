@@ -148,13 +148,13 @@ MonoBehaviour:
   - key: Jump_DOWN
     imagePair: {fileID: 2800000, guid: 3e8f96b7740128140b5ffbf923752820, type: 3}
   - key: Reverse_UP
-    imagePair: {fileID: 2800000, guid: 4b36d849d844ab34c8e6a1ba0e6d4c4f, type: 3}
-  - key: Reverse_DOWN
-    imagePair: {fileID: 2800000, guid: bf567006a515fa145a12b89da6a3b9fe, type: 3}
-  - key: Fast_UP
     imagePair: {fileID: 2800000, guid: b2cd389e2e9c2df4db22ac6e9ac3bde9, type: 3}
-  - key: Fast_DOWN
+  - key: Reverse_DOWN
     imagePair: {fileID: 2800000, guid: 2ebfdaa780a2fe84fabd0c42473d27cc, type: 3}
+  - key: Fast_UP
+    imagePair: {fileID: 2800000, guid: 4b36d849d844ab34c8e6a1ba0e6d4c4f, type: 3}
+  - key: Fast_DOWN
+    imagePair: {fileID: 2800000, guid: bf567006a515fa145a12b89da6a3b9fe, type: 3}
   - key: Lock_UP
     imagePair: {fileID: 2800000, guid: 9e857c824d96a7443bc192d0022e6ef2, type: 3}
   - key: Lock_DOWN

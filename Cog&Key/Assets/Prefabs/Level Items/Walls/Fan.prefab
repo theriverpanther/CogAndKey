@@ -108,7 +108,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -233,7 +233,7 @@ GameObject:
   - component: {fileID: 8500906137736344675}
   - component: {fileID: 6383624240727007192}
   - component: {fileID: 8040408842003227072}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Particle System (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

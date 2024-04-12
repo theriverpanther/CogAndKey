@@ -129,8 +129,8 @@ GameObject:
   - component: {fileID: 5991776524027107468}
   - component: {fileID: 9096448479592646945}
   - component: {fileID: 2698930125854928055}
-  - component: {fileID: 6266114410323300525}
   - component: {fileID: 2518777728627218210}
+  - component: {fileID: 6266114410323300525}
   m_Layer: 2
   m_Name: Hunter
   m_TagString: Agent
@@ -173,13 +173,18 @@ MonoBehaviour:
   movementSpeed: 5
   jumpSpeed: 17.5
   fastScalar: 2
-  stepSize: 0.1
+  stepSize: 0.25
+  rb: {fileID: 6266114410323300525}
+  senses:
+  - {fileID: 1219042728086153759}
+  - {fileID: 4525991479264589196}
   direction: {x: 0, y: 0}
   playerPosition: {x: 0, y: 0, z: 0}
   processingTurn: 0
   processingStop: 0
   pathTarget: {fileID: 0}
   minLedgeSize: 2
+  ledgeSize: 0
   signifier_mat_idle: {fileID: 2100000, guid: bfb06bfbce404cc48ac0b23bab9e8e67, type: 2}
   signifier_mat_attack: {fileID: 2100000, guid: 0af2079cec263814eb0045ac9b9b996e, type: 2}
   signifier: {fileID: 5375331374888654306}
@@ -215,7 +220,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.009845734, y: 0.55040455}
+  m_Offset: {x: -0.6824522, y: 0.58}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -226,7 +231,52 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.1676865, y: 2.600809}
+  m_Size: {x: 1.7830906, y: 2.55}
+  m_EdgeRadius: 0
+--- !u!61 &2518777728627218210
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4279547822411098776}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.12, y: 0.11}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3.3, y: 1.7340888}
   m_EdgeRadius: 0
 --- !u!50 &6266114410323300525
 Rigidbody2D:
@@ -255,51 +305,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!61 &2518777728627218210
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4279547822411098776}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -1.9386556, y: 0.7391156}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.55292034, y: 2.9996479}
-  m_EdgeRadius: 0
 --- !u!1 &4638306192599210149
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,8 +578,8 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: 0, y: 0.5773587}
-      - {x: -0.38955164, y: -0.946047}
-      - {x: 0.59817636, y: -0.9460467}
+      - {x: -0.38955164, y: -1.3}
+      - {x: 0.59817636, y: -1.3}
   m_UseDelaunayMesh: 0
 --- !u!114 &4525991479264589196
 MonoBehaviour:

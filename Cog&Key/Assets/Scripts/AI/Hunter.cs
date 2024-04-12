@@ -94,7 +94,7 @@ public class Hunter : Agent
         {
             // patrol
             // for now just deal with edge detection
-            EdgeDetectMovement(!fast, true);
+            if(jumpState == JumpState.Grounded) EdgeDetectMovement(!fast, true);
             if (!isLost && pathTarget != null)
             {
                 
@@ -126,7 +126,7 @@ public class Hunter : Agent
             else if (wallDetected)
             {
                 Jump();
-                Debug.Log("Wall D");
+                //Debug.Log("Wall D");
             }
             else
             {

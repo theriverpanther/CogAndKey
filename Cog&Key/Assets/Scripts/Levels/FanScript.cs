@@ -7,6 +7,8 @@ public class FanScript : KeyWindable
     private GameObject Wind1;
     private GameObject Wind2;
     private float windTime;
+    private ParticleSystem particles;
+    private Vector3 basePos;
 
     private const float MAX_BASE_FORCE = 10.0f;
     private static Dictionary<KeyState, float> keyToMultiplier = new Dictionary<KeyState, float>() {
@@ -27,6 +29,8 @@ public class FanScript : KeyWindable
 
         Wind1 = transform.GetChild(0).gameObject;
         Wind2 = transform.GetChild(1).gameObject;
+        particles = transform.GetChild(4).GetComponent<ParticleSystem>();
+        basePos = transform.position;
     }
 
     void Update() {
@@ -41,11 +45,21 @@ public class FanScript : KeyWindable
         }
 
         // TEMP VISUAL EFFECT
-        windTime += keyToMultiplier[InsertedKeyType] * 1.5f * Time.deltaTime;
-        float range = windTime % 1f;
-        float range2 = (windTime + 0.5f) % 1.0f;
-        Wind1.transform.localPosition = new Vector3(-0.2f, range * fanRange, 0);
-        Wind2.transform.localPosition = new Vector3(0.2f, range2 * fanRange, 0);
+        particles.startSpeed = 10 * keyToMultiplier[InsertedKeyType];
+        ParticleSystem.EmissionModule emit = particles.emission;
+        if (particles.startSpeed == 0) emit.rateOverTime = 0;
+        else emit.rateOverTime = 50;
+
+        if (InsertedKeyType != KeyState.Reverse) particles.transform.position = basePos;
+        else particles.transform.position = new Vector3(basePos.x, basePos.y + 10, basePos.z);
+
+
+
+        //windTime += keyToMultiplier[InsertedKeyType] * 1.5f * Time.deltaTime;
+        //float range = windTime % 1f;
+        //float range2 = (windTime + 0.5f) % 1.0f;
+        //Wind1.transform.localPosition = new Vector3(-0.2f, range * fanRange, 0);
+        //Wind2.transform.localPosition = new Vector3(0.2f, range2 * fanRange, 0);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {

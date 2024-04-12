@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 //using UnityEditor.Build;
 //using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
@@ -28,13 +30,13 @@ public class Agent : KeyWindable
 
     protected const float GROUND_GRAVITY = 7.5f;
 
-    protected Rigidbody2D rb;
+    [SerializeField] protected Rigidbody2D rb;
     /// <summary>
     /// Degree of error for prediction built in for a less perfect agent
     /// </summary>
     protected float mistakeThreshold = 0.05f;
     protected float senseCount = 2;
-    protected List<Sense> senses = new List<Sense>(2);
+    [SerializeField] protected List<Sense> senses = new List<Sense>(2);
     protected float attackDamage;
     protected bool flightEnabled = false;
 
@@ -63,7 +65,7 @@ public class Agent : KeyWindable
     protected List<ContactPoint2D> wallPts;
 
     [SerializeField] protected float minLedgeSize = 0.1f;
-    protected float ledgeSize = 0f;
+    [SerializeField] protected float ledgeSize = 0f;
 
     protected bool isLost = false;
     protected float confusionTime = 5f;
@@ -86,20 +88,21 @@ public class Agent : KeyWindable
 
     public Vector2 Direction { get { return direction; } }
 
-    public float Speed { get { return movementSpeed; } } 
+    public float Speed { get { return movementSpeed; } }
     #endregion
+
+    protected void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
 
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        
         rb.gravityScale = GROUND_GRAVITY;
         scaleVal = transform.localScale;
         collidingObjs = new List<GameObject>(); 
-
-        animationTag = FindChildWithTag(gameObject, "AgentAnimator");
-        ani = animationTag.GetComponent<Animator>();
-        Debug.Log("Found child: " + animationTag);
 
         //senses = new List<Sense>
         //{
@@ -107,8 +110,15 @@ public class Agent : KeyWindable
         //    transform.GetChild(6).GetComponent<Sense>()
         //};
         IsGrounded();
-        halfHeight = GetComponent<BoxCollider2D>().bounds.extents.y / 2;
-        halfWidth = GetComponent<BoxCollider2D>().bounds.size.x / 2;
+        BoxCollider2D[] colliders = GetComponents<BoxCollider2D>(); 
+
+        halfHeight = colliders[0].bounds.extents.y / 2;
+        if (colliders.Length > 1)
+        {
+            halfHeight = colliders[1].bounds.extents.y / 2 > halfHeight ? colliders[1].bounds.extents.y / 2 : halfHeight;
+            halfWidth = colliders[1].bounds.size.x / 2;
+        }
+        else halfWidth = colliders[0].bounds.size.x / 2;
 
         nodes.AddRange(GameObject.FindGameObjectsWithTag("Node"));
         // Get a non magic number way pls
@@ -140,6 +150,15 @@ public class Agent : KeyWindable
         wallPts = new List<ContactPoint2D>();
 
         direction = Vector2.left;
+
+        // Temporary If Statement
+        if(this.GetType() == typeof(Hunter))
+        {
+            animationTag = FindChildWithTag(gameObject, "AgentAnimator");
+            ani = animationTag.GetComponent<Animator>();
+            Debug.Log("Found child: " + animationTag);
+        }
+        
     }
 
     // Update is called once per frame
@@ -161,7 +180,9 @@ public class Agent : KeyWindable
         if(transform.position.y + halfHeight < LevelData.Instance.YMin)
         {
             Destroy(gameObject);
-        }      
+        }
+        //if (InsertedKeyType == KeyState.Lock && ani.speed != 0) ani.speed = 0;
+        //else if (ani.speed != 2) ani.speed = 2;
 
     }
 
@@ -170,7 +191,7 @@ public class Agent : KeyWindable
         if (!processingTurn && !processingStop)
         {
             rb.velocity = new Vector2(walkSpeed * direction.x * (InsertedKeyType == KeyState.Reverse ? -1 : 1), rb.velocity.y);
-            ani.SetBool("Walking", true);
+            if(ani!=null) ani.SetBool("Walking", true);
         }
     }
 
@@ -189,18 +210,18 @@ public class Agent : KeyWindable
         rb.position = new Vector2(rb.position.x, rb.position.y + stepSize);
     }
 
-    protected void IsGrounded()
+    protected virtual void IsGrounded()
     {
         const float BUFFER = 0.2f;
 
-        jumpState = ((RayCheck(transform.position, BUFFER, -halfWidth, halfHeight, 5) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight, 5)) && ledgeSize >= minLedgeSize ? JumpState.Grounded: JumpState.Aerial);
+        jumpState = ((RayCheck(transform.position, BUFFER, -halfWidth, halfHeight, 5) || RayCheck(transform.position, -BUFFER, halfWidth, halfHeight, 5)) || ledgeSize >= minLedgeSize ? JumpState.Grounded: JumpState.Aerial);
         //if(floorPts!=null)
         //{
         //    jumpState = floorPts.Count >= 2 && ledgeSize >= minLedgeSize ? JumpState.Grounded : JumpState.Aerial;
         //} 
     }
 
-    protected bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight, float distance)
+    protected virtual bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight, float distance)
     {
         RaycastHit2D ray = Physics2D.Raycast(new Vector3(position.x - halfWidth + buffer, position.y - halfHeight, 0), Vector2.down, distance, LayerMask.GetMask("Ground"));
         if(ray.collider!=null && distance != 10)
@@ -261,7 +282,7 @@ public class Agent : KeyWindable
             if (Mathf.Abs(tempVelocity.x) > 1f) yield return new WaitUntil(() => Mathf.Abs(rb.velocity.x) > 1f);
             else yield return new WaitForSeconds(turnDelay);
             processingTurn = false;
-            Debug.Log("Coroutine End");
+            //Debug.Log("Coroutine End");
         }
 
         if (animationTag != null)
@@ -375,12 +396,16 @@ public class Agent : KeyWindable
     /// <param name="detectFloorEdges">Detect floor edges</param>
     /// <param name="detectWalls">Detect walls to turn around at</param>
     /// <returns>x direction to turn towards</returns>
-    protected int EdgeDetect(bool detectFloorEdges, bool detectWalls)
+    protected virtual int EdgeDetect(bool detectFloorEdges, bool detectWalls)
     {
         int returnVal = 0;
         if (contacts!=null)
         {
-            GetComponent<BoxCollider2D>().GetContacts(contacts);
+            BoxCollider2D[] boxes = GetComponents<BoxCollider2D>();
+            List<ContactPoint2D> contactTemp = new List<ContactPoint2D>();
+            boxes[0].GetContacts(contactTemp);
+            boxes[1].GetContacts(contacts);
+            contacts.AddRange(contactTemp);
 
             // Floor Edges -
             // Find the contact points at the base of the agent
@@ -399,14 +424,16 @@ public class Agent : KeyWindable
             foreach (ContactPoint2D contact in contacts)
             {
                 if (contact.collider.tag == "Agent") continue;
-                if (contact.point.y - transform.position.y <= .1f + halfHeight)
+                if (contact.point.y - transform.position.y <= halfHeight)
                 {
                     floorPts.Add(contact);
                 }
-                if (Mathf.Abs(contact.point.x - transform.position.x) <= .1f + halfWidth)
+                if (Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth)
                 {
                     wallPts.Add(contact);
+                    //Debug.Log(wallPts.Count);
                 }
+                //DebugDisplay.Instance.DrawDot(contact.point);
             }
 
             // Custom Sort based on agent -> pill based on orientation
@@ -449,9 +476,6 @@ public class Agent : KeyWindable
                                     isLost = false;
                                 }
                                 else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
-                                // Still end up stopping at the edge
-                                // This will also run them off the edge
-                                // Is this a garbage collection issue?
                             }
                             else
                             {
@@ -571,13 +595,11 @@ public class Agent : KeyWindable
     {
         if (contacts != null)
         {
-            
-
             Gizmos.color = Color.blue;
 
             foreach (ContactPoint2D contact in floorPts)
             {
-                Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
+                if(!contact.Equals(null)) Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
             }
 
             Gizmos.color = Color.green;
@@ -586,12 +608,65 @@ public class Agent : KeyWindable
             {
                 Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
             }
+
+            Gizmos.color = Color.red;
+            foreach(ContactPoint2D contact in contacts)
+            {
+                Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
+            }
         }
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(new Vector3(transform.position.x - halfWidth + 0.2f, transform.position.y - halfHeight, 0), .125f);
-        Gizmos.DrawWireSphere(new Vector3(transform.position.x + halfWidth - 0.2f, transform.position.y - halfHeight, 0), .125f);
 
-        Gizmos.DrawRay(new Vector3(transform.position.x - halfWidth + 0.2f, transform.position.y - halfHeight, 0), Vector2.down);
-        Gizmos.DrawRay(new Vector3(transform.position.x + halfWidth - 0.2f, transform.position.y - halfHeight, 0), Vector2.down);
+        Vector3 leftPt = RotatePoint(new Vector3(-halfWidth, -halfHeight, 0), rb.rotation);
+
+        Vector3 rightPt = RotatePoint(new Vector3(halfWidth, -halfHeight, 0), rb.rotation);
+
+        Gizmos.DrawWireSphere(leftPt + transform.position, .125f);
+        Gizmos.DrawWireSphere(rightPt + transform.position, .125f);
+
+        Vector2 dir = new Vector2(Mathf.Sin(rb.rotation * Mathf.Deg2Rad), -Mathf.Cos(rb.rotation * Mathf.Deg2Rad)).normalized;
+        Gizmos.DrawRay(leftPt + transform.position, dir);
+        Gizmos.DrawRay(rightPt + transform.position, dir);
+
+        // Need to offset based on world point
+    }
+
+    /// <summary>
+    /// Rotates a point around the origin of 0,0 at a given angle in degrees
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    protected Vector3 RotatePoint(Vector3 point, float angle)
+    {
+        Vector3 newPoint = Vector3.zero;
+        newPoint.x = point.x * Mathf.Cos(angle * Mathf.Deg2Rad) - point.y * Mathf.Sin(angle * Mathf.Deg2Rad);
+        newPoint.y = point.y * Mathf.Cos(angle * Mathf.Deg2Rad) + point.x * Mathf.Sin(angle * Mathf.Deg2Rad);
+        return newPoint;
+    }
+
+    /// <summary>
+    /// Rotates a point around a custom origin value at a given angle in degrees
+    /// </summary>
+    /// <param name="origin"></param>
+    /// <param name="positionToRotate"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    protected Vector3 RotateWorldPoint(Vector3 origin, Vector3 positionToRotate,  float angle)
+    {
+        Vector3 temp = RotatePoint(positionToRotate - origin, angle);
+        temp += origin;
+        return temp;
+    }
+
+    /// <summary>
+    /// Rotates a point at the origin of the Agent at the given angle in degrees
+    /// </summary>
+    /// <param name="point"></param>
+    /// <param name="angle"></param>
+    /// <returns></returns>
+    protected Vector3 RotateWorldPoint(Vector3 point, float angle)
+    {
+        return RotateWorldPoint(transform.position, point, angle);
     }
 }
