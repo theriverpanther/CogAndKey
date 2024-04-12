@@ -112,7 +112,7 @@ public class KeyScript : MonoBehaviour
             }
         }
         else if(currentState == State.Attached) {
-            if(PlayerInput.Instance.JustPressed(keyToInput[Type]) || PlayerInput.Instance.JustPressed(PlayerInput.Action.Recall)
+            if(PlayerInput.Instance.JustPressed(keyToInput[Type]) || PlayerInput.Instance.IsRecallKey(type)
                 || Mathf.Abs(player.transform.position.y - transform.position.y) > 30f 
                 || Mathf.Abs(player.transform.position.x - transform.position.x) > 30f
             ) {

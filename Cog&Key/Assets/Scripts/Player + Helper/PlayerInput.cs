@@ -194,6 +194,10 @@ public class PlayerInput
         return null;
     }
 
+    public bool IsRecallKey(KeyState keyType) {
+        return JustPressed(Action.Recall) && SelectedKey == keyType;
+    }
+
     public bool IsPressed(Action action) {
         return pressedThisFrame[(int)action];
     }
