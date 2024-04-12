@@ -211,7 +211,7 @@ public class ConveyorBeltScript : Rideable
             rider.GetComponent<Rigidbody2D>().velocity += ShiftSpeed * (launchDir == Vector2.up ? 0.5f : 0.8f) * launchDir;
         }
 
-        if(rider.transform.position.y > transform.position.y + transform.lossyScale.y / 2f) {
+        if(transform.localScale.x < transform.localScale.y && rider.transform.position.y > transform.position.y + transform.lossyScale.y / 2f) {
             recentRiders.Add(new RecentRiderData(.5f, rider, shiftDirections[index]));
         }
 

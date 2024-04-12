@@ -787,11 +787,11 @@ PrefabInstance:
       objectReference: {fileID: 1310697921}
     - target: {fileID: 6416847816354941741, guid: a447d812ceadd5845b704c076812ab53, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.499996
+      value: 5.5
       objectReference: {fileID: 0}
     - target: {fileID: 6416847816354941741, guid: a447d812ceadd5845b704c076812ab53, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.21665001
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 6416847816354941741, guid: a447d812ceadd5845b704c076812ab53, type: 3}
       propertyPath: m_LocalPosition.z
@@ -848,19 +848,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2262845593173028102, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: StartEquipped
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2262845593173028102, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: keyAcquiredUI
       value: 
       objectReference: {fileID: 1310697921}
+    - target: {fileID: 2262845593173028102, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
+      propertyPath: StartAttachedTo
+      value: 
+      objectReference: {fileID: 4136481548036261801}
     - target: {fileID: 6145047718219482363, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1
+      value: 12.5
       objectReference: {fileID: 0}
     - target: {fileID: 6145047718219482363, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: -0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6145047718219482363, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -868,7 +872,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6145047718219482363, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 6145047718219482363, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: m_LocalRotation.x
@@ -880,7 +884,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6145047718219482363, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 6145047718219482363, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -892,7 +896,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6145047718219482363, guid: b717826458fc7594186eb7e20152aa6d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2337,6 +2341,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tall Conveyor Belt
       objectReference: {fileID: 0}
+    - target: {fileID: 5769772162595483561, guid: 025cdb5a36be30449a21b764fe684d3c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8034297726487001618, guid: 025cdb5a36be30449a21b764fe684d3c, type: 3}
       propertyPath: m_Size.y
       value: 1
@@ -2490,7 +2498,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1435158080659954869, guid: bb491babc34d8cc40924907bdc626b50, type: 3}
       propertyPath: clockwise
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7478833717739385759, guid: bb491babc34d8cc40924907bdc626b50, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2545,6 +2553,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb491babc34d8cc40924907bdc626b50, type: 3}
+--- !u!114 &4136481548036261801 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1435158080659954869, guid: bb491babc34d8cc40924907bdc626b50, type: 3}
+  m_PrefabInstance: {fileID: 4136481548036261800}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa63ca223ba2bbf4cb28f6929de2429c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4283375879458236639
 PrefabInstance:
   m_ObjectHideFlags: 0
