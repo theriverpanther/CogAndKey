@@ -73,6 +73,7 @@ public class Hunter : Agent
 
     protected override void BehaviorTree(float walkSpeed, bool fast)
     {
+        AllocateContacts();
         bool playerSensed = false;
         foreach (Sense s in senses)
         {
@@ -94,7 +95,9 @@ public class Hunter : Agent
         {
             // patrol
             // for now just deal with edge detection
-            if(jumpState == JumpState.Grounded) EdgeDetectMovement(!fast, true);
+            if (jumpState == JumpState.Aerial) IsGrounded();
+            if (jumpState == JumpState.Grounded) EdgeDetectMovement(!fast, true);
+
             if (!isLost && pathTarget != null)
             {
                 

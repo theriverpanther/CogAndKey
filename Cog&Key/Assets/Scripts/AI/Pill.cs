@@ -236,12 +236,11 @@ public class Pill : Agent
     protected override int EdgeDetect(bool detectFloorEdges, bool detectWalls)
     {
         int returnVal = 0;
+        //contacts.Clear();
+        BoxCollider2D collider = GetComponent<BoxCollider2D>();
+        collider.GetContacts(contacts);
         if (contacts != null)
         {
-            //contacts.Clear();
-            BoxCollider2D collider = GetComponent<BoxCollider2D>();
-            collider.GetContacts(contacts);
-
             // Floor Edges -
             // Find the contact points at the base of the agent
             // If the distance between the poles of these points is less than a proportion of the size of the hunter, turn (need to determine proportion)

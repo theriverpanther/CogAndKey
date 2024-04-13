@@ -223,7 +223,7 @@ public class Agent : KeyWindable
 
     protected virtual bool RayCheck(Vector3 position, float buffer, float halfWidth, float halfHeight, float distance)
     {
-        RaycastHit2D ray = Physics2D.Raycast(new Vector3(position.x - halfWidth + buffer, position.y - halfHeight, 0), Vector2.down, distance, LayerMask.GetMask("Ground"));
+        RaycastHit2D ray = Physics2D.Raycast(new Vector3(position.x + halfWidth + buffer, position.y - halfHeight, 0), Vector2.down, distance, LayerMask.GetMask("Ground"));
         if(ray.collider!=null && distance != 10)
         {
             Debug.DrawRay(new Vector3(position.x - halfWidth + buffer, position.y - halfHeight, 0), Vector2.down, Color.green, 1f);
@@ -389,6 +389,40 @@ public class Agent : KeyWindable
         }
     }
 
+    protected void AllocateContacts()
+    {
+        rb.GetContacts(contacts);
+        //Debug.Log(contacts.Count);
+
+        floorPts.Clear();
+        wallPts.Clear();
+        foreach (ContactPoint2D contact in contacts)
+        {
+            if (contact.collider.tag == "Agent") continue;
+            if (contact.point.y - transform.position.y <= halfHeight)
+            {
+                floorPts.Add(contact);
+            }
+            if (Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth)
+            {
+                wallPts.Add(contact);
+            }
+        }
+
+        // Custom Sort based on agent -> pill based on orientation
+        floorPts.Sort((i, j) => { return i.point.x < j.point.x ? -1 : 1; });
+        wallPts.Sort((i, j) => { return i.point.y < j.point.y ? 1 : -1; });
+
+        float sqrDist = 0f;
+        ledgeSize = 0f;
+        if (floorPts.Count > 0)
+        {
+            sqrDist = SquareDistance(floorPts[0].point, floorPts[floorPts.Count - 1].point);
+
+            ledgeSize = sqrDist;
+        }
+    }
+
     /// <summary>
     /// Change direction based off of environmental data
     /// </summary>
@@ -399,14 +433,14 @@ public class Agent : KeyWindable
     protected virtual int EdgeDetect(bool detectFloorEdges, bool detectWalls)
     {
         int returnVal = 0;
-        if (contacts!=null)
+        //BoxCollider2D[] boxes = GetComponents<BoxCollider2D>();
+        //List<ContactPoint2D> contactTemp = new List<ContactPoint2D>();
+        //boxes[0].GetContacts(contactTemp);
+        //boxes[1].GetContacts(contacts);
+        //contacts.AddRange(contactTemp);
+        
+        if (contacts.Count > 0)
         {
-            BoxCollider2D[] boxes = GetComponents<BoxCollider2D>();
-            List<ContactPoint2D> contactTemp = new List<ContactPoint2D>();
-            boxes[0].GetContacts(contactTemp);
-            boxes[1].GetContacts(contacts);
-            contacts.AddRange(contactTemp);
-
             // Floor Edges -
             // Find the contact points at the base of the agent
             // If the distance between the poles of these points is less than a proportion of the size of the hunter, turn (need to determine proportion)
@@ -419,26 +453,6 @@ public class Agent : KeyWindable
             // If a jump is possible, try it
             // Turn if fail
             // If the y position is below max y, jump
-            floorPts.Clear();
-            wallPts.Clear();
-            foreach (ContactPoint2D contact in contacts)
-            {
-                if (contact.collider.tag == "Agent") continue;
-                if (contact.point.y - transform.position.y <= halfHeight)
-                {
-                    floorPts.Add(contact);
-                }
-                if (Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth)
-                {
-                    wallPts.Add(contact);
-                    //Debug.Log(wallPts.Count);
-                }
-                //DebugDisplay.Instance.DrawDot(contact.point);
-            }
-
-            // Custom Sort based on agent -> pill based on orientation
-            floorPts.Sort((i, j) => { return i.point.x < j.point.x ? -1 : 1; });
-            wallPts.Sort((i,j) => { return i.point.y < j.point.y ? 1 : -1; });
             // Change ray checks based on aligned axis
 
             float sqrDist = 0f;
