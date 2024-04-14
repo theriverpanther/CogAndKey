@@ -41,7 +41,8 @@ public class KeyScript : MonoBehaviour
     private KeyUI keyUI;
     private GameObject visual;
     private Collider2D boxCollider;
-    //private bool attachedPickup;
+    private Vector3 returnStart;
+    private float returnTime;
     public KeyState Type { get { return type; } }
 
     public bool Attached { get { return currentState == State.Attached || currentState == State.AttachPickup; } }
@@ -94,17 +95,11 @@ public class KeyScript : MonoBehaviour
             }
         }
         else if(currentState == State.Returning) {
-            Vector3 playerPos = player.transform.position;
-            Vector3 towardsPlayer = (playerPos - transform.position);
-            towardsPlayer.z = 0;
-            towardsPlayer = towardsPlayer.normalized;
-            float newSpeed = velocity.magnitude + Time.deltaTime * 4 * ACCEL;
+            returnTime += 3.0f * Time.deltaTime;
+            float scaledTime = returnTime * returnTime;
+            transform.position = (1.0f - scaledTime) * returnStart + scaledTime * player.transform.position;
 
-            velocity = newSpeed * towardsPlayer;
-            transform.position += Time.deltaTime * velocity;
-
-            if(Vector2.Distance(playerPos, transform.position) <= 0.5f) {
-                // use distance check instead of collision trigger so that the key gets more to the center of the player
+            if(returnTime >= 1f) {
                 SetState(State.PlayerHeld);
                 if(Gamepad.current != null) {
                     PlayerInput.Instance.Rumble(0.2f, 0.2f);
@@ -136,6 +131,10 @@ public class KeyScript : MonoBehaviour
                 break;
             case State.Attached:
                 boxCollider.enabled = false; // disable collider because triggers are sent to the parent
+                break;
+            case State.Returning:
+                returnStart = transform.position;
+                returnTime = 0.0f;
                 break;
         }
 
