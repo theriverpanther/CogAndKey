@@ -115,7 +115,7 @@ public class PoweredBlock : Rideable
     }
 
     protected override void OnKeyRemoved(KeyState removedKey) {
-        if(plateDirection.HasValue && InsertedKeyType == KeyState.Fast || InsertedKeyType == KeyState.Reverse) {
+        if(plateDirection.HasValue && (InsertedKeyType == KeyState.Fast || InsertedKeyType == KeyState.Reverse)) {
             plateTimer = 0.1f;
         } else { 
             plateDirection = null;
