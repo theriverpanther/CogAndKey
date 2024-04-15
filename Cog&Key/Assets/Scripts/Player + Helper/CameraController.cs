@@ -149,7 +149,7 @@ public class CameraController : MonoBehaviour
             targetY = (topBlock.Value + bottomBlock.Value) / 2f;
         } else {
             float bottomTarget = bottomBlock.HasValue ? bottomBlock.Value + cameraSize.y / 2f - 3f : float.MinValue;
-            float topTarget = topBlock.HasValue ? topBlock.Value - cameraSize.y / 2f + 3f : float.MaxValue;
+            float topTarget = topBlock.HasValue ? topBlock.Value - cameraSize.y / 2f + 1.5f : float.MaxValue;
             targetY = Mathf.Clamp(newPosition.y, bottomTarget, topTarget);
         }
 
