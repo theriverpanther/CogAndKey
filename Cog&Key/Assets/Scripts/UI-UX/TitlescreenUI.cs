@@ -6,6 +6,8 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
+using UnityEngine.InputSystem;
+using UnityEditor.Experimental.GraphView;
 
 public class TitlescreenUI : MonoBehaviour
 {
@@ -14,6 +16,9 @@ public class TitlescreenUI : MonoBehaviour
     private GameObject currentlyEnabled;
     public Animator wallpaperUI;
     private EventSystem mainEventSystem;
+
+    [SerializeField]
+    GameObject playButton;
 
     // Start is called before the first frame update
     void Start()
@@ -69,6 +74,18 @@ public class TitlescreenUI : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log("Screen does not exist.");
+        }
+    }
+
+    public void Update()
+    {
+        if(Gamepad.current.bButton.wasPressedThisFrame)
+        {
+            if (currentlyEnabled.name.ToLower() != "main screen")
+            {
+                ButtonPress("backtitle");
+                SetSelected(playButton);
+            }
         }
     }
 
