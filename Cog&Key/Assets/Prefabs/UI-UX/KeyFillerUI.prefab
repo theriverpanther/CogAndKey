@@ -31,16 +31,16 @@ RectTransform:
   m_GameObject: {fileID: 201812220187674193}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.426897, y: 1.426897, z: 1.426897}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7017874409755928630}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 143.5, y: -75}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 65.3, y: -1}
   m_SizeDelta: {x: 49.407112, y: 50}
-  m_Pivot: {x: 1, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3748412832073563459
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -177,19 +177,19 @@ MonoBehaviour:
     imagePair: {fileID: 2800000, guid: 79be4c7570d8b7844a6955de77cf0b31, type: 3}
   otherPairs:
   - key: Jump_UP
-    imagePair: {fileID: 2800000, guid: 20bc6b1e1df116140823b0b804b4ce14, type: 3}
+    imagePair: {fileID: 2800000, guid: 157dde8f1ea6605498a9127464880c6b, type: 3}
   - key: Jump_DOWN
     imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
   - key: Reverse_UP
-    imagePair: {fileID: 2800000, guid: 9c44845f458054d4d93d91af99e04862, type: 3}
+    imagePair: {fileID: 2800000, guid: 55fb5590ff4c4324794459e9f705c62b, type: 3}
   - key: Reverse_DOWN
     imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
   - key: Fast_UP
-    imagePair: {fileID: 2800000, guid: 443b83fdfb25fac4c9099d1df5640fa4, type: 3}
+    imagePair: {fileID: 2800000, guid: ddb5f20811cf76745a402094eb88b4f7, type: 3}
   - key: Fast_DOWN
     imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
   - key: Lock_UP
-    imagePair: {fileID: 2800000, guid: 8665f7dfe656b674e9a0bff1c8f932f8, type: 3}
+    imagePair: {fileID: 2800000, guid: 5355bf735ab75b34d8ba44d8fd9fda7a, type: 3}
   - key: Lock_DOWN
     imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
   genPairs:
@@ -302,7 +302,7 @@ MonoBehaviour:
   - key: Fast_DOWN
     imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
   - key: Lock_UP
-    imagePair: {fileID: 2800000, guid: 8665f7dfe656b674e9a0bff1c8f932f8, type: 3}
+    imagePair: {fileID: 2800000, guid: 5355bf735ab75b34d8ba44d8fd9fda7a, type: 3}
   - key: Lock_DOWN
     imagePair: {fileID: 2800000, guid: 2379b586ab9c09b429170d61ba8da874, type: 3}
   genPairs:
@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
 --- !u!1 &1238259055575772442
