@@ -455,18 +455,19 @@ public class Agent : KeyWindable
             // If the y position is below max y, jump
             // Change ray checks based on aligned axis
 
+            AllocateContacts();
+
             float sqrDist = 0f;
             ledgeSize = 0f;
             if (floorPts.Count > 0)
             {
                 sqrDist = SquareDistance(floorPts[0].point, floorPts[floorPts.Count - 1].point);
-
-                ledgeSize = sqrDist;
+                ledgeSize = Mathf.Abs(floorPts[0].point.x - floorPts[floorPts.Count - 1].point.x);
             }
 
             if (detectFloorEdges)
             {
-                if (sqrDist <= minLedgeSize)
+                if (ledgeSize <= minLedgeSize)
                 {
                     bool leftRayCheck = RayCheck(transform.position, 0.1f, -halfWidth, halfHeight, 10);
                     bool rightRayCheck = RayCheck(transform.position, -0.1f, halfWidth, halfHeight, 10);
@@ -538,7 +539,7 @@ public class Agent : KeyWindable
                         else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
 
                     }
-                    else if(!RayCheck(transform.position, 0.1f, halfWidth * direction.x * -1, halfHeight, 20))
+                    else if(!RayCheck(transform.position, 0.1f, halfWidth * direction.x, halfHeight, 20))
                     {
                         // Account for stepping down
                         returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
@@ -624,10 +625,10 @@ public class Agent : KeyWindable
             }
 
             Gizmos.color = Color.red;
-            foreach(ContactPoint2D contact in contacts)
-            {
-                Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
-            }
+            //foreach(ContactPoint2D contact in contacts)
+            //{
+            //    Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
+            //}
         }
         Gizmos.color = Color.red;
 

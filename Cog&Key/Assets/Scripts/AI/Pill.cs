@@ -44,8 +44,10 @@ public class Pill : Agent
         //rb.SetRotation(1 + rb.rotation);
         if (Mathf.Abs(transform.rotation.z) > 360)
         {
-            //transform.eulerAngles = new Vector3(0, 0, transform.rotation.z % 360);
+            rb.rotation = rb.rotation % 360;
         }
+
+        AllocateContacts();
 
         switch (InsertedKeyType)
         {
@@ -118,7 +120,7 @@ public class Pill : Agent
             //Fall();
         }
 
-        if (testVal) Drop();
+        if (testVal) Jump();
 
         base.Update();
     }
@@ -405,12 +407,12 @@ public class Pill : Agent
 
     private void Drop()
     {
-        StartCoroutine(Rotate(direction.x == -1 ? -1 : 1));
+        StartCoroutine(Rotate(direction.x == 1 ? -1 : 1));
     }
 
     protected override void Jump()
     {
-        StartCoroutine(Rotate(direction.x == -1 ? 1 : -1));
+        StartCoroutine(Rotate(direction.x == 1 ? 1 : -1));
     }
 
 
@@ -426,9 +428,19 @@ public class Pill : Agent
             if (orientationState > Orientation.Left) orientationState = 0;
             if (orientationState < 0) orientationState = Orientation.Left;
 
+            float value = rb.rotation + direction * 90;
             rb.freezeRotation = false;
-            rb.SetRotation(rb.rotation + direction * 90);
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            Vector3 tempVel = rb.velocity;
+            rb.velocity = new Vector2(0,0);
+            rb.MoveRotation(value);
+            Vector3 newVal = transform.position + new Vector3((Mathf.Cos(value * Mathf.Deg2Rad) == 0 ? -1 : 1) * (halfHeight - halfWidth), (Mathf.Sin(value * Mathf.Deg2Rad) == 0 ? -1 : 1) * (halfWidth - halfHeight), 0f);
+            Debug.DrawLine(transform.position, newVal, Color.white, 2f);
+            transform.position = newVal;
+            yield return new WaitUntil(() => rb.rotation == value);
             rb.freezeRotation = true;
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.velocity = tempVel;
 
             if (this.direction.x != 0)
             {

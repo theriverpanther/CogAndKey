@@ -37,6 +37,10 @@ public class Hunter : Agent
                 // Move forward until an edge is hit, turn around on the edge
                 // Hits edge = either collision on side or edge of platform
                 BehaviorTree(movementSpeed, false);
+                if (animationTag != null && !processingTurn && !processingStop)
+                {
+                    animationTag.GetComponent<Animator>().SetBool("Walking", true);
+                }
                 //rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
                 break;
             case KeyState.Reverse:
@@ -44,6 +48,10 @@ public class Hunter : Agent
                 // Might try to cache old movement for full reversal
                 // For now, just use the opposite of the direction
                 BehaviorTree(movementSpeed, false);
+                if (animationTag != null && !processingTurn && !processingStop)
+                {
+                    animationTag.GetComponent<Animator>().SetBool("Walking", true);
+                }
                 //rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
                 break;
             case KeyState.Lock:
@@ -51,11 +59,19 @@ public class Hunter : Agent
                 // Lock until removed
                 // Will have logic in future iterations
                 rb.velocity = new Vector2(0, rb.velocity.y);
+                if (animationTag != null)
+                {
+                    animationTag.GetComponent<Animator>().SetBool("Walking", false);
+                }
                 break;
             case KeyState.Fast:
                 // Same movement, scale the speed by a fast value, do not edge detect ground
                 // Lose control of seeking, just zoom in direction
                 BehaviorTree(movementSpeed * fastScalar, true);
+                if (animationTag != null && !processingTurn && !processingStop)
+                {
+                    animationTag.GetComponent<Animator>().SetBool("Walking", true);
+                }
                 //rb.velocity = new Vector2(movementSpeed * direction.x * fastScalar, rb.velocity.y);
                 break;
             default:
