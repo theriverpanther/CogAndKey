@@ -165,7 +165,7 @@ public class Hunter : Agent
             
             if(playerPosition.y > transform.position.y + halfHeight * 2)
             {
-                if(playerSensed || wallDetected) Jump();
+                if(playerSensed && wallDetected) Jump();
             }
             if (!playerSensed)
             {

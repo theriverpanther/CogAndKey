@@ -36,6 +36,7 @@ public class Pill : Agent
 
     protected override void Start()
     {
+        player = GameObject.Find("Player");
         base.Start();
     }
 
@@ -106,18 +107,13 @@ public class Pill : Agent
 
         if (floorPts.Count > 0 && orientationState != Orientation.Up && floorPts[0].point.y > transform.position.y)
         {
-            //Fall();
+            Fall();
         }
 
 
         if(Input.GetKeyDown(KeyCode.V))
         {
-            rb.freezeRotation = false;
-            rb.rotation = 0;
-            orientationState = Orientation.Up;
-            rb.freezeRotation = true;
-            //orientationState = Orientation.Up;
-            //Fall();
+            Fall();
         }
 
         if (testVal) Jump();
@@ -170,7 +166,7 @@ public class Pill : Agent
             {
                 if ((transform.position.x - playerPosition.x) < distThreshold)
                 {
-                    Jump();
+                    this.Jump();
                 }
             }
         }
@@ -189,11 +185,11 @@ public class Pill : Agent
             // instead of jumping to meet, turn around
             if (wallDetected && playerSensed)
             {
-                //Jump();
+                this.Jump();
             }
             if (playerPosition.y > transform.position.y + halfHeight * 5)
             {
-                if (playerSensed || wallDetected) Debug.Log("Jump"); //Jump();
+                if (playerSensed || wallDetected) this.Jump();
             }
             if (!playerSensed)
             {
@@ -237,6 +233,7 @@ public class Pill : Agent
 
     protected override int EdgeDetect(bool detectFloorEdges, bool detectWalls)
     {
+        if (rotating) return 0;
         int returnVal = 0;
         //contacts.Clear();
         BoxCollider2D collider = GetComponent<BoxCollider2D>();
@@ -255,50 +252,6 @@ public class Pill : Agent
             // If a jump is possible, try it
             // Turn if fail
             // If the y position is below max y, jump
-            floorPts.Clear();
-            wallPts.Clear();
-            foreach (ContactPoint2D contact in contacts)
-            {
-                bool floorCheck = false;
-                bool wallCheck = false;
-                switch (orientationState)
-                {
-                    case Orientation.Up:
-                        floorCheck = contact.point.y - transform.position.y <= halfHeight;
-                        wallCheck = Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth;
-                        break;
-                    case Orientation.Right:
-                        floorCheck = contact.point.x - transform.position.x <= halfHeight;
-                        wallCheck = Mathf.Abs(contact.point.y - transform.position.y) <= halfWidth;
-                        break;
-                    case Orientation.Down:
-                        floorCheck = transform.position.y - contact.point.y <= halfHeight;
-                        wallCheck = Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth;
-                        break;
-                    case Orientation.Left:
-                        floorCheck = transform.position.x - contact.point.x <= halfHeight;
-                        wallCheck = Mathf.Abs(contact.point.y - transform.position.y) <= halfWidth;
-                        break;
-
-                }
-                if (contact.collider.tag == "Agent") continue;
-                if (floorCheck)
-                {
-                    floorPts.Add(contact);
-                }
-                if (wallCheck)
-                {
-                    wallPts.Add(contact);
-                }
-                //DebugDisplay.Instance.DrawDot(contact.point);
-            }
-            if(floorPts.Count != 3) Debug.Log("Floor " + floorPts.Count);
-            if (wallPts.Count != 1) Debug.Log("Wall " + wallPts.Count);
-
-            // Custom Sort based on agent -> pill based on orientation
-            floorPts.Sort((i, j) => { return i.point.x < j.point.x ? -1 : 1; });
-            wallPts.Sort((i, j) => { return i.point.y < j.point.y ? 1 : -1; });
-            // Change ray checks based on aligned axis
 
             float sqrDist = 0f;
             ledgeSize = 0f;
@@ -328,7 +281,7 @@ public class Pill : Agent
                                 Vector3 point = results.collider.transform.position;
                                 if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
                                 {
-                                    if (pathTarget.transform.position.y > transform.position.y) Jump();
+                                    if (pathTarget.transform.position.y > transform.position.y) this.Jump();
                                     returnVal = 0;
                                     lostTimer = 0;
                                     isLost = false;
@@ -339,7 +292,7 @@ public class Pill : Agent
                             {
                                 if (sqrDistToTarget <= 64f)
                                 {
-                                    if (transform.position.y < pathTarget.transform.position.y) Jump();
+                                    if (transform.position.y < pathTarget.transform.position.y) this.Jump();
                                     returnVal = 0;
                                     lostTimer = 0;
                                     isLost = false;
@@ -359,7 +312,7 @@ public class Pill : Agent
 
                         else if (PlayerPosition != Vector3.zero)
                         {
-                            if (Mathf.Abs(rb.velocity.x) > 0) Jump();
+                            if (Mathf.Abs(rb.velocity.x) > 0) this.Jump();
                             returnVal = 0;
                         }
 
@@ -370,34 +323,130 @@ public class Pill : Agent
                 }
                 else
                 {
-                    float maxY = float.MinValue;
-                    float minY = float.MaxValue;
-                    foreach (ContactPoint2D contact in floorPts)
+                    if(orientationState == Orientation.Up || orientationState == Orientation.Down)
                     {
-                        if (contact.point.y < minY) minY = contact.point.y;
-                        if (contact.point.y > maxY) maxY = contact.point.y;
+                        float maxY = float.MinValue;
+                        float minY = float.MaxValue;
+                        foreach (ContactPoint2D contact in floorPts)
+                        {
+                            if (contact.point.y < minY) minY = contact.point.y;
+                            if (contact.point.y > maxY) maxY = contact.point.y;
+                        }
+                        if (maxY - minY > stepSize) StepUp();
                     }
-                    if (maxY - minY > stepSize) StepUp();
+                    else
+                    {
+                        float maxX = float.MinValue;
+                        float minX = float.MaxValue;
+                        foreach (ContactPoint2D contact in floorPts)
+                        {
+                            if (contact.point.y < minX) minX = contact.point.x;
+                            if (contact.point.y > maxX) maxX = contact.point.x;
+                        }
+                        if (maxX - minX > stepSize) StepUp();
+                    }
+                    
                 }
             }
             if (detectWalls)
             {
                 if (wallPts.Count >= 2)
                 {
-                    float maxY = float.MinValue;
-                    float minY = float.MaxValue;
-
-                    foreach (ContactPoint2D contact in wallPts)
+                    if (orientationState == Orientation.Up || orientationState == Orientation.Down)
                     {
-                        if (contact.point.y < minY) minY = contact.point.y;
-                        if (contact.point.y > maxY) maxY = contact.point.y;
+                        float maxY = float.MinValue;
+                        float minY = float.MaxValue;
+                        foreach (ContactPoint2D contact in floorPts)
+                        {
+                            if (contact.point.y < minY) minY = contact.point.y;
+                            if (contact.point.y > maxY) maxY = contact.point.y;
+                        }
+                        if (maxY - minY > jumpSpeed) this.Jump();
+                    }
+                    else
+                    {
+                        float maxX = float.MinValue;
+                        float minX = float.MaxValue;
+                        foreach (ContactPoint2D contact in floorPts)
+                        {
+                            if (contact.point.y < minX) minX = contact.point.x;
+                            if (contact.point.y > maxX) maxX = contact.point.x;
+                        }
+                        if (maxX - minX > jumpSpeed) this.Jump();
                     }
 
-                    Jump();
+                    this.Jump();
                 }
             }
         }
         return returnVal;
+    }
+
+    protected override void AllocateContacts()
+    {
+        rb.GetContacts(contacts);
+        //Debug.Log(contacts.Count);
+
+        floorPts.Clear();
+        wallPts.Clear();
+
+        foreach (ContactPoint2D contact in contacts)
+        {
+            bool floorCheck = false;
+            bool wallCheck = false;
+            switch (orientationState)
+            {
+                case Orientation.Up:
+                    floorCheck = transform.position.y - contact.point.y  <= halfHeight;
+                    wallCheck = Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth;
+                    break;
+                case Orientation.Right:
+                    floorCheck = transform.position.x - contact.point.x <= halfHeight;
+                    wallCheck = Mathf.Abs(contact.point.y - transform.position.y) <= halfWidth;
+                    break;
+                case Orientation.Down:
+                    floorCheck = contact.point.y - transform.position.y <= halfHeight;
+                    wallCheck = Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth;
+                    break;
+                case Orientation.Left:
+                    floorCheck = contact.point.x - transform.position.x <= halfHeight;
+                    wallCheck = Mathf.Abs(contact.point.y - transform.position.y) <= halfWidth;
+                    break;
+
+            }
+            if (contact.collider.tag == "Agent") continue;
+            if (floorCheck)
+            {
+                floorPts.Add(contact);
+            }
+            if (wallCheck)
+            {
+                wallPts.Add(contact);
+            }
+
+            float sqrDist = 0f;
+            ledgeSize = 0f;
+            if (floorPts.Count > 0)
+            {
+                sqrDist = SquareDistance(floorPts[0].point, floorPts[floorPts.Count - 1].point);
+
+                ledgeSize = sqrDist;
+            }
+        }
+
+        // Custom Sort based on agent -> pill based on orientation
+        if(orientationState == Orientation.Up || orientationState == Orientation.Down)
+        {
+            floorPts.Sort((i, j) => { return i.point.x < j.point.x ? -1 : 1; });
+            wallPts.Sort((i, j) => { return i.point.y < j.point.y ? 1 : -1; });
+        }
+        else
+        {
+            floorPts.Sort((i, j) => { return i.point.y < j.point.y ? -1 : 1; });
+            wallPts.Sort((i, j) => { return i.point.x < j.point.x ? 1 : -1; });
+        }
+        // Change ray checks based on aligned axis
+
     }
 
     private void Fall()
@@ -424,6 +473,7 @@ public class Pill : Agent
         {
             isRotating = true;
 
+            // Update Orientation
             orientationState -= direction;
             if (orientationState > Orientation.Left) orientationState = 0;
             if (orientationState < 0) orientationState = Orientation.Left;
@@ -432,9 +482,10 @@ public class Pill : Agent
             rb.freezeRotation = false;
             rb.bodyType = RigidbodyType2D.Kinematic;
             Vector3 tempVel = rb.velocity;
-            rb.velocity = new Vector2(0,0);
+            rb.velocity = Vector2.zero;
             rb.MoveRotation(value);
-            Vector3 newVal = transform.position + new Vector3((Mathf.Cos(value * Mathf.Deg2Rad) == 0 ? -1 : 1) * (halfHeight - halfWidth), (Mathf.Sin(value * Mathf.Deg2Rad) == 0 ? -1 : 1) * (halfWidth - halfHeight), 0f);
+            Vector3 newVal = transform.position + new Vector3((Mathf.Abs(Mathf.Cos(Mathf.Deg2Rad * value)) == 0 ? 1 : -1) * (halfWidth - halfHeight),
+                                                                (value % 360 == 180 || value % 360 == 270 ? 1 : -1) * (halfHeight - halfWidth), 0f);
             Debug.DrawLine(transform.position, newVal, Color.white, 2f);
             transform.position = newVal;
             yield return new WaitUntil(() => rb.rotation == value);
@@ -451,6 +502,22 @@ public class Pill : Agent
             {
                 this.direction.x = this.direction.y;
                 this.direction.y = 0;
+            }
+
+            switch(orientationState)
+            {
+                case Orientation.Left:
+                    transform.localScale = new Vector3(-this.direction.y, 1, 1);
+                    break;
+                case Orientation.Down:
+                    transform.localScale = new Vector3(this.direction.x, 1, 1);
+                    break;
+                case Orientation.Right:
+                    transform.localScale = new Vector3(this.direction.y, 1, 1);
+                    break;
+                case Orientation.Up:
+                    transform.localScale = new Vector3(-this.direction.x, 1, 1);
+                    break;
             }
 
             //float timer = 0;

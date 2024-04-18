@@ -389,7 +389,7 @@ public class Agent : KeyWindable
         }
     }
 
-    protected void AllocateContacts()
+    protected virtual void AllocateContacts()
     {
         rb.GetContacts(contacts);
         //Debug.Log(contacts.Count);
@@ -571,7 +571,7 @@ public class Agent : KeyWindable
                         if(contact.point.y > maxY) maxY = contact.point.y;
                     }
 
-                    if (maxY - minY >= halfHeight - .1f)
+                    if (maxY - minY >= halfHeight)
                     {
                         returnVal = wallPts[0].point.x < transform.position.x ? 1 : -1;
                     }
