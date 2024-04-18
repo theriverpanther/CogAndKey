@@ -40,6 +40,10 @@ public class Hunter : Agent
                 // Hits edge = either collision on side or edge of platform
                 BehaviorTree(movementSpeed, false);
                 hunterAnimations.SetFloat("Speed", 1);
+                if (animationTag != null && !processingTurn && !processingStop)
+                {
+                    animationTag.GetComponent<Animator>().SetBool("Walking", true);
+                }
                 //rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
                 break;
             case KeyState.Reverse:
@@ -48,6 +52,10 @@ public class Hunter : Agent
                 // For now, just use the opposite of the direction
                 BehaviorTree(movementSpeed, false);
                 hunterAnimations.SetFloat("Speed", -1.5f);
+                if (animationTag != null && !processingTurn && !processingStop)
+                {
+                    animationTag.GetComponent<Animator>().SetBool("Walking", true);
+                }
                 //rb.velocity = new Vector2(movementSpeed * direction.x, rb.velocity.y);
                 break;
             case KeyState.Lock:
@@ -56,12 +64,20 @@ public class Hunter : Agent
                 // Will have logic in future iterations
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 hunterAnimations.SetFloat("Speed", 0);
+                if (animationTag != null)
+                {
+                    animationTag.GetComponent<Animator>().SetBool("Walking", false);
+                }
                 break;
             case KeyState.Fast:
                 // Same movement, scale the speed by a fast value, do not edge detect ground
                 // Lose control of seeking, just zoom in direction
                 BehaviorTree(movementSpeed * fastScalar, true);
                 hunterAnimations.SetFloat("Speed", 1.5f);
+                if (animationTag != null && !processingTurn && !processingStop)
+                {
+                    animationTag.GetComponent<Animator>().SetBool("Walking", true);
+                }
                 //rb.velocity = new Vector2(movementSpeed * direction.x * fastScalar, rb.velocity.y);
                 break;
             default:
@@ -155,7 +171,7 @@ public class Hunter : Agent
             
             if(playerPosition.y > transform.position.y + halfHeight * 2)
             {
-                if(playerSensed || wallDetected) Jump();
+                if(playerSensed && wallDetected) Jump();
             }
             if (!playerSensed)
             {

@@ -43,6 +43,7 @@ public class KeyScript : MonoBehaviour
     private Collider2D boxCollider;
     private Vector3 returnStart;
     private float returnTime;
+    private bool returnFaster;
     public KeyState Type { get { return type; } }
 
     public bool Attached { get { return currentState == State.Attached || currentState == State.AttachPickup; } }
@@ -95,7 +96,7 @@ public class KeyScript : MonoBehaviour
             }
         }
         else if(currentState == State.Returning) {
-            returnTime += 3.0f * Time.deltaTime;
+            returnTime += (returnFaster ? 6f : 3.0f) * Time.deltaTime;
             float scaledTime = returnTime * returnTime;
             transform.position = (1.0f - scaledTime) * returnStart + scaledTime * player.transform.position;
 
@@ -127,7 +128,7 @@ public class KeyScript : MonoBehaviour
                 break;
             case State.Attacking:
                 SetActive(true);
-                transform.localPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+                transform.localPosition = player.transform.position;
                 break;
             case State.Attached:
                 boxCollider.enabled = false; // disable collider because triggers are sent to the parent
@@ -135,6 +136,7 @@ public class KeyScript : MonoBehaviour
             case State.Returning:
                 returnStart = transform.position;
                 returnTime = 0.0f;
+                returnFaster = Vector2.Distance(transform.position, player.transform.position) < 2.0f;
                 break;
         }
 

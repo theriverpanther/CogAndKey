@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2127669084252330649}
   - component: {fileID: 9034239406136708904}
   - component: {fileID: 7129150094159061108}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 2698930125854928055}
   - component: {fileID: 2518777728627218210}
   - component: {fileID: 6266114410323300525}
-  m_Layer: 2
+  m_Layer: 14
   m_Name: Hunter
   m_TagString: Agent
   m_Icon: {fileID: 0}
@@ -183,7 +183,7 @@ MonoBehaviour:
   processingTurn: 0
   processingStop: 0
   pathTarget: {fileID: 0}
-  minLedgeSize: 2
+  minLedgeSize: 1.5
   ledgeSize: 0
   signifier_mat_idle: {fileID: 2100000, guid: bfb06bfbce404cc48ac0b23bab9e8e67, type: 2}
   signifier_mat_attack: {fileID: 2100000, guid: 0af2079cec263814eb0045ac9b9b996e, type: 2}
@@ -221,7 +221,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.6824522, y: 0.58}
+  m_Offset: {x: -0.6824522, y: 0.55068994}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -232,7 +232,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.7830906, y: 2.55}
+  m_Size: {x: 1.7830906, y: 2.6086202}
   m_EdgeRadius: 0
 --- !u!61 &2518777728627218210
 BoxCollider2D:
@@ -301,7 +301,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 4
+    m_Bits: 16388
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -318,7 +318,7 @@ GameObject:
   - component: {fileID: 1219042728086153759}
   - component: {fileID: 8040336077339182211}
   - component: {fileID: 7088257616929858595}
-  m_Layer: 2
+  m_Layer: 14
   m_Name: Sight
   m_TagString: Not Physics
   m_Icon: {fileID: 0}
@@ -460,7 +460,7 @@ GameObject:
   - component: {fileID: 4589412632226605338}
   - component: {fileID: 6229497153326840427}
   - component: {fileID: 4525991479264589196}
-  m_Layer: 2
+  m_Layer: 14
   m_Name: Backwards Sense
   m_TagString: Untagged
   m_Icon: {fileID: 0}
