@@ -863,7 +863,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 3098f04b9195aab48b8065c212a2c444, type: 3}
     - target: {fileID: 737069584690309812, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Color.a
-      value: 0.5882353
+      value: 0.6862745
       objectReference: {fileID: 0}
     - target: {fileID: 1238259055575772442, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Name
@@ -993,7 +993,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 737069584690309812, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Color.a
-      value: 0.5882353
+      value: 0.6862745
       objectReference: {fileID: 0}
     - target: {fileID: 1238259055575772442, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Name
@@ -1002,6 +1002,10 @@ PrefabInstance:
     - target: {fileID: 1777258764903648534, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Name
       value: Stop Key
+      objectReference: {fileID: 0}
+    - target: {fileID: 1814525463322788550, guid: 0813a2780923d204381e70eede23affc, type: 3}
+      propertyPath: m_EffectColor.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3689282094989724371, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Sprite
@@ -1123,7 +1127,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 26b136c5d5630964f9417ebd3a98991d, type: 3}
     - target: {fileID: 737069584690309812, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Color.a
-      value: 0.5882353
+      value: 0.6862745
       objectReference: {fileID: 0}
     - target: {fileID: 1238259055575772442, guid: 0813a2780923d204381e70eede23affc, type: 3}
       propertyPath: m_Name
