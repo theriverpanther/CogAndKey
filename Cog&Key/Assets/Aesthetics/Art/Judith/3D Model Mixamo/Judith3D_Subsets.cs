@@ -37,4 +37,12 @@ public class Judith3D_Subsets : MonoBehaviour
         //Debug.Log("AAAAAAAAAA");
         transform.localRotation = new Quaternion(transform.rotation.x, 180f, transform.rotation.z, transform.rotation.w);
     }
+
+    void KillPlayOnAnimationEnd()
+    {
+        PlayerScript player = GameObject.Find("Player").GetComponent<PlayerScript>();
+        player.Die();
+        player.playerAnimation.SetBool("Dead", false);
+        PlayerInput.Instance.Locked = false;
+    }
 }
