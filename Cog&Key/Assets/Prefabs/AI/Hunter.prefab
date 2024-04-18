@@ -188,6 +188,7 @@ MonoBehaviour:
   signifier_mat_idle: {fileID: 2100000, guid: bfb06bfbce404cc48ac0b23bab9e8e67, type: 2}
   signifier_mat_attack: {fileID: 2100000, guid: 0af2079cec263814eb0045ac9b9b996e, type: 2}
   signifier: {fileID: 5375331374888654306}
+  hunterAnimations: {fileID: 7536989477852280065}
 --- !u!61 &2698930125854928055
 BoxCollider2D:
   m_ObjectHideFlags: 0
