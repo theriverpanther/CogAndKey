@@ -12,6 +12,8 @@ public class KeyScript : MonoBehaviour
 
     [SerializeField] private GameObject keyAcquiredUI;
 
+    private Animator animator;
+
     public enum State {
         FloatPickup,
         PlayerHeld,
@@ -58,6 +60,7 @@ public class KeyScript : MonoBehaviour
         visual = transform.GetChild(0).gameObject;
         keyAni = visual.GetComponent<Animator>();
         boxCollider = GetComponent<Collider2D>();
+        animator = visual.GetComponent<Animator>();
     }
 
     void Start() {
@@ -124,6 +127,7 @@ public class KeyScript : MonoBehaviour
 
         switch(currentState) {
             case State.PlayerHeld:
+               
                 SetActive(false);
                 break;
             case State.Attacking:
