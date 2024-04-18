@@ -137,7 +137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpState: 0
   movementSpeed: 3
-  jumpSpeed: 16
+  jumpSpeed: 0.25
   fastScalar: 3
   stepSize: 0.1
   rb: {fileID: 4023532078733587198}
@@ -1653,6 +1653,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 14
       objectReference: {fileID: 0}
+    - target: {fileID: 399772970465554283, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 484246925045810862, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
       propertyPath: m_Layer
       value: 14
@@ -1664,6 +1668,10 @@ PrefabInstance:
     - target: {fileID: 1700603534413560532, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
       propertyPath: m_Layer
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1856888710073977851, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
+      propertyPath: m_SortingOrder
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 2924671182427003953, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
       propertyPath: m_Layer

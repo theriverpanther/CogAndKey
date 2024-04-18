@@ -252,19 +252,11 @@ public class Pill : Agent
             // If a jump is possible, try it
             // Turn if fail
             // If the y position is below max y, jump
-
-            float sqrDist = 0f;
             ledgeSize = 0f;
-            if (floorPts.Count > 0)
-            {
-                sqrDist = SquareDistance(floorPts[0].point, floorPts[floorPts.Count - 1].point);
-
-                ledgeSize = sqrDist;
-            }
 
             if (detectFloorEdges)
             {
-                if (sqrDist <= minLedgeSize)
+                if (ledgeSize <= minLedgeSize)
                 {
                     bool leftRayCheck = RayCheck(transform.position, 0.1f, -halfWidth, halfHeight, 10);
                     bool rightRayCheck = RayCheck(transform.position, -0.1f, halfWidth, halfHeight, 10);
@@ -343,7 +335,7 @@ public class Pill : Agent
                             if (contact.point.y < minX) minX = contact.point.x;
                             if (contact.point.y > maxX) maxX = contact.point.x;
                         }
-                        if (maxX - minX > stepSize) StepUp();
+                        if (maxX - minX <= stepSize) StepUp();
                     }
                     
                 }
@@ -361,7 +353,7 @@ public class Pill : Agent
                             if (contact.point.y < minY) minY = contact.point.y;
                             if (contact.point.y > maxY) maxY = contact.point.y;
                         }
-                        if (maxY - minY > jumpSpeed) this.Jump();
+                        if (maxY - minY > stepSize) this.Jump();
                     }
                     else
                     {
@@ -372,10 +364,10 @@ public class Pill : Agent
                             if (contact.point.y < minX) minX = contact.point.x;
                             if (contact.point.y > maxX) maxX = contact.point.x;
                         }
-                        if (maxX - minX > jumpSpeed) this.Jump();
+                        if (maxX - minX > stepSize) this.Jump();
                     }
 
-                    this.Jump();
+                    //this.Jump();
                 }
             }
         }
@@ -424,13 +416,11 @@ public class Pill : Agent
                 wallPts.Add(contact);
             }
 
-            float sqrDist = 0f;
             ledgeSize = 0f;
             if (floorPts.Count > 0)
             {
-                sqrDist = SquareDistance(floorPts[0].point, floorPts[floorPts.Count - 1].point);
-
-                ledgeSize = sqrDist;
+                if (orientationState == Orientation.Up || orientationState == Orientation.Down) ledgeSize = Mathf.Abs(floorPts[0].point.x - floorPts[floorPts.Count - 1].point.x);
+                else ledgeSize = Mathf.Abs(floorPts[0].point.y - floorPts[floorPts.Count - 1].point.y);
             }
         }
 
@@ -456,12 +446,26 @@ public class Pill : Agent
 
     private void Drop()
     {
-        StartCoroutine(Rotate(direction.x == 1 ? -1 : 1));
+        if (orientationState == Orientation.Up || orientationState == Orientation.Down)
+        {
+            StartCoroutine(Rotate(direction.x == 1 ? -1 : 1));
+        }
+        else
+        {
+            StartCoroutine(Rotate(direction.y == 1 ? -1 : 1));
+        }
     }
 
     protected override void Jump()
     {
-        StartCoroutine(Rotate(direction.x == 1 ? 1 : -1));
+        if(orientationState == Orientation.Up || orientationState == Orientation.Down)
+        {
+            StartCoroutine(Rotate(direction.x == 1 ? 1 : -1));
+        }
+        else
+        {
+            StartCoroutine(Rotate(direction.y == 1 ? 1 : -1));
+        }
     }
 
 
@@ -484,8 +488,8 @@ public class Pill : Agent
             Vector3 tempVel = rb.velocity;
             rb.velocity = Vector2.zero;
             rb.MoveRotation(value);
-            Vector3 newVal = transform.position + new Vector3((Mathf.Abs(Mathf.Cos(Mathf.Deg2Rad * value)) == 0 ? 1 : -1) * (halfWidth - halfHeight),
-                                                                (value % 360 == 180 || value % 360 == 270 ? 1 : -1) * (halfHeight - halfWidth), 0f);
+            Vector3 newVal = transform.position + new Vector3((value % 360 == 270 || value % 360 == 180 ? -1 : 1) * (Mathf.Abs(halfWidth - halfHeight)),
+                                                                (value % 360 == 180 || value % 360 == 270 ? -1 : 1) * (Mathf.Abs(halfHeight - halfWidth)), 0f);
             Debug.DrawLine(transform.position, newVal, Color.white, 2f);
             transform.position = newVal;
             yield return new WaitUntil(() => rb.rotation == value);
