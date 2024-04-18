@@ -16,6 +16,9 @@ public class ConveyorBeltScript : Rideable
 
     private static Dictionary<GameObject, List<Vector3>> allBeltRiders; // prevents multiple belts affecting things at the seams
 
+    [SerializeField]
+    private Animator tickAnimator;
+
     private class RecentRiderData {
         public float timer;
         public GameObject rider;
@@ -31,10 +34,10 @@ public class ConveyorBeltScript : Rideable
     private List<RecentRiderData> recentRiders = new List<RecentRiderData>();
 
     // temp visual spin
-    private List<GameObject> topTicks = new List<GameObject>();
-    private List<GameObject> bottomTicks = new List<GameObject>();
-    private List<GameObject> leftTicks = new List<GameObject>();
-    private List<GameObject> rightTicks = new List<GameObject>();
+    //private List<GameObject> topTicks = new List<GameObject>();
+    //private List<GameObject> bottomTicks = new List<GameObject>();
+    //private List<GameObject> leftTicks = new List<GameObject>();
+    //private List<GameObject> rightTicks = new List<GameObject>();
     private float visualTimer;
 
     [SerializeField]
@@ -46,31 +49,31 @@ public class ConveyorBeltScript : Rideable
         allBeltRiders = new Dictionary<GameObject, List<Vector3>>();
         Rect area = Global.GetCollisionArea(gameObject);
 
-        float tickHalfWidth = TickMarkPrefab.transform.localScale.y / 2;
+        //float tickHalfWidth = TickMarkPrefab.transform.localScale.y / 2;
 
-        // horizontal marks
-        for(float x = area.xMin + 0.5f; x < area.xMax; x += 0.5f) {
-            GameObject addedTop = Instantiate(TickMarkPrefab);
-            topTicks.Add(addedTop);
-            addedTop.transform.position = new Vector3(x, area.yMax - tickHalfWidth, 0);
+        //// horizontal marks
+        //for(float x = area.xMin + 0.5f; x < area.xMax; x += 0.5f) {
+        //    GameObject addedTop = Instantiate(TickMarkPrefab);
+        //    topTicks.Add(addedTop);
+        //    addedTop.transform.position = new Vector3(x, area.yMax - tickHalfWidth, 0);
 
-            GameObject addedBottom = Instantiate(TickMarkPrefab);
-            bottomTicks.Add(addedBottom);
-            addedBottom.transform.position = new Vector3(x, area.yMin + tickHalfWidth, 0);
-        }
+        //    GameObject addedBottom = Instantiate(TickMarkPrefab);
+        //    bottomTicks.Add(addedBottom);
+        //    addedBottom.transform.position = new Vector3(x, area.yMin + tickHalfWidth, 0);
+        //}
 
-        // vertical marks
-        for(float y = area.yMin + 0.5f; y < area.yMax; y += 0.5f) {
-            GameObject addedLeft = Instantiate(TickMarkPrefab);
-            leftTicks.Add(addedLeft);
-            addedLeft.transform.position = new Vector3(area.xMin + tickHalfWidth, y, 0);
-            addedLeft.transform.rotation = Quaternion.Euler(0, 0, 90);
+        //// vertical marks
+        //for(float y = area.yMin + 0.5f; y < area.yMax; y += 0.5f) {
+        //    GameObject addedLeft = Instantiate(TickMarkPrefab);
+        //    leftTicks.Add(addedLeft);
+        //    addedLeft.transform.position = new Vector3(area.xMin + tickHalfWidth, y, 0);
+        //    addedLeft.transform.rotation = Quaternion.Euler(0, 0, 90);
 
-            GameObject addedRight = Instantiate(TickMarkPrefab);
-            rightTicks.Add(addedRight);
-            addedRight.transform.position = new Vector3(area.xMax - tickHalfWidth, y, 0);
-            addedRight.transform.rotation = Quaternion.Euler(0, 0, 90);
-        }
+        //    GameObject addedRight = Instantiate(TickMarkPrefab);
+        //    rightTicks.Add(addedRight);
+        //    addedRight.transform.position = new Vector3(area.xMax - tickHalfWidth, y, 0);
+        //    addedRight.transform.rotation = Quaternion.Euler(0, 0, 90);
+        //}
 
         if (!clockwise)
         {
@@ -142,36 +145,36 @@ public class ConveyorBeltScript : Rideable
         }
         
         // update temp visuals
-        float lastTime = visualTimer;
-        visualTimer += ShiftSpeed * 0.5f * Time.deltaTime * (clockwise ? 1 : -1);
-        if(visualTimer >= 0.5f || visualTimer <= -0.5f) {
-            visualTimer = 0;
-        }
-        float shift = visualTimer - lastTime;
+        //float lastTime = visualTimer;
+        //visualTimer += ShiftSpeed * 0.5f * Time.deltaTime * (clockwise ? 1 : -1);
+        //if(visualTimer >= 0.5f || visualTimer <= -0.5f) {
+        //    visualTimer = 0;
+        //}
+        //float shift = visualTimer - lastTime;
 
-        foreach(GameObject top in topTicks) {
-            Vector3 pos = top.transform.position;
-            pos.x += shift;
-            top.transform.position = pos;
-        }
+        //foreach(GameObject top in topTicks) {
+        //    Vector3 pos = top.transform.position;
+        //    pos.x += shift;
+        //    top.transform.position = pos;
+        //}
 
-        foreach(GameObject bottom in bottomTicks) {
-            Vector3 pos = bottom.transform.position;
-            pos.x -= shift;
-            bottom.transform.position = pos;
-        }
+        //foreach(GameObject bottom in bottomTicks) {
+        //    Vector3 pos = bottom.transform.position;
+        //    pos.x -= shift;
+        //    bottom.transform.position = pos;
+        //}
 
-        foreach(GameObject left in leftTicks) {
-            Vector3 pos = left.transform.position;
-            pos.y += shift;
-            left.transform.position = pos;
-        }
+        //foreach(GameObject left in leftTicks) {
+        //    Vector3 pos = left.transform.position;
+        //    pos.y += shift;
+        //    left.transform.position = pos;
+        //}
 
-        foreach(GameObject right in rightTicks) {
-            Vector3 pos = right.transform.position;
-            pos.y -= shift;
-            right.transform.position = pos;
-        }
+        //foreach(GameObject right in rightTicks) {
+        //    Vector3 pos = right.transform.position;
+        //    pos.y -= shift;
+        //    right.transform.position = pos;
+        //}
     }
 
     protected override void OnRiderAdded(GameObject rider) {
@@ -236,6 +239,13 @@ public class ConveyorBeltScript : Rideable
             ReverseDirection();
         }
 
+        switch(newKey)
+        {
+            case KeyState.Lock: { tickAnimator.SetFloat("tickSpeed", 0); break; }
+            case KeyState.Fast: { tickAnimator.SetFloat("tickSpeed", 1.5f); break; }
+            case KeyState.Reverse: { tickAnimator.SetFloat("tickSpeed", -1.5f); break; }
+        }
+
         UpdateGears(newKey);
 
     }
@@ -244,6 +254,8 @@ public class ConveyorBeltScript : Rideable
         if(removedKey == KeyState.Reverse) {
             ReverseDirection();
         }
+
+        tickAnimator.SetFloat("tickSpeed", 1);
 
         UpdateGears(KeyState.None);
 
@@ -259,7 +271,8 @@ public class ConveyorBeltScript : Rideable
 
     private void ReverseDirection() {
         clockwise = !clockwise;
-        for(int i = 0; i < riders.Count; i++) {
+        
+        for (int i = 0; i < riders.Count; i++) {
             List<Vector3> allRiderDirections = allBeltRiders[riders[i]];
             int reverseIndex = allRiderDirections.IndexOf(shiftDirections[i]);
             if(reverseIndex >= 0) {
