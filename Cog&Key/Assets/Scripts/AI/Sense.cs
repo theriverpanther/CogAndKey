@@ -39,7 +39,7 @@ public class Sense : MonoBehaviour
         {
             if (type == SenseType.Sight)
             {
-                RaycastHit2D results = Physics2D.Raycast(transform.position, (collision.transform.position - transform.position).normalized, 10f);
+                RaycastHit2D results = Physics2D.Raycast(transform.position, (collision.transform.position - transform.position).normalized, 10f, LayerMask.GetMask("Ground", "Player"));
                 //Debug.DrawLine(transform.position, results.transform.position, Color.red, 2f);
                 //Debug.Log($"Pos:{transform.position}, Collider: {collision.transform.position}");
 
