@@ -242,8 +242,8 @@ public class ConveyorBeltScript : Rideable
         switch(newKey)
         {
             case KeyState.Lock: { tickAnimator.SetFloat("tickSpeed", 0); break; }
-            case KeyState.Fast: { tickAnimator.SetFloat("tickSpeed", 1.5f); break; }
-            case KeyState.Reverse: { tickAnimator.SetFloat("tickSpeed", -1.5f); break; }
+            case KeyState.Fast: { tickAnimator.SetFloat("tickSpeed", -1.5f); break; }
+            case KeyState.Reverse: { tickAnimator.SetFloat("tickSpeed", 1.5f); break; }
         }
 
         UpdateGears(newKey);
@@ -255,7 +255,7 @@ public class ConveyorBeltScript : Rideable
             ReverseDirection();
         }
 
-        tickAnimator.SetFloat("tickSpeed", 1);
+        tickAnimator.SetFloat("tickSpeed", -1);
 
         UpdateGears(KeyState.None);
 
