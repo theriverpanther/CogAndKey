@@ -223,7 +223,7 @@ public class KeyScript : MonoBehaviour
             // attach to an object
             transform.position = windable.transform.position + snap.Value.localPosition;
             AttachTo(windable);
-            SoundManager.Instance.PlaySound("Lock", .3f); //Sound Manager Code
+            SoundManager.Instance?.PlaySound("Lock", .3f); //Sound Manager Code
             if(Gamepad.current != null) {
                 PlayerInput.Instance.Rumble(0.6f, 0.1f);
             }
