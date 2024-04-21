@@ -20,6 +20,7 @@ public class KeyPlug : KeyWindable
         if(newKey == KeyState.Fast || newKey == KeyState.Reverse) {
             doorLock.Activated = true;
             light.color = Color.green;
+            doorLock.light.GetComponent<DoorLight>().UpdateDoor();
         }
         else if(newKey == KeyState.Lock) {
             target.Locked = true;
@@ -30,6 +31,7 @@ public class KeyPlug : KeyWindable
         if(removedKey == KeyState.Fast || removedKey == KeyState.Reverse) {
             doorLock.Activated = false;
             light.color = Color.red;
+            doorLock.light.GetComponent<DoorLight>().UpdateDoor();
         }
         else if(removedKey == KeyState.Lock) {
             target.Locked = false;
