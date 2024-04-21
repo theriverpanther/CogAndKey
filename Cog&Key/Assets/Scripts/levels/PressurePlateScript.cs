@@ -15,6 +15,10 @@ public class PressurePlateScript : MonoBehaviour
 
     private const float SPEED = 5.0f;
 
+    [SerializeField] Color inactve;
+    [SerializeField] Color active;
+    [SerializeField] private GameObject lightOnButton;
+
     void Start() {
         doorLocks = new DoorOpener[targets.Count];
         for(int i = 0; i < targets.Count; i++) {
@@ -22,6 +26,7 @@ public class PressurePlateScript : MonoBehaviour
         }
         buttonTop = button.transform.localPosition.y;
         buttonBottom = -0.3f;
+        lightOnButton.GetComponent<SpriteRenderer>().color = inactve;
     }
 
     void Update() {
@@ -46,10 +51,14 @@ public class PressurePlateScript : MonoBehaviour
 
         numOnTop++;
         pressed = true;
-        foreach(DoorOpener doorLock in doorLocks) {
+        lightOnButton.GetComponent<SpriteRenderer>().color = active;
+
+        foreach (DoorOpener doorLock in doorLocks) {
             doorLock.Activated = true;
+            doorLock.light.GetComponent<DoorLight>().UpdateDoor();
         }
 
+        
         PoweredBlock block = collision.gameObject.GetComponent<PoweredBlock>();
         if(block != null) {
             block.SetPlateDirection();
@@ -64,8 +73,10 @@ public class PressurePlateScript : MonoBehaviour
         numOnTop--;
         if(numOnTop <= 0) {
             pressed = false;
-            foreach(DoorOpener doorLock in doorLocks) {
+            lightOnButton.GetComponent<SpriteRenderer>().color = inactve;
+            foreach (DoorOpener doorLock in doorLocks) {
                 doorLock.Activated = false;
+                doorLock.light.GetComponent<DoorLight>().UpdateDoor();
             }
         }
     }

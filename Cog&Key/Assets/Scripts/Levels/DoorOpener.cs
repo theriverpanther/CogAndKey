@@ -5,6 +5,9 @@ using UnityEngine;
 public class DoorOpener
 {
     private bool activated;
+
+    public GameObject light;
+
     public bool Activated {
         get { return activated; }
         set { 

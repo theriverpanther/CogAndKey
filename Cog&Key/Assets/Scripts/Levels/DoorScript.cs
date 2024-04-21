@@ -13,12 +13,18 @@ public class DoorScript : MonoBehaviour
 
     private const float MOVE_SPEED = 10f;
 
+    [SerializeField]
+    private GameObject lightHolder;
+    [SerializeField] 
+    private GameObject lightBase;
+
     public bool Locked { get; set; }
 
     void Start() {
         startY = transform.position.y;
         height = transform.localScale.y;
         open = false;
+        lightHolder.transform.parent.GetComponent<RectTransform>().localScale = new Vector3(0.0104735792f, 0.00314207375f, 0.00942622125f);
     }
 
     void Update() {
@@ -52,12 +58,17 @@ public class DoorScript : MonoBehaviour
 
     public void AddLock(DoorOpener doorLock) {
         locks.Add(doorLock);
+        doorLock.light = Instantiate(lightBase, lightHolder.transform);
+        doorLock.light.GetComponent<DoorLight>().LinkDoor(doorLock);
     }
 
     public void CheckLocks() {
         open = RequireAll;
         foreach(DoorOpener opener in locks) {
-            if(!RequireAll && opener.Activated) {
+
+            opener.light.GetComponent<DoorLight>().UpdateDoor();
+
+            if (!RequireAll && opener.Activated) {
                 open = true;
                 return;
             }
