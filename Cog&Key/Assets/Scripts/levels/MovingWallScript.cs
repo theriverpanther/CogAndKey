@@ -142,7 +142,7 @@ public class MovingWallScript : Rideable
     }
 
     protected override void OnRiderRemoved(GameObject rider, int index) {
-        if(rider.transform.parent.gameObject.activeInHierarchy) {
+        if(rider.transform.parent == null || rider.transform.parent.gameObject.activeInHierarchy) {
             rider.transform.SetParent(null);
         }
 
