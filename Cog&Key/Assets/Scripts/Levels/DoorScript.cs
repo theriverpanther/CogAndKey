@@ -58,25 +58,52 @@ public class DoorScript : MonoBehaviour
 
     public void AddLock(DoorOpener doorLock) {
         locks.Add(doorLock);
-        doorLock.light = Instantiate(lightBase, lightHolder.transform);
+
+        if(!RequireAll && lightHolder.transform.childCount != 1)
+        {
+            Instantiate(lightBase, lightHolder.transform);
+            doorLock.light = lightHolder.transform.GetChild(0).gameObject;
+
+        } else if (!RequireAll)
+        {
+            doorLock.light = lightHolder.transform.GetChild(0).gameObject;
+        }
+
+        if (RequireAll)
+        {
+            doorLock.light = Instantiate(lightBase, lightHolder.transform);
+        }
+
         doorLock.light.GetComponent<DoorLight>().LinkDoor(doorLock);
     }
 
     public void CheckLocks() {
         open = RequireAll;
+        bool lightOnForAll = false;
         foreach(DoorOpener opener in locks) {
-
-            opener.light.GetComponent<DoorLight>().UpdateDoor();
 
             if (!RequireAll && opener.Activated) {
                 open = true;
+                opener.light.GetComponent<DoorLight>().UpdateDoor();
                 return;
             }
 
             if(RequireAll && !opener.Activated) {
                 open = false;
+                if (lightOnForAll)
+                {
+                    opener.light.GetComponent<DoorLight>().UpdateDoor("open");
+
+                }
+                return;
+            }  else
+            {
+                opener.light.GetComponent<DoorLight>().UpdateDoor("open");
+                lightOnForAll = true;
                 return;
             }
+
+
         }
     }
 }

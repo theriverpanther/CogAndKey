@@ -26,8 +26,19 @@ public class DoorLight : MonoBehaviour
         UpdateDoor();
     }
 
-    public void UpdateDoor()
+    public void UpdateDoor(string status = "")
     {
+        if(status != "")
+        {
+            if(status == "open")
+            {
+                lightImg.color = active;
+                return;
+            }
+            lightImg.color = inactive;
+            return;
+        }
+
         if(lockAttachedTo.Activated)
         {
             lightImg.color = active;
