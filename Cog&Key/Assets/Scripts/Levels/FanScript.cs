@@ -15,7 +15,7 @@ public class FanScript : KeyWindable
         { KeyState.Fast, 3f },
         { KeyState.None, 1f },
         { KeyState.Lock, 0f },
-        { KeyState.Reverse, -1f }
+        { KeyState.Reverse, -1.5f }
     };
 
     private List<Rigidbody2D> affectedEntities = new List<Rigidbody2D>();
