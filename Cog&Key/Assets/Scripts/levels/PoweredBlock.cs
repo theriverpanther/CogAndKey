@@ -13,12 +13,18 @@ public class PoweredBlock : Rideable
 
     public Vector2? plateDirection;
 
+    [SerializeField]
+    private GameObject fanCollection;
+
+    private GameObject fanBlades;
+
     void Start() {
         startHeight = transform.position.y;
         physBod = GetComponent<Rigidbody2D>();
         physBod.mass = 80f;
         physBod.gravityScale = 4.0f;
         halfWidth = transform.localScale.x / 2f;
+        fanBlades = fanCollection.transform.GetChild(0).gameObject;
 
         float angle = transform.GetChild(0).transform.rotation.eulerAngles.z;
         switch(angle) {
@@ -28,6 +34,7 @@ public class PoweredBlock : Rideable
 
             case 90:
                 forwardDirection = Vector2.up;
+                fanCollection.transform.localRotation = transform.rotation;
                 break;
 
             case 180:
@@ -35,6 +42,8 @@ public class PoweredBlock : Rideable
                 break;
 
             case 270:
+                fanCollection.transform.localRotation = transform.rotation;
+                break;
             case -90:
                 forwardDirection = Vector2.down;
                 break;
@@ -112,6 +121,10 @@ public class PoweredBlock : Rideable
     protected override void OnKeyInserted(KeyState newKey) {
         if(newKey == KeyState.Lock) {
             physBod.isKinematic = false;
+            foreach(Transform blade in fanBlades.transform)
+            {
+                blade.gameObject.GetComponent<Animator>().StartPlayback();
+            }
             //physBod.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
         }
     }
@@ -126,6 +139,10 @@ public class PoweredBlock : Rideable
         if(removedKey == KeyState.Lock) {
             physBod.isKinematic = true;
             physBod.velocity = Vector3.zero;
+            foreach (Transform blade in fanBlades.transform)
+            {
+                blade.gameObject.GetComponent<Animator>().StopPlayback();
+            }
             //physBod.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
     }
