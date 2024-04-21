@@ -12,10 +12,10 @@ public class FanScript : KeyWindable
 
     private const float MAX_BASE_FORCE = 10.0f;
     private static Dictionary<KeyState, float> keyToMultiplier = new Dictionary<KeyState, float>() {
-        { KeyState.Fast, 2f },
+        { KeyState.Fast, 3f },
         { KeyState.None, 1f },
         { KeyState.Lock, 0f },
-        { KeyState.Reverse, -1f }
+        { KeyState.Reverse, -1.5f }
     };
 
     private List<Rigidbody2D> affectedEntities = new List<Rigidbody2D>();

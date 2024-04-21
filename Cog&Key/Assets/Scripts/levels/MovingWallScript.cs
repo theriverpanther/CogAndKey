@@ -142,7 +142,9 @@ public class MovingWallScript : Rideable
     }
 
     protected override void OnRiderRemoved(GameObject rider, int index) {
-        rider.transform.SetParent(null);
+        if(rider.transform.parent == null || rider.transform.parent.gameObject.activeInHierarchy) {
+            rider.transform.SetParent(null);
+        }
 
         // keep rider momentum if moving fast
         if(InsertedKeyType == KeyState.Fast) {
