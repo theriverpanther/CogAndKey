@@ -37,7 +37,10 @@ public class TutorialZone : MonoBehaviour
         if (attempts == showAfterAttempts)
         {
             showThisZone.SetActive(true);
-            showThisZone.GetComponent<Animator>().SetTrigger("ShowPopup");
+            if(showThisZone.GetComponent<Animator>() != null)
+            {
+                showThisZone.GetComponent<Animator>().SetTrigger("ShowPopup");
+            }
             SoundManager.Instance?.PlaySound("Tutorial", .4f); //Sound Manager Tutorial Ping
         }
 
