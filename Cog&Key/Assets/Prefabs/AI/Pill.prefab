@@ -149,7 +149,7 @@ MonoBehaviour:
   processingTurn: 0
   processingStop: 0
   pathTarget: {fileID: 0}
-  minLedgeSize: 0.25
+  minLedgeSize: 1
   ledgeSize: 0
   isFalling: 0
   isRotating: 0
@@ -214,7 +214,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0026826859, y: -0.0145303905}
+  m_Offset: {x: -0.0026826859, y: 0.24}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -508,7 +508,7 @@ Transform:
   m_GameObject: {fileID: 2529657333566953278}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0.6789856, y: 0.062000275, z: 0}
+  m_LocalPosition: {x: -0.6789856, y: 0.29900026, z: 0}
   m_LocalScale: {x: 3.186563, y: 4.998906, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -604,7 +604,7 @@ Transform:
   m_GameObject: {fileID: 2627168527937860289}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.237, z: 0}
   m_LocalScale: {x: 2.5746875, y: 4.8625, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -696,7 +696,7 @@ Transform:
   m_GameObject: {fileID: 3049167300355068107}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: 0.006, z: 0}
+  m_LocalPosition: {x: -0, y: 0.243, z: 0}
   m_LocalScale: {x: 0.45937502, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1127,7 +1127,7 @@ Transform:
   m_GameObject: {fileID: 6794050714160483303}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.237, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1707,7 +1707,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6966479903630681708, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.118
+      value: 0.35500002
       objectReference: {fileID: 0}
     - target: {fileID: 6966479903630681708, guid: 639d3a73ff4000a4e8c3bb8f8ad02ea0, type: 3}
       propertyPath: m_LocalPosition.z
