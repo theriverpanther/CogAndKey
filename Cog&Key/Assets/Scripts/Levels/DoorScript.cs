@@ -100,7 +100,6 @@ public class DoorScript : MonoBehaviour
             {
                 opener.light.GetComponent<DoorLight>().UpdateDoor("open");
                 lightOnForAll = true;
-                return;
             }
 
 

@@ -7,7 +7,6 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.InputSystem;
-using UnityEditor.Experimental.GraphView;
 
 public class TitlescreenUI : MonoBehaviour
 {
@@ -130,7 +129,7 @@ public class TitlescreenUI : MonoBehaviour
                 SwitchScreen("Main Screen");
                 break;
             case "play":
-                SetScene("Onboarding_v1");
+                SetScene("Onboarding");
                 break;
         }
         }

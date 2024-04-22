@@ -105,9 +105,6 @@ public class KeyScript : MonoBehaviour
 
             if(returnTime >= 1f) {
                 SetState(State.PlayerHeld);
-                if(Gamepad.current != null) {
-                    PlayerInput.Instance.Rumble(0.2f, 0.2f);
-                }
             }
         }
         else if(currentState == State.Attached) {

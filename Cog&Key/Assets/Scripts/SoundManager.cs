@@ -28,6 +28,7 @@ public class SoundManager : MonoBehaviour
         }
 
         Instance = this;
+        transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
         activeSounds = new List<AudioSource>();
         soundList = new Dictionary<string, AudioClip>();
