@@ -14,6 +14,8 @@ public class TutorialZone : MonoBehaviour
     [SerializeField]
     GameObject showThisZone;
 
+    GameObject soundManager;
+
     void Start()
     {
         showThisZone.SetActive(false);
@@ -35,6 +37,8 @@ public class TutorialZone : MonoBehaviour
         if (attempts == showAfterAttempts)
         {
             showThisZone.SetActive(true);
+            showThisZone.GetComponent<Animator>().SetTrigger("ShowPopup");
+            SoundManager.Instance?.PlaySound("Tutorial", .4f); //Sound Manager Tutorial Ping
         }
 
 

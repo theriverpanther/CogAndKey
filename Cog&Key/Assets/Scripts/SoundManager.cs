@@ -46,7 +46,8 @@ public class SoundManager : MonoBehaviour
     }
 
     public void PlaySound(string identifier, float volume = 0.3f) {
-        if(!soundList.ContainsKey(identifier)) {
+        Debug.Log("Playing clip.");
+        if (!soundList.ContainsKey(identifier)) {
             Debug.Log("Sound clip not found.");
             return;
         }

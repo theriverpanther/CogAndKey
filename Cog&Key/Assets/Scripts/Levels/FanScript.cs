@@ -7,6 +7,7 @@ public class FanScript : KeyWindable
     private GameObject Wind1;
     private GameObject Wind2;
     private float windTime;
+    [SerializeField]
     private ParticleSystem particles;
     private Vector3 basePos;
 
