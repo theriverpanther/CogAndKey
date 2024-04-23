@@ -20,8 +20,8 @@ public class CameraController : MonoBehaviour
     private const float WINDOW_CENTER_X_LIMIT = WINDOW_X_LIMIT - WINDOW_WIDTH / 2f;
     //private const float WINDOW_CENTER_Y_LIMIT = WINDOW_Y_LIMIT - WINDOW_HEIGHT / 2f;
 
-    private const float FOCUS_OUTER_RADIUS = 12.0f;
-    private const float FOCUS_INNER_RADIUS = 8.0f;
+    private const float FOCUS_OUTER_RADIUS = 10.0f;
+    private const float FOCUS_INNER_RADIUS = 7.0f;
     private const float FOCUS_MAX_RATIO = 0.5f;
 
     private PlayerScript player;
