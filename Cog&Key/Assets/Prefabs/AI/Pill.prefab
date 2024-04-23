@@ -136,21 +136,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpState: 0
-  movementSpeed: 3
-  jumpSpeed: 0.25
-  fastScalar: 3
   stepSize: 0.1
   rb: {fileID: 4023532078733587198}
   senses:
   - {fileID: 8710868206761123753}
   - {fileID: 4419252549508052745}
   direction: {x: 0, y: 0}
-  playerPosition: {x: 0, y: 0, z: 0}
+  halfHeight: 0.75
+  halfWidth: 0
   processingTurn: 0
   processingStop: 0
   pathTarget: {fileID: 0}
-  minLedgeSize: 1
+  minLedgeSize: 0.25
   ledgeSize: 0
+  distThreshold: 0.5
   isFalling: 0
   isRotating: 0
   testVal: 0
