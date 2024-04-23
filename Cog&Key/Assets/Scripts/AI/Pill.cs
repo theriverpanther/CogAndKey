@@ -563,8 +563,8 @@ public class Pill : Agent
             
             rb.MoveRotation(value);
             float modTheta = value % 360;
-            bool xCondition = modTheta == -90 || modTheta == 270;
-            bool yCondition = modTheta == -270 || modTheta == 90;
+            bool xCondition = modTheta == -90 || modTheta == 270 || modTheta == 0;
+            bool yCondition = modTheta == -270 || modTheta == 90 || modTheta == 0;
             Vector3 newPos = transform.position + new Vector3((xCondition ? -1 : 1) * (Mathf.Abs(halfWidth - halfHeight)),
                                                                 (yCondition ? -1 : 1) * (Mathf.Abs(halfHeight - halfWidth)), 0f);
             if (orientationState == Orientation.Down) newPos.y += .25f;
