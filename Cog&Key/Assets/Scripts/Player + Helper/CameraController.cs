@@ -29,6 +29,8 @@ public class CameraController : MonoBehaviour
     private Rect playerWindow;
     private List<Vector2> focusPoints;
 
+    private Vector3 unfocusedPositon;
+
     public static CameraController Instance { get; private set; }
 
     public Vector2 Dimensions { get {
@@ -54,43 +56,24 @@ public class CameraController : MonoBehaviour
             focusPoints.Add(focusPoint.transform.position);
             Destroy(focusPoint);
         }
+
+        unfocusedPositon = transform.position;
     }
 
     void FixedUpdate() {
         Vector2 cameraSize = Dimensions;
         LevelData level = LevelData.Instance;
 
-        Vector3 startPosition = transform.position;
-        Vector3 newPosition = transform.position;
-
-        Vector2 followPoint = player.transform.position;
+        Vector3 startPosition = unfocusedPositon;
+        Vector3 newPosition = startPosition;
 
         Vector2 startCenter = playerWindow.center;
         playerWindow.height = player.CurrentState == PlayerScript.State.Grounded ? WINDOW_GROUND_HEIGHT : WINDOW_AIR_HEIGHT;
         playerWindow.center = startCenter;
         float windowCenterYLimit = WINDOW_Y_LIMIT - playerWindow.height / 2f;
 
-        // check if there is a nearby focus point
-        Vector2? focus = null;
-        float focusDist = 0f;
-        foreach(Vector2 focusPoint in focusPoints) {
-            focusDist = Vector2.Distance(player.transform.position, focusPoint);
-            if(focusDist <= FOCUS_OUTER_RADIUS) {
-                focus = focusPoint;
-                break;
-            }
-        }
-        
-        if(focus.HasValue) {
-            float ratio = FOCUS_MAX_RATIO;
-            if(focusDist > FOCUS_INNER_RADIUS) {
-                float multiplier = (FOCUS_OUTER_RADIUS - focusDist) / (FOCUS_OUTER_RADIUS - FOCUS_INNER_RADIUS);
-                ratio *= multiplier;
-            }
-            followPoint = ratio * focus.Value + (1 - ratio) * (Vector2)player.transform.position; // focus on the average of the focus point and the player
-        }
-
-        Vector2 followRelativeToCenter = followPoint - (Vector2)transform.position;
+        Vector2 followPoint = player.transform.position;
+        Vector2 followRelativeToCenter = followPoint - (Vector2)unfocusedPositon;
 
         // manage horizontal
         float? movingX = null;
@@ -184,6 +167,30 @@ public class CameraController : MonoBehaviour
         windowCenter.x = Mathf.Clamp(windowCenter.x, -WINDOW_CENTER_X_LIMIT, WINDOW_CENTER_X_LIMIT);
         windowCenter.y = Mathf.Clamp(windowCenter.y, -windowCenterYLimit, windowCenterYLimit);
         playerWindow.center = windowCenter;
+
+        // check if there is a nearby focus point
+        unfocusedPositon = transform.position;
+        Vector2? focus = null;
+        float focusDist = float.MaxValue;
+        foreach(Vector2 focusPoint in focusPoints) {
+            float testFocusDist = Vector2.Distance(player.transform.position, focusPoint);
+            if(testFocusDist <= FOCUS_OUTER_RADIUS && testFocusDist < focusDist) {
+                focus = focusPoint;
+                focusDist = testFocusDist;
+                break;
+            }
+        }
+        
+        if(focus.HasValue) {
+            float ratio = FOCUS_MAX_RATIO;
+            if(focusDist > FOCUS_INNER_RADIUS) {
+                float multiplier = (FOCUS_OUTER_RADIUS - focusDist) / (FOCUS_OUTER_RADIUS - FOCUS_INNER_RADIUS);
+                ratio *= multiplier;
+            }
+            newPosition = ratio * focus.Value + (1 - ratio) * (Vector2)unfocusedPositon; // focus on the average of the focus point and the player
+            newPosition.z = fixedZ;
+            transform.position = newPosition;
+        }
 
         if(visibleWindow != null) {
         // REMOVE FOR FINAL VERSION
