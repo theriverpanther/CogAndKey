@@ -22,8 +22,8 @@ public class Agent : KeyWindable
     [SerializeField] protected JumpState jumpState;
 
     [Header("Agent Statistics")]
-    protected float movementSpeed = 2f;
-    protected float jumpSpeed = 2f;
+    [SerializeField] protected float movementSpeed = 2f;
+    [SerializeField] protected float jumpSpeed = 2f;
     protected float attackSpeed;
     protected float fastScalar = 3f;
     [SerializeField] protected float stepSize = 0.01f;

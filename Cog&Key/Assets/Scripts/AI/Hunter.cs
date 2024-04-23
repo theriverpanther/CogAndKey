@@ -169,7 +169,7 @@ public class Hunter : Agent
             // Player needs to be able to jump over enemy
             // instead of jumping to meet, turn around
             
-            if(playerPosition.y > transform.position.y + halfHeight * 2)
+            if(playerPosition.y > transform.position.y - halfHeight + stepSize)
             {
                 if(playerSensed && wallDetected) Jump();
             }

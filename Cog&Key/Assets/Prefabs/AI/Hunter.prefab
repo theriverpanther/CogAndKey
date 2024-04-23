@@ -170,6 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpState: 0
+  movementSpeed: 7.5
   stepSize: 0.01
   rb: {fileID: 6266114410323300525}
   senses:
