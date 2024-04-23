@@ -22,10 +22,10 @@ public class Agent : KeyWindable
     [SerializeField] protected JumpState jumpState;
 
     [Header("Agent Statistics")]
-    [SerializeField] protected float movementSpeed = 2f;
-    [SerializeField] protected float jumpSpeed = 2f;
+    protected float movementSpeed = 2f;
+    protected float jumpSpeed = 2f;
     protected float attackSpeed;
-    [SerializeField] protected float fastScalar = 3f;
+    protected float fastScalar = 3f;
     [SerializeField] protected float stepSize = 0.01f;
 
     protected const float GROUND_GRAVITY = 7.5f;
@@ -46,9 +46,9 @@ public class Agent : KeyWindable
     protected List<GameObject> collidingObjs;
     [SerializeField] protected Vector2 direction = Vector2.zero;
 
-    [SerializeField] protected Vector3 playerPosition = Vector3.zero;
-    protected float halfHeight = 0.75f;
-    protected float halfWidth = 0;
+    protected Vector3 playerPosition = Vector3.zero;
+    [SerializeField] protected float halfHeight = 0.75f;
+    [SerializeField] protected float halfWidth = 0;
 
     protected float turnDelay = .5f;
     [SerializeField] protected bool processingTurn = false;
@@ -99,7 +99,6 @@ public class Agent : KeyWindable
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        
         rb.gravityScale = GROUND_GRAVITY;
         scaleVal = transform.localScale;
         collidingObjs = new List<GameObject>(); 
@@ -205,7 +204,7 @@ public class Agent : KeyWindable
         }
     }
 
-    protected void StepUp()
+    protected virtual void StepUp()
     {
         rb.position = new Vector2(rb.position.x, rb.position.y + stepSize);
     }
@@ -231,32 +230,31 @@ public class Agent : KeyWindable
         return ray.collider != null && ray.distance < halfHeight + distance;
     }
 
-    protected List<Vector2> ValidJumps()
-    {
-        List<Vector2> jumps = new List<Vector2>();
+    //protected List<Vector2> ValidJumps()
+    //{
+    //    List<Vector2> jumps = new List<Vector2>();
 
-        foreach(GameObject node in nodes)
-        {
-            if(IsPointOnJump(node.transform.position.x, node.transform.position.y, mistakeThreshold))
-            {
-                jumps.Add(node.transform.position);
-            }
-        }
+    //    foreach(GameObject node in nodes)
+    //    {
+    //        if(IsPointOnJump(node.transform.position.x, node.transform.position.y, mistakeThreshold))
+    //        {
+    //            jumps.Add(node.transform.position);
+    //        }
+    //    }
 
-        return jumps;
-    }
+    //    return jumps;
+    //}
 
-    protected bool IsPointOnJump(float x, float y, float threshold)
-    {
-        float offsetX = Mathf.Abs(x - transform.position.x);
-        float calcY = -rb.gravityScale * offsetX * offsetX + rb.velocity.y * offsetX + transform.position.x;
-        return calcY > y - threshold && calcY < y + threshold;
-    }
+    //protected bool IsPointOnJump(float x, float y, float threshold)
+    //{
+    //    float offsetX = Mathf.Abs(x - transform.position.x);
+    //    float calcY = -rb.gravityScale * offsetX * offsetX + rb.velocity.y * offsetX + transform.position.x;
+    //    return calcY > y - threshold && calcY < y + threshold;
+    //}
 
     // turning animations go here
     protected IEnumerator TurnDelay()
-    {
-
+    { 
         if (!processingTurn && !processingStop)
         {
             processingTurn = true;
@@ -403,7 +401,7 @@ public class Agent : KeyWindable
             {
                 floorPts.Add(contact);
             }
-            if (Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth)
+            if (Mathf.Abs(contact.point.x - transform.position.x) <= halfWidth + 0.1f)
             {
                 wallPts.Add(contact);
             }
@@ -433,11 +431,6 @@ public class Agent : KeyWindable
     protected virtual int EdgeDetect(bool detectFloorEdges, bool detectWalls)
     {
         int returnVal = 0;
-        //BoxCollider2D[] boxes = GetComponents<BoxCollider2D>();
-        //List<ContactPoint2D> contactTemp = new List<ContactPoint2D>();
-        //boxes[0].GetContacts(contactTemp);
-        //boxes[1].GetContacts(contacts);
-        //contacts.AddRange(contactTemp);
         
         if (contacts.Count > 0)
         {
@@ -610,12 +603,18 @@ public class Agent : KeyWindable
     {
         if (contacts != null)
         {
+            //Gizmos.color = Color.red;
+            //foreach (ContactPoint2D contact in contacts)
+            //{
+            //    Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
+            //}
+
             Gizmos.color = Color.blue;
 
-            foreach (ContactPoint2D contact in floorPts)
-            {
-                if(!contact.Equals(null)) Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
-            }
+            //foreach (ContactPoint2D contact in floorPts)
+            //{
+            //    if (!contact.Equals(null)) Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
+            //}
 
             Gizmos.color = Color.green;
 
@@ -624,11 +623,7 @@ public class Agent : KeyWindable
                 Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
             }
 
-            Gizmos.color = Color.red;
-            //foreach(ContactPoint2D contact in contacts)
-            //{
-            //    Gizmos.DrawSphere(new Vector3(contact.point.x, contact.point.y, 0), 0.0625f);
-            //}
+
         }
         Gizmos.color = Color.red;
 
