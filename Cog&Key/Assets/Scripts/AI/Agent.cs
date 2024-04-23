@@ -432,7 +432,7 @@ public class Agent : KeyWindable
     {
         int returnVal = 0;
         
-        if (contacts.Count > 0)
+        if (contacts.Count > 0 && !processingTurn)
         {
             // Floor Edges -
             // Find the contact points at the base of the agent
