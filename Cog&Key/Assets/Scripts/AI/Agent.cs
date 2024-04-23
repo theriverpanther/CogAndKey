@@ -460,95 +460,98 @@ public class Agent : KeyWindable
 
             if (detectFloorEdges)
             {
-                if (ledgeSize <= minLedgeSize)
+                if(floorPts.Count > 0)
                 {
-                    bool leftRayCheck = RayCheck(transform.position, 0.1f, -halfWidth, halfHeight, 10);
-                    bool rightRayCheck = RayCheck(transform.position, -0.1f, halfWidth, halfHeight, 10);
-                    if (pathTarget != null)
+                    if (ledgeSize <= minLedgeSize)
                     {
-                        float xDistToTarget = Mathf.Abs(transform.position.x - pathTarget.transform.position.x);
-                        float sqrDistToTarget = Vector3.SqrMagnitude(transform.position - pathTarget.transform.position);
-                        if (xDistToTarget < 20f)
+                        bool leftRayCheck = RayCheck(transform.position, 0.1f, -halfWidth, halfHeight, 10);
+                        bool rightRayCheck = RayCheck(transform.position, -0.1f, halfWidth, halfHeight, 10);
+                        if (pathTarget != null)
                         {
-                            RaycastHit2D results;
-                            results = Physics2D.Raycast(transform.position, (pathTarget.transform.position - transform.position).normalized, 5f, LayerMask.GetMask("Ground", "Player"));
-                            if (results.collider != null)
+                            float xDistToTarget = Mathf.Abs(transform.position.x - pathTarget.transform.position.x);
+                            float sqrDistToTarget = Vector3.SqrMagnitude(transform.position - pathTarget.transform.position);
+                            if (xDistToTarget < 20f)
                             {
-                                //Debug.DrawLine(transform.position, pathTarget.transform.position);
-                                Vector3 point = results.collider.transform.position;
-                                if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
+                                RaycastHit2D results;
+                                results = Physics2D.Raycast(transform.position, (pathTarget.transform.position - transform.position).normalized, 5f, LayerMask.GetMask("Ground", "Player"));
+                                if (results.collider != null)
                                 {
-                                    if (pathTarget.transform.position.y > transform.position.y) Jump();
-                                    returnVal = 0;
-                                    lostTimer = 0;
-                                    isLost = false;
-                                }
-                                else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
-                            }
-                            else
-                            {
-                                //Debug.DrawLine(transform.position, pathTarget.transform.position);
-                                if (sqrDistToTarget <= 64f)
-                                {
-                                    if (transform.position.y < pathTarget.transform.position.y) Jump();
-                                    returnVal = 0;
-                                    lostTimer = 0;
-                                    isLost = false;
+                                    //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                    Vector3 point = results.collider.transform.position;
+                                    if (Mathf.Abs(pathTarget.transform.position.y - transform.position.y) < 2f)
+                                    {
+                                        if (pathTarget.transform.position.y > transform.position.y) Jump();
+                                        returnVal = 0;
+                                        lostTimer = 0;
+                                        isLost = false;
+                                    }
+                                    else returnVal = floorPts[0].point.x < transform.position.x && leftRayCheck ? -1 : 1;
                                 }
                                 else
                                 {
-                                    lostTimer += Time.deltaTime;
-                                    if (lostTimer >= confusionTime)
+                                    //Debug.DrawLine(transform.position, pathTarget.transform.position);
+                                    if (sqrDistToTarget <= 64f)
                                     {
-                                        isLost = true;
-                                        Debug.Log(gameObject.name + " can't reach next point at " + pathTarget.transform.position + ".");
+                                        if (transform.position.y < pathTarget.transform.position.y) Jump();
+                                        returnVal = 0;
+                                        lostTimer = 0;
+                                        isLost = false;
                                     }
-                                    // Turn the way that is opposite of the edge the agent is at
-                                    bool left = false;
-                                    bool right = false;
+                                    else
+                                    {
+                                        lostTimer += Time.deltaTime;
+                                        if (lostTimer >= confusionTime)
+                                        {
+                                            isLost = true;
+                                            Debug.Log(gameObject.name + " can't reach next point at " + pathTarget.transform.position + ".");
+                                        }
+                                        // Turn the way that is opposite of the edge the agent is at
+                                        bool left = false;
+                                        bool right = false;
 
-                                    // Need to turn when meeting two conditions
-                                    // Central point within a threshold of minLedgeSize + x
-                                    // Edge point greater than or less than x
-                                    foreach(ContactPoint2D contact in floorPts)
-                                    {
-                                        if (contact.point.x > transform.position.x) right = true;
-                                        else left = true;
+                                        // Need to turn when meeting two conditions
+                                        // Central point within a threshold of minLedgeSize + x
+                                        // Edge point greater than or less than x
+                                        foreach (ContactPoint2D contact in floorPts)
+                                        {
+                                            if (contact.point.x > transform.position.x) right = true;
+                                            else left = true;
+                                        }
+                                        if (left) returnVal = -1;
+                                        else if (right) returnVal = 1;
+                                        else returnVal = 0;
                                     }
-                                    if (left) returnVal = -1;
-                                    else if (right) returnVal = 1;
-                                    else returnVal = 0;
                                 }
                             }
+
+
+                            else if (PlayerPosition != Vector3.zero)
+                            {
+                                if (Mathf.Abs(rb.velocity.x) > 0) Jump();
+                                returnVal = 0;
+                            }
+
+                            else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
+
                         }
-                    
-                        
-                        else if (PlayerPosition != Vector3.zero)
+                        else if (!RayCheck(transform.position, 0.1f, halfWidth * direction.x, halfHeight, 20))
                         {
-                            if(Mathf.Abs(rb.velocity.x) > 0) Jump();
-                            returnVal = 0;
+                            // Account for stepping down
+                            returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
                         }
 
-                        else returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
-
                     }
-                    else if(!RayCheck(transform.position, 0.1f, halfWidth * direction.x, halfHeight, 20))
+                    else
                     {
-                        // Account for stepping down
-                        returnVal = floorPts[0].point.x < transform.position.x ? -1 : 1;
+                        float maxY = float.MinValue;
+                        float minY = float.MaxValue;
+                        foreach (ContactPoint2D contact in floorPts)
+                        {
+                            if (contact.point.y < minY) minY = contact.point.y;
+                            if (contact.point.y > maxY) maxY = contact.point.y;
+                        }
+                        if (maxY - minY > stepSize) StepUp();
                     }
-
-                }
-                else
-                {
-                    float maxY = float.MinValue;
-                    float minY = float.MaxValue;
-                    foreach(ContactPoint2D contact in floorPts)
-                    {
-                        if (contact.point.y < minY) minY = contact.point.y;
-                        if (contact.point.y > maxY) maxY = contact.point.y;
-                    }
-                    if (maxY - minY > stepSize) StepUp();
                 }
             }
             if (detectWalls)

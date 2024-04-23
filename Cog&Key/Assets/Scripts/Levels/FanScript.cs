@@ -110,7 +110,32 @@ public class FanScript : KeyWindable
             particles.transform.position = basePos;
         } else
         {
-            particles.transform.position = new Vector3(basePos.x, basePos.y + 10, basePos.z);
+            int modAngle = (int)(transform.eulerAngles.z % 360);
+            switch(modAngle)
+            {
+                case 90:
+                    particles.transform.position = new Vector3(basePos.x - 6, basePos.y, basePos.z);
+                    break;
+                case -270:
+                    particles.transform.position = new Vector3(basePos.x - 6, basePos.y, basePos.z);
+                    break;
+                case 180:
+                    particles.transform.position = new Vector3(basePos.x, basePos.y - 6, basePos.z);
+                    break;
+                case -180:
+                    particles.transform.position = new Vector3(basePos.x, basePos.y - 6, basePos.z);
+                    break;
+                case 270:
+                    particles.transform.position = new Vector3(basePos.x + 6, basePos.y, basePos.z);
+                    break;
+                case -90:
+                    particles.transform.position = new Vector3(basePos.x + 6, basePos.y, basePos.z);
+                    break;
+                case 0:
+                    particles.transform.position = new Vector3(basePos.x, basePos.y + 6, basePos.z);
+                    break;
+
+            }
         }
         particles.Play();
         yield return new WaitForSeconds(0.05f);
