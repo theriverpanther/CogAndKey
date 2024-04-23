@@ -18,6 +18,7 @@ public class ConveyorBeltScript : Rideable
 
     [SerializeField]
     private Animator tickAnimator;
+    private float speedMultiplier = 0f;
 
     private class RecentRiderData {
         public float timer;
@@ -48,6 +49,16 @@ public class ConveyorBeltScript : Rideable
         gears = transform.GetComponentsInChildren<Gear>();
         allBeltRiders = new Dictionary<GameObject, List<Vector3>>();
         Rect area = Global.GetCollisionArea(gameObject);
+
+        if(clockwise)
+        {
+            speedMultiplier = 1;
+        } else
+        {
+            speedMultiplier = -1;
+        }
+
+        tickAnimator.SetFloat("tickSpeed", speedMultiplier);
 
         //float tickHalfWidth = TickMarkPrefab.transform.localScale.y / 2;
 
@@ -242,8 +253,8 @@ public class ConveyorBeltScript : Rideable
         switch(newKey)
         {
             case KeyState.Lock: { tickAnimator.SetFloat("tickSpeed", 0); break; }
-            case KeyState.Fast: { tickAnimator.SetFloat("tickSpeed", -1.5f); break; }
-            case KeyState.Reverse: { tickAnimator.SetFloat("tickSpeed", 1.5f); break; }
+            case KeyState.Fast: { tickAnimator.SetFloat("tickSpeed", 1.5f * speedMultiplier); break; }
+            case KeyState.Reverse: { tickAnimator.SetFloat("tickSpeed", 1.5f * -speedMultiplier); break; }
         }
 
         UpdateGears(newKey);
@@ -255,7 +266,7 @@ public class ConveyorBeltScript : Rideable
             ReverseDirection();
         }
 
-        tickAnimator.SetFloat("tickSpeed", -1);
+        tickAnimator.SetFloat("tickSpeed", speedMultiplier);
 
         UpdateGears(KeyState.None);
 
