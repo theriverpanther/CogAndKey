@@ -79,30 +79,22 @@ public class DoorScript : MonoBehaviour
 
     public void CheckLocks() {
         open = RequireAll;
-        bool lightOnForAll = false;
-        foreach(DoorOpener opener in locks) {
-
-            if (!RequireAll && opener.Activated) {
+        foreach (DoorOpener opener in locks)
+        {
+            if (!RequireAll && opener.Activated)
+            {
                 open = true;
                 opener.light.GetComponent<DoorLight>().UpdateDoor();
                 return;
             }
 
-            if(RequireAll && !opener.Activated) {
-                open = false;
-                if (lightOnForAll)
-                {
-                    opener.light.GetComponent<DoorLight>().UpdateDoor("open");
-
-                }
-                return;
-            }  else
+            if (RequireAll && !opener.Activated)
             {
-                opener.light.GetComponent<DoorLight>().UpdateDoor("open");
-                lightOnForAll = true;
-            }
-
-
+                open = false;
+                opener.light.GetComponent<DoorLight>().UpdateDoor();
+                return;
+            } 
         }
+
     }
 }

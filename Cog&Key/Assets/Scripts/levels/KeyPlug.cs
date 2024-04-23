@@ -20,7 +20,7 @@ public class KeyPlug : KeyWindable
         if(newKey == KeyState.Fast || newKey == KeyState.Reverse) {
             doorLock.Activated = true;
             light.color = Color.green;
-            doorLock.light.GetComponent<DoorLight>().UpdateDoor();
+            doorLock.light.GetComponent<DoorLight>().UpdateDoor("open");
         }
         else if(newKey == KeyState.Lock) {
             target.Locked = true;

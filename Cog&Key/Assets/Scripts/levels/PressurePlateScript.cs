@@ -55,7 +55,7 @@ public class PressurePlateScript : MonoBehaviour
 
         foreach (DoorOpener doorLock in doorLocks) {
             doorLock.Activated = true;
-            doorLock.light.GetComponent<DoorLight>().UpdateDoor();
+            doorLock.light.GetComponent<DoorLight>().UpdateDoor("open");
         }
 
         
