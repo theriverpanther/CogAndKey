@@ -18,6 +18,7 @@ TagManager:
   - AgentAnimator
   - Gear
   - Pressure Plate
+  - BossPoint
   layers:
   - Default
   - TransparentFX
