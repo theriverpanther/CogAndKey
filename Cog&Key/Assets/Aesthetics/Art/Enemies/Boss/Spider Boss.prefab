@@ -4860,6 +4860,7 @@ MonoBehaviour:
   connectPoints: []
   currentPoint: {fileID: 0}
   previousPoint: {fileID: 0}
+  rb: {fileID: 8926531615927509272}
   animator: {fileID: 1531324169044528597}
   timeToMove: 0
   speed: 3

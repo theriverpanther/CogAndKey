@@ -10,12 +10,13 @@ public class LevelData : MonoBehaviour
     [SerializeField] private GameObject LevelBoundary;
     private Rect levelBounds;
 
-    public GameObject BossRespawnPoint { get { return (currentBossPoint.transform.parent.gameObject == null ? null : currentBossPoint.transform.parent.gameObject); } }
-
+    public Vector3? BossRespawnPosition { get { return (currentBossPoint == null ? null : currentBossPoint); } }
 
     private string levelName;
+
     private CheckpointScript currentCheckpoint;
-    private ConnectionPoint currentBossPoint;
+    private Vector3 currentBossPoint;
+
     private List<GameObject> checkpoints;
     private Dictionary<KeyState, bool> checkpointKeys; // saves keys that are claimed before a checkpoint
 
@@ -120,14 +121,15 @@ public class LevelData : MonoBehaviour
         }
     }
 
-    public void TriggerBossCheckpoint(ConnectionPoint bossPoint)
+    public void TriggerBossCheckpoint(Vector3 bossPoint)
     {
         if (currentBossPoint == bossPoint)
         {
             return;
         }
-
         currentBossPoint = bossPoint;
+
+        Debug.Log("TRIGGERING BOSS CHECKPOINT SAVER..." + currentBossPoint);
     }
 
     private void EquipCheckpointKeys() {

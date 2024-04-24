@@ -20,6 +20,7 @@ public class BossManager : MonoBehaviour
     public GameObject currentPoint;
     public GameObject previousPoint;
 
+    [SerializeField]
     Rigidbody rb;
 
     [SerializeField]
@@ -29,7 +30,7 @@ public class BossManager : MonoBehaviour
     bool timeToMove = false;
     public float speed = 3.0f;
 
-    void Start()
+    void Awake()
     {
         foreach(Transform child in connectors.transform)
         {
@@ -39,15 +40,24 @@ public class BossManager : MonoBehaviour
         currentPoint = connectPoints[0];
         previousPoint = connectPoints[0];
 
-        if (LevelData.Instance != null && LevelData.Instance.BossRespawnPoint != null)
+        if (LevelData.Instance != null && LevelData.Instance.BossRespawnPosition != null)
         {
-            transform.position = LevelData.Instance.BossRespawnPoint.transform.position;
-            currentPoint = LevelData.Instance.BossRespawnPoint;
+            Debug.Log("Loading from death point...");
+            foreach(GameObject t in connectPoints)
+            {
+                if(t.transform.position.Equals(LevelData.Instance.BossRespawnPosition))
+                {
+                    currentPoint = t;
+                    Debug.Log("FOUND YA!...");
+                    break;
+                }
+            }
+            
         }
 
-        transform.position = currentPoint.transform.position;
+        Debug.Log("EEEEEEEHh " + LevelData.Instance?.BossRespawnPosition);
 
-        rb = GetComponent<Rigidbody>();
+        transform.position = currentPoint.transform.position;
        
     }
 
@@ -59,7 +69,6 @@ public class BossManager : MonoBehaviour
             animator.SetBool("Walking", true);
             rb.velocity = (currentPoint.transform.position - transform.position).normalized * speed;
 
-            //Debug.Log(Vector3.Distance(transform.position, currentPoint.transform.position));
             if (Vector3.Distance(transform.position, currentPoint.transform.position) <= 0.75f)
             {
                 timeToMove = false;
@@ -79,9 +88,10 @@ public class BossManager : MonoBehaviour
         currentPoint = moveTo;
         timeToMove = true;
 
-        GameObject.Find("Level Data Saver").GetComponent<LevelData>().TriggerBossCheckpoint(currentPoint.GetComponent<ConnectionPoint>());
 
-        Debug.Log("WAAAAAA " + GameObject.Find("Level Data Saver").GetComponent<LevelData>().BossRespawnPoint.name);
+        LevelData.Instance.TriggerBossCheckpoint(moveTo.transform.position);
+
+        Debug.Log("WAAAAAA " + moveTo.name + LevelData.Instance.BossRespawnPosition);
 
         return;
 
