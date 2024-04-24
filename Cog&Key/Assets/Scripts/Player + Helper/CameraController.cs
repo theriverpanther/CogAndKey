@@ -46,9 +46,6 @@ public class CameraController : MonoBehaviour
         Instance = this;
         player = GameObject.FindWithTag("Player").GetComponent<PlayerScript>();
         fixedZ = transform.position.z;
-        if(LevelData.Instance != null) {
-            SetInitialPosition();
-        }
 
         playerWindow = new Rect(-WINDOW_X_LIMIT, -3f, WINDOW_WIDTH, WINDOW_GROUND_HEIGHT);
 
@@ -219,6 +216,7 @@ public class CameraController : MonoBehaviour
         startingPos.x = Mathf.Clamp(startingPos.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f); // do not look beyond the level bounds
         startingPos.y = Mathf.Clamp(startingPos.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = startingPos;
+        unfocusedPositon = startingPos;
     }
 
     private List<float> FindLandBlocks(Vector2 middle) {
