@@ -137,11 +137,11 @@ public class CameraController : MonoBehaviour
             targetY = Mathf.Clamp(newPosition.y, bottomTarget, topTarget);
         }
 
-        if(newPosition.y != targetY) {
+        if(newPosition.y != targetY) { // if camera is blocked by terrain
             if(Mathf.Sign(targetY - newPosition.y) == -Mathf.Sign(newPosition.y - startPosition.y)) {
                 newPosition.y = startPosition.y; // prevent scrolling past what should be an edge
             }
-            newPosition.y += (targetY - newPosition.y) * 0.08f * Time.timeScale;
+            newPosition.y += (targetY - newPosition.y) * 0.02f * Time.timeScale;
         }
 
         // move the camera to the new position
