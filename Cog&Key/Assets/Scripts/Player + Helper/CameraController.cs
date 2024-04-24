@@ -21,7 +21,6 @@ public class CameraController : MonoBehaviour
     //private const float WINDOW_CENTER_Y_LIMIT = WINDOW_Y_LIMIT - WINDOW_HEIGHT / 2f;
 
     private const float FOCUS_OUTER_RADIUS = 10.0f;
-    private const float FOCUS_INNER_RADIUS = 7.0f;
     private const float FOCUS_MAX_RATIO = 0.5f;
 
     private PlayerScript player;
@@ -30,6 +29,8 @@ public class CameraController : MonoBehaviour
     private List<Vector2> focusPoints;
 
     private Vector3 unfocusedPositon;
+    private Vector2? lastFocusPoint;
+    private float focusRatio;
 
     public static CameraController Instance { get; private set; }
 
@@ -182,12 +183,21 @@ public class CameraController : MonoBehaviour
         }
         
         if(focus.HasValue) {
-            float ratio = FOCUS_MAX_RATIO;
-            if(focusDist > FOCUS_INNER_RADIUS) {
-                float multiplier = (FOCUS_OUTER_RADIUS - focusDist) / (FOCUS_OUTER_RADIUS - FOCUS_INNER_RADIUS);
-                ratio *= multiplier;
-            }
-            newPosition = ratio * focus.Value + (1 - ratio) * (Vector2)unfocusedPositon; // focus on the average of the focus point and the player
+            // focus on the average of the focus point and the player
+            lastFocusPoint = focus.Value;
+
+            focusRatio += Time.deltaTime;
+            focusRatio = Mathf.Min(focusRatio, FOCUS_MAX_RATIO);
+
+            newPosition = focusRatio * focus.Value + (1 - focusRatio) * (Vector2)unfocusedPositon;
+            newPosition.z = fixedZ;
+            transform.position = newPosition;
+        }
+        else if(lastFocusPoint.HasValue) {
+            focusRatio -= Time.deltaTime;
+            focusRatio = Mathf.Max(focusRatio, 0);
+
+            newPosition = focusRatio * lastFocusPoint.Value + (1 - focusRatio) * (Vector2)unfocusedPositon;
             newPosition.z = fixedZ;
             transform.position = newPosition;
         }
