@@ -86,6 +86,7 @@ public class BossManager : MonoBehaviour
     {
         previousPoint = currentPoint;
         currentPoint = moveTo;
+        transform.position = new Vector3(currentPoint.transform.position.x, currentPoint.transform.position.y - 45f, currentPoint.transform.position.z);
         timeToMove = true;
 
 
