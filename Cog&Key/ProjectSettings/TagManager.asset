@@ -19,6 +19,7 @@ TagManager:
   - Gear
   - Pressure Plate
   - BossPoint
+  - Fader
   layers:
   - Default
   - TransparentFX

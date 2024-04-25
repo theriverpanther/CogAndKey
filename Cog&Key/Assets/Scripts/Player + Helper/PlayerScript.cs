@@ -36,6 +36,9 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     public Animator playerAnimation;
 
+    [SerializeField]
+    public Animator fadeScreenOnDeath;
+
     public State CurrentState { get; private set; }
     public bool HasWallSlid { get; private set; }
     public Vector2 Velocity { get { return physicsBody.velocity; } }
@@ -69,6 +72,7 @@ public class PlayerScript : MonoBehaviour
         }
 
         helperScript = helper?.GetComponent<HelperCreature>();
+        fadeScreenOnDeath = GameObject.FindWithTag("Fader").GetComponent<Animator>();
     }
 
     void FixedUpdate()
@@ -271,6 +275,13 @@ public class PlayerScript : MonoBehaviour
 
     // restarts the level from the most recent checkpoint
     public void Die() {
+        StartCoroutine(DieSequence());
+    }
+
+    IEnumerator DieSequence()
+    {
+        fadeScreenOnDeath.SetBool("FadeToBlack", true);
+        yield return new WaitForSeconds(0.18f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
