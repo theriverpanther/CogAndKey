@@ -20,16 +20,18 @@ public class CameraController : MonoBehaviour
     private const float WINDOW_CENTER_X_LIMIT = WINDOW_X_LIMIT - WINDOW_WIDTH / 2f;
     //private const float WINDOW_CENTER_Y_LIMIT = WINDOW_Y_LIMIT - WINDOW_HEIGHT / 2f;
 
-    private const float FOCUS_OUTER_RADIUS = 10.0f;
-    private const float FOCUS_INNER_RADIUS = 7.0f;
+    //private const float FOCUS_OUTER_RADIUS = 10.0f;
     private const float FOCUS_MAX_RATIO = 0.5f;
 
     private PlayerScript player;
     private float fixedZ;
     private Rect playerWindow;
     private List<Vector2> focusPoints;
+    private List<float> focusRadii;
 
     private Vector3 unfocusedPositon;
+    private Vector2? lastFocusPoint;
+    private float focusRatio;
 
     public static CameraController Instance { get; private set; }
 
@@ -44,16 +46,15 @@ public class CameraController : MonoBehaviour
         Instance = this;
         player = GameObject.FindWithTag("Player").GetComponent<PlayerScript>();
         fixedZ = transform.position.z;
-        if(LevelData.Instance != null) {
-            SetInitialPosition();
-        }
 
         playerWindow = new Rect(-WINDOW_X_LIMIT, -3f, WINDOW_WIDTH, WINDOW_GROUND_HEIGHT);
 
         focusPoints = new List<Vector2>();
+        focusRadii = new List<float>();
         GameObject[] focusPointList = GameObject.FindGameObjectsWithTag("Focus Point");
         foreach(GameObject focusPoint in focusPointList) {
             focusPoints.Add(focusPoint.transform.position);
+            focusRadii.Add(focusPoint.transform.lossyScale.x / 2f);
             Destroy(focusPoint);
         }
 
@@ -136,11 +137,11 @@ public class CameraController : MonoBehaviour
             targetY = Mathf.Clamp(newPosition.y, bottomTarget, topTarget);
         }
 
-        if(newPosition.y != targetY) {
+        if(newPosition.y != targetY) { // if camera is blocked by terrain
             if(Mathf.Sign(targetY - newPosition.y) == -Mathf.Sign(newPosition.y - startPosition.y)) {
                 newPosition.y = startPosition.y; // prevent scrolling past what should be an edge
             }
-            newPosition.y += (targetY - newPosition.y) * 0.08f * Time.timeScale;
+            newPosition.y += (targetY - newPosition.y) * 0.02f * Time.timeScale;
         }
 
         // move the camera to the new position
@@ -172,22 +173,31 @@ public class CameraController : MonoBehaviour
         unfocusedPositon = transform.position;
         Vector2? focus = null;
         float focusDist = float.MaxValue;
-        foreach(Vector2 focusPoint in focusPoints) {
-            float testFocusDist = Vector2.Distance(player.transform.position, focusPoint);
-            if(testFocusDist <= FOCUS_OUTER_RADIUS && testFocusDist < focusDist) {
-                focus = focusPoint;
+        for(int i = 0; i < focusPoints.Count; i++) {
+            float testFocusDist = Vector2.Distance(player.transform.position, focusPoints[i]);
+            if(testFocusDist <= focusRadii[i] && testFocusDist < focusDist) {
+                focus = focusPoints[i];
                 focusDist = testFocusDist;
                 break;
             }
         }
         
         if(focus.HasValue) {
-            float ratio = FOCUS_MAX_RATIO;
-            if(focusDist > FOCUS_INNER_RADIUS) {
-                float multiplier = (FOCUS_OUTER_RADIUS - focusDist) / (FOCUS_OUTER_RADIUS - FOCUS_INNER_RADIUS);
-                ratio *= multiplier;
-            }
-            newPosition = ratio * focus.Value + (1 - ratio) * (Vector2)unfocusedPositon; // focus on the average of the focus point and the player
+            // focus on the average of the focus point and the player
+            lastFocusPoint = focus.Value;
+
+            focusRatio += 0.6f * Time.deltaTime;
+            focusRatio = Mathf.Min(focusRatio, FOCUS_MAX_RATIO);
+
+            newPosition = focusRatio * focus.Value + (1 - focusRatio) * (Vector2)unfocusedPositon;
+            newPosition.z = fixedZ;
+            transform.position = newPosition;
+        }
+        else if(lastFocusPoint.HasValue) {
+            focusRatio -= 0.6f * Time.deltaTime;
+            focusRatio = Mathf.Max(focusRatio, 0);
+
+            newPosition = focusRatio * lastFocusPoint.Value + (1 - focusRatio) * (Vector2)unfocusedPositon;
             newPosition.z = fixedZ;
             transform.position = newPosition;
         }
@@ -206,6 +216,7 @@ public class CameraController : MonoBehaviour
         startingPos.x = Mathf.Clamp(startingPos.x, level.XMin + Dimensions.x / 2f, level.XMax - Dimensions.x / 2f); // do not look beyond the level bounds
         startingPos.y = Mathf.Clamp(startingPos.y, level.YMin + Dimensions.y / 2f, level.YMax - Dimensions.y / 2f);
         transform.position = startingPos;
+        unfocusedPositon = startingPos;
     }
 
     private List<float> FindLandBlocks(Vector2 middle) {
