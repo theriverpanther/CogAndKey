@@ -155,7 +155,7 @@ public class Agent : KeyWindable
         {
             animationTag = FindChildWithTag(gameObject, "AgentAnimator");
             ani = animationTag.GetComponent<Animator>();
-            Debug.Log("Found child: " + animationTag);
+            //Debug.Log("Found child: " + animationTag);
         }
         
     }
@@ -312,7 +312,7 @@ public class Agent : KeyWindable
         Material[] materials = signifier.GetComponent<SkinnedMeshRenderer>().materials;
         materials[1] = mat;
         signifier.GetComponent<Renderer>().materials = materials;
-        Debug.Log("Material swapped succesfully!");
+        //Debug.Log("Material swapped succesfully!");
     }
 
 

@@ -25,6 +25,7 @@ public class PlayerScript : MonoBehaviour
     private Rigidbody2D physicsBody;
     private Vector2 colliderHalfSize;
     private PlayerInput input;
+    private bool dead;
 
     private float coyoteTime;
     private bool? moveLockedRight = null; // prevents the player from moving in this direction. false is left, null is neither
@@ -275,7 +276,10 @@ public class PlayerScript : MonoBehaviour
 
     // restarts the level from the most recent checkpoint
     public void Die() {
-        StartCoroutine(DieSequence());
+        if(!dead) {
+            StartCoroutine(DieSequence());
+            dead = true;
+        }
     }
 
     IEnumerator DieSequence()
