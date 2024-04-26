@@ -104,8 +104,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1829041407
-  m_SortingLayer: 2
+  m_SortingLayerID: 1594806245
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 5dc0d7322a5e406428a3695600df7ec0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.29411766}
@@ -188,8 +188,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1829041407
-  m_SortingLayer: 2
+  m_SortingLayerID: 1594806245
+  m_SortingLayer: 6
   m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: 8febbfbab50f0514da43766800e1932a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -221,6 +221,14 @@ PrefabInstance:
     - target: {fileID: 2660677331258882811, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
       propertyPath: m_Color.r
       value: 0.5686275
+      objectReference: {fileID: 0}
+    - target: {fileID: 2660677331258882811, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
+      propertyPath: m_SortingLayer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2660677331258882811, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1594806245
       objectReference: {fileID: 0}
     - target: {fileID: 3462743732668982699, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
       propertyPath: m_Name
@@ -371,6 +379,14 @@ PrefabInstance:
     - target: {fileID: 2847293790157130310, guid: 875da7def8dd2af478612d8e697ec539, type: 3}
       propertyPath: m_Color.r
       value: 0.5686275
+      objectReference: {fileID: 0}
+    - target: {fileID: 2847293790157130310, guid: 875da7def8dd2af478612d8e697ec539, type: 3}
+      propertyPath: m_SortingLayer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2847293790157130310, guid: 875da7def8dd2af478612d8e697ec539, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1594806245
       objectReference: {fileID: 0}
     - target: {fileID: 2892800190805645052, guid: 875da7def8dd2af478612d8e697ec539, type: 3}
       propertyPath: m_LocalRotation.w

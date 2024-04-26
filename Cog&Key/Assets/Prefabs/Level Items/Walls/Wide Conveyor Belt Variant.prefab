@@ -71,8 +71,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1829041407
-  m_SortingLayer: 2
+  m_SortingLayerID: 1594806245
+  m_SortingLayer: 6
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 9cf702718b590e644aa3b6f4816780d5, type: 3}
   m_Color: {r: 0.8207547, g: 0.7047945, b: 0.623309, a: 1}
@@ -176,8 +176,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1829041407
-  m_SortingLayer: 2
+  m_SortingLayerID: 1594806245
+  m_SortingLayer: 6
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 520cc54f0f2835e469b17cac71cafb67, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -378,7 +378,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8764658011706434050, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
       propertyPath: m_SortingLayer
-      value: 2
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8896447016799181237, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
       propertyPath: m_SortingLayer
@@ -589,6 +589,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8764658011706434050, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
+      propertyPath: m_SortingLayer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8764658011706434050, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1594806245
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -721,7 +729,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8764658011706434050, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
       propertyPath: m_SortingLayer
-      value: 2
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8764658011706434050, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1594806245
       objectReference: {fileID: 0}
     - target: {fileID: 8896447016799181237, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
       propertyPath: m_SortingLayer
@@ -976,6 +988,14 @@ PrefabInstance:
     - target: {fileID: 8665481099766302413, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8764658011706434050, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
+      propertyPath: m_SortingLayer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8764658011706434050, guid: 3c4a7803c031923478f280ecf85494df, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1594806245
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
