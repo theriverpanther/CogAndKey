@@ -73,6 +73,7 @@ public class LevelData : MonoBehaviour
         checkpointKeys[KeyState.Reverse] = false;
 
         EquipCheckpointKeys();
+        PlayerInput.Instance.Locked = false;
     }
 
     // called when the scene changes, deletes the instance if it is no longer the correct level

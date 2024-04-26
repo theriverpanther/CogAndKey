@@ -74,6 +74,7 @@ public class PlayerScript : MonoBehaviour
 
         helperScript = helper?.GetComponent<HelperCreature>();
         fadeScreenOnDeath = GameObject.FindWithTag("Fader").GetComponent<Animator>();
+        PlayerInput.Instance.Locked = false;
     }
 
     void FixedUpdate()
