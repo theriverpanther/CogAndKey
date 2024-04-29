@@ -147,6 +147,7 @@ public class PlayerScript : MonoBehaviour
 
                 // wall jump
                 if(adjWallDir != Direction.None && input.JustPressed(PlayerInput.Action.Jump)) {
+                    Debug.Log("wall jump");
                     HasWallSlid = true;
                     coyoteTime = 0;
                     physicsBody.gravityScale = JUMP_GRAVITY;
@@ -161,6 +162,9 @@ public class PlayerScript : MonoBehaviour
                     if(Mathf.Sign(velocity.x) != jumpDirection) {
                         velocity.x = 0;
                     }
+                    if(Mathf.Sign(velocity.x) == jumpDirection) {
+                        velocity.x = 0; // cancel velocity already moving in the jump direction (rare cases)
+                    }
                     velocity.x += jumpDirection * 6.0f;
                     moveLockedRight = (jumpDirection == -1);
                     SetAnimation("Jumping");
@@ -171,6 +175,7 @@ public class PlayerScript : MonoBehaviour
                     Jump(ref velocity, true);
                     SetAnimation("Jumping");
                     coyoteTime = 0;
+                    Debug.Log("coyote jump");
                 }
 
                 // land on the ground
@@ -201,6 +206,7 @@ public class PlayerScript : MonoBehaviour
 
                 if(input.JumpBuffered) { // jump buffer allows a jump when pressed slightly before landing
                     Jump(ref velocity, floorObject != null && floorObject.GetComponent<MovingWallScript>() != null);
+                    Debug.Log("ground jump");
                 }
                 else if(!onFloor) {
                     // fall off platform
